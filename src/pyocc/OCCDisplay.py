@@ -34,6 +34,8 @@ class OCCDisplay (Viewer):
         sub = self.SubWindow()
         name = self.txt.text()
         indx = name.split(".")[-1]
+
+        self.display.View.Dump(name)
         if   indx == "pdf":
             ef_type = Graphic3d_EF_PDF
         elif indx == "ps":
@@ -43,4 +45,4 @@ class OCCDisplay (Viewer):
         else:
             ef_type = Graphic3d_EF_PDF
         print (name)
-        self.display_obj.Export (name, ef_type)
+        #self.display_obj.Export (name, ef_type)
