@@ -10,22 +10,11 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-# Estimation parameter of EKF
-Q = np.diag([0.1, 0.1, math.radians(1.0), 1.0])**2
-R = np.diag([1.0, math.radians(40.0)])**2
-
-#  Simulation parameter
-Qsim = np.diag([0.5, 0.5])**2
-Rsim = np.diag([1.0, math.radians(30.0)])**2
-
-DT = 0.1  # time tick [s]
-SIM_TIME = 50.0  # simulation time [s]
-
-show_animation = True
-
 class Observe (object):
     
     def __init__(self):
+        self.Q    = np.diag([0.1, 0.1, np.deg2rad(1.0), 1])**2
+        self.R    = np.diag([1.0, np.deg2rad(40.0)])**2
         self.Qsim = np.diag([0.5, 0.5])**2
         self.Rsim = np.diag([1.0, math.radians(30.0)])**2
         self.dt = 0.1
@@ -102,13 +91,13 @@ class EKF_Calc (Observe):
         #  Predict
         xPred = self.Model (self.xEst, u)
         jF = self.JacobF (xPred, u)
-        PPred = jF * self.PEst * jF.T + Q
+        PPred = jF * self.PEst * jF.T + self.Q
 
         #  Update
         jH = self.Jacob
         zPred = self.Jacob * xPred
         y = z.T - zPred
-        S = jH * PPred * jH.T + R
+        S = jH * PPred * jH.T + self.R
         K = PPred * jH.T * np.linalg.inv(S)
         self.xEst = xPred + K * y
         self.PEst = (np.eye(len(self.xEst)) - K * jH) * PPred
@@ -146,8 +135,8 @@ if __name__ == '__main__':
     time = 0.0
     obj = EKF_Calc ()
 
-    while SIM_TIME >= time:
-        time += DT
+    while 50.0 >= time:
+        time += obj.dt
         u = np.matrix([1.0, 0.1]).T
 
         z, ud = obj.Observe_model(u)
@@ -165,3 +154,5 @@ if __name__ == '__main__':
         plt.axis("equal")
         plt.grid(True)
         plt.pause(0.001)
+    
+    plt.savefig ("name.png")
