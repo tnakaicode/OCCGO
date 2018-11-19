@@ -136,7 +136,6 @@ def ekf_estimation(xEst, PEst, z, u):
 def plot_covariance_ellipse(xEst, PEst):
     Pxy = PEst[0:2, 0:2]
     eigval, eigvec = np.linalg.eig(Pxy)
-
     if eigval[0] >= eigval[1]:
         bigind = 0
         smallind = 1
