@@ -19,6 +19,6 @@ model.view.print_summary()
 
 model.set_etype('axisym', parts)
 model.set_eshape('quad', 2)
-model.mesh(1.0, 'gmsh')
+#model.mesh(1.0, 'gmsh')
 model.plot_elements(model_name+'_elements')
 model.view.print_summary()
