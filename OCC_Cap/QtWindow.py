@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-
 class MainWindow(QWidget):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -23,7 +22,6 @@ class MainWindow(QWidget):
         subWindow = SubWindow(self)
         subWindow.show()
 
-    # サブウィンドウから実行
     def setParam(self, param):
         self.label.setText(param)
 
@@ -37,7 +35,7 @@ class SubWindow:
 
         self.edit = QLineEdit()
 
-        button = QPushButton('送信')
+        button = QPushButton('send')
         button.clicked.connect(self.setParamOriginal)
 
         layout = QVBoxLayout()
@@ -47,7 +45,6 @@ class SubWindow:
 
         self.w.setLayout(layout)
 
-    # ここで親ウィンドウに値を渡している
     def setParamOriginal(self):
         self.parent.setParam(self.edit.text())
 
