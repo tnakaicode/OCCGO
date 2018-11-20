@@ -25,3 +25,4 @@ from src.pyocc.OCCDisplay import OCCDisplay
 
 if __name__ == "__main__":
     print("ok")
+    print ("ok")

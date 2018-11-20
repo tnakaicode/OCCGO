@@ -1,15 +1,13 @@
-.vscode/settings.json
-.vscode/launch.json
 test4/hoge/.libs/libhoge.YKCPBYTORWDP76PENZHG4TQPGU2B4S73.gfortran-win_amd64.dll
+.vscode/launch.json
+.vscode/settings.json
 OregonState/CWT.py
 OregonState/EqHeat_Mayavi.py
 OregonState/FDTD.py
 OregonState/FourierMatplot.py
 OregonState/HeatCNTridiag.py
-OregonState/LaplaceFEM_2D.py
-OregonState/LaplaceLine.py
+model/test1.py
 src/__pycache__/__init__.cpython-36.pyc
-src/pyocc/Product.py
 src/pyocc/__pycache__/OCCDisplay.cpython-36.pyc
 src/pyocc/__pycache__/OCCQt.cpython-36.pyc
 src/pyocc/__pycache__/__init__.cpython-36.pyc
@@ -21,7 +19,6 @@ test3/dam-eplot_geom.png
 test3/hole-fancy.geo
 test3/import-dxf.geo
 test3/import-dxf.inp
-test3/import-dxf.py
 test3/import-dxf_chunked_areas.png
 test3/import-dxf_chunked_lines.png
 test3/import-dxf_chunked_points.png
