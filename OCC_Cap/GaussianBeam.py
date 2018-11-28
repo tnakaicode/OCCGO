@@ -54,7 +54,7 @@ if __name__ == "__main__":
     knum = 2*np.pi / wave
     
     pz = np.linspace (0, 500, 10)
-    w0 = 10.0
+    w0 = 15.0
     rz = pz + 1/pz*(np.pi*w0/wave)**2
     wz = w0 * np.sqrt (1 + (wave*pz/(np.pi*w0**2))**2)
     t0 = wave / (np.pi * w0)
