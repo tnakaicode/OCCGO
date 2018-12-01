@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys, time, os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "\..")
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
 from src.pyocc.OCCQt import Viewer
 from src.pyocc.OCCDisplay import OCCDisplay

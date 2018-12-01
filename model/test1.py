@@ -8,7 +8,7 @@ from linecache import getline, clearcache
 from scipy.integrate import simps
 from scipy.constants import *
 from optparse import OptionParser
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "\..")
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
 from OCC.Display.SimpleGui import init_display
 from OCC.gp import gp_Pln
@@ -25,4 +25,3 @@ from src.pyocc.OCCDisplay import OCCDisplay
 
 if __name__ == "__main__":
     print("ok")
-    print ("ok")
