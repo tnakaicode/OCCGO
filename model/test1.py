@@ -8,7 +8,7 @@ from linecache import getline, clearcache
 from scipy.integrate import simps
 from scipy.constants import *
 from optparse import OptionParser
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
+sys.path.append(os.path.join('..'))
 
 from OCC.Display.SimpleGui import init_display
 from OCC.gp import gp_Pln
@@ -25,3 +25,10 @@ from src.pyocc.OCCDisplay import OCCDisplay
 
 if __name__ == "__main__":
     print("ok")
+
+    display, start_display, add_menu, add_function_to_menu = init_display()
+
+    display.DisplayShape(make_box(10,10,10))
+
+    display.FitAll()
+    start_display()
