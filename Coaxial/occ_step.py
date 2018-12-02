@@ -24,6 +24,8 @@ from OCC.TCollection    import TCollection_AsciiString
 from OCC.TCollection    import TCollection_ExtendedString
 from OCC.TDocStd        import TDocStd_Document, Handle_TDocStd_Document
 
+from OCC.Extend.ShapeFactory import make_box
+
 class ExportCAFMethod (object):
     
     def __init__(self, name="name", tol=1.0E-10):
@@ -69,6 +71,7 @@ if __name__ == "__main__":
     root.Add (make_plane (center=gp_Pnt(0, 0, 0  )), name="pln0")
     root.Add (make_plane (center=gp_Pnt(0, 0, 100)), name="pln1")
     root.Add (make_circle (gp_Pnt(0, 0, 0), 100), name="circle")
+    root.Add (make_box(100,100,100), name="box001")
     root.Write()
     
     display.FitAll()
