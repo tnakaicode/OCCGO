@@ -16,8 +16,8 @@ from OCC.gp import gp_Pnt, gp_Vec, gp_Ax1, gp_Ax2, gp_Ax3
 from OCC.TopoDS  import TopoDS_Compound
 from OCC.BOPAlgo import BOPAlgo_MakerVolume, BOPAlgo_Builder
 from OCC.BRep    import BRep_Builder
+from OCC.Extend.ShapeFactory import make_box, make_face
 from OCCUtils.Topology  import Topo
-from OCCUtils.Construct import make_box, make_face
 from OCCUtils.Construct import vec_to_dir
 
 from src.pyocc.OCCQt import Viewer
