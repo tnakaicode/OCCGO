@@ -1,7 +1,7 @@
 import numpy as np
 import sys, time, os
 
-from OCC.Core.Display.SimpleGui import init_display
+from OCC.Display.SimpleGui import init_display
 from OCC.Core.XSControl      import XSControl_Writer, XSControl_WorkSession
 from OCC.Core.XCAFApp        import XCAFApp_Application
 from OCC.Core.XCAFDoc        import (XCAFDoc_DocumentTool_ShapeTool,
