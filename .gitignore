@@ -37,3 +37,12 @@ src/__pycache__/__init__.cpython-36.pyc
 src/pyocc/__pycache__/OCCDisplay.cpython-36.pyc
 src/pyocc/__pycache__/OCCQt.cpython-36.pyc
 >>>>>>> 727e901f5a90eb5a20c0e92ecbdb348b8a115749
+
+# Byte-compiled / optimized / DLL files
+
+__pycache__/
+*.py[cod]
+
+
+# Jupyter Notebook
+.ipynb_checkpoints
