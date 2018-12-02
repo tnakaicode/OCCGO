@@ -11,11 +11,11 @@ from optparse import OptionParser
 sys.path.append(os.path.join('..'))
 
 from OCC.Display.SimpleGui import init_display
-from OCC.gp import gp_Pln
-from OCC.gp import gp_Pnt, gp_Vec, gp_Ax1, gp_Ax2, gp_Ax3
-from OCC.TopoDS  import TopoDS_Compound
-from OCC.BOPAlgo import BOPAlgo_MakerVolume, BOPAlgo_Builder
-from OCC.BRep    import BRep_Builder
+from OCC.Core.gp import gp_Pln
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Ax1, gp_Ax2, gp_Ax3
+from OCC.Core.TopoDS  import TopoDS_Compound
+from OCC.Core.BOPAlgo import BOPAlgo_MakerVolume, BOPAlgo_Builder
+from OCC.Core.BRep    import BRep_Builder
 from OCC.Extend.ShapeFactory import make_box, make_face
 from OCCUtils.Topology  import Topo
 from OCCUtils.Construct import vec_to_dir
