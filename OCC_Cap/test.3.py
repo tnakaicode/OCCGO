@@ -11,7 +11,7 @@ from OCCUtils.Construct import vec_to_dir
 if __name__ == "__main__":
     display, start_display, add_menu, add_function_to_menu = init_display()
 
-    box = make_box(100, 200, 200)
+    box = make_box(200, 200, 200)
 
     p1, v1 = gp_Pnt(50, 50, 50), gp_Vec(0, 0, -1)
     fc1 = make_face(gp_Pln(p1, vec_to_dir(v1)), -1000, 1000, -1000, 1000)  # limited, not infinite plane
