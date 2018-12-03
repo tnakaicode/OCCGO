@@ -24,7 +24,7 @@ from OCC.TCollection    import TCollection_AsciiString
 from OCC.TCollection    import TCollection_ExtendedString
 from OCC.TDocStd        import TDocStd_Document, Handle_TDocStd_Document
 
-from OCC.Extend.ShapeFactory import make_box
+from OCCUtils.Construct import make_box
 
 class ExportCAFMethod (object):
     
