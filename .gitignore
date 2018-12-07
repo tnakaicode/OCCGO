@@ -42,6 +42,7 @@ src/pyocc/__pycache__/OCCQt.cpython-36.pyc
 
 __pycache__/
 *.py[cod]
+*.pyc[cod]
 
 
 # Jupyter Notebook
