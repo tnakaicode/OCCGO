@@ -70,6 +70,7 @@ if __name__ == "__main__":
     root.Add (make_vertex (gp_Pnt()), name="pnt")
     root.Add (make_plane (center=gp_Pnt(0, 0, 0  )), name="pln0")
     root.Add (make_plane (center=gp_Pnt(0, 0, 100)), name="pln1")
+    root.Add (make_plane (center=gp_Pnt(0, 0, 200)), name="pln2")
     root.Add (make_circle (gp_Pnt(0, 0, 0), 100), name="circle")
     root.Add (make_box(100,100,100), name="box001")
     root.Write()
