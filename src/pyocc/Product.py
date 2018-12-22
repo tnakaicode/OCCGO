@@ -9,7 +9,7 @@ from OCCUtils.Topology import dumpTopology
 import airconics as act
 
 from .base import Base
-from .export import export_STEPFile
+from .export import export_STEPFile_name
 
 def print_xy_click(shp, *kwargs):
     shape = shp[0]
@@ -109,11 +109,11 @@ class Part (Base):
 
         elif ext in ['.stp', '.step']:
             if single_export:
-                status.append(export_STEPFile(list(self.values()), filename))
+                status.append(export_STEPFile_name(list(self.values()), filename))
             else:
                 for name, component in self.items():
                     f = path + '_' + name + ext
-                    status.append(export_STEPFile([component], f))
+                    status.append(export_STEPFile_name([component], f))
         else:
             raise ValueError('Unexpected file extension {}'.format(ext))
 
@@ -191,7 +191,7 @@ class Product (Part):
                 for partname, part in self.items():
                     print (part)
                     shapes.append (part)
-                status.append(export_STEPFile(shapes, filename))
+                status.append(export_STEPFile_name(shapes, filename))
             else:
                 for name, part in self.items():
                     f = path + '_' + name + ext
