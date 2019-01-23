@@ -80,6 +80,27 @@ def coaxial_wg_tm_mn(mesh, m=31, n=11, phi=90.0, radi_a=0.0, radi_b=25.0):
     return func
 
 
+def jn_dev (pr=0, m=31, n=11, deg=0):
+    if deg == 0:
+        x_mn = jn_zeros(m, n)[-1]
+        func = jvp(m, x_mn*pr, 0)*yvp(m, x_mn, 0)
+    elif deg == 1:
+        x_mn = jnp_zeros(m, n)[-1]
+        func = jvp(m, x_mn*pr, 0)*yvp(m, x_mn, 1)
+    print(x_mn)
+    return func
+
+def nj_dev (pr=0, m=31, n=11, deg=0):
+    if deg == 0:
+        x_mn = jn_zeros(m, n)[-1]
+        func = jvp(m, x_mn, 0)*yvp(m, x_mn*pr, 0)
+    elif deg == 1:
+        x_mn = jnp_zeros(m, n)[-1]
+        func = jvp(m, x_mn, 1)*yvp(m, x_mn*pr, 0)
+    print(x_mn)
+    return func
+
+
 if __name__ == "__main__":
     argvs = sys.argv
     parser = OptionParser()
@@ -104,34 +125,28 @@ if __name__ == "__main__":
     m, n = opt.mn
     a, b = opt.radi
 
-    pr = np.linspace(10, 100, 1000)
-    m = 5
-    n = 10
-    print(jn_zeros(m, n)[-1])
-    print(jnp_zeros(m, n)[-1])
-    print(yn_zeros(m, n)[-1])
-    print(ynp_zeros(m, n)[-1])
-
-    x0_mn_1 = jn_zeros(m, 5)[-1]
-    x1_mn_1 = jnp_zeros(m, 5)[-1]
-    x0_mn_2 = jn_zeros(m, 7)[-1]
-    x1_mn_2 = jnp_zeros(m, 7)[-1]
-
-    d_1 = jvp(m, pr, 0)*yvp(m, x0_mn_1, 0) - yvp(m, pr, 0)*jvp(m, x0_mn_1, 0)
-    d_2 = jvp(m, pr, 0)*yvp(m, x0_mn_2, 0) - yvp(m, pr, 0)*jvp(m, x0_mn_2, 0)
+    pr = np.linspace(20, 100.0, 1000)
+    r0 = np.linspace(0.2,1,1000)
+    m = 31
+    n = 5
+    print(jn_zeros(m, n))
+    print(jnp_zeros(m, n))
+    print(yn_zeros(m, n))
+    print(ynp_zeros(m, n))
 
     plt.figure()
-    plt.plot(pr, d_1)
-    plt.plot(pr, d_2)
+    #plt.plot(pr, jn_dev(r0, 37, 12, 0) - nj_dev(r0, 37, 12, 0))
+    plt.plot(pr, jn_dev(r0, 31, 10, 0) - nj_dev(r0, 31, 10, 0))
+    plt.plot(pr, jn_dev(r0, 31, 11, 0) - nj_dev(r0, 31, 11, 0))
+    plt.xlim(0, 100)
+    plt.ylim(-0.025, 0.025)
     plt.grid()
     
     plt.figure()
-    plt.plot(pr, jvp(m, pr, 0)*yvp(m, x0_mn_1, 0))
-    plt.plot(pr, jvp(m, pr, 0)*yvp(m, x0_mn_2, 0))
+    #plt.plot(pr, jn_dev(r0, 37, 12, 1) - nj_dev(r0, 37, 12, 1))
+    plt.plot(pr, jn_dev(r0, 31, 10, 1) - nj_dev(r0, 31, 10, 1))
+    plt.plot(pr, jn_dev(r0, 31, 11, 1) - nj_dev(r0, 31, 11, 1))
     plt.grid()
-    
-    plt.figure()
-    plt.plot(pr, yvp(m, pr, 0)*jvp(m, x0_mn_1, 0))
-    plt.plot(pr, yvp(m, pr, 0)*jvp(m, x0_mn_2, 0))
-    plt.grid()
+    plt.xlim(0, 100)
+    plt.ylim(-0.025, 0.025)
     plt.show()

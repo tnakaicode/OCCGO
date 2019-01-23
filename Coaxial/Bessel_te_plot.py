@@ -104,7 +104,7 @@ if __name__ == "__main__":
     m, n = opt.mn
     a, b = opt.radi
 
-    pr = np.linspace(10, 100, 1000)
+    pr = np.linspace(10, 50, 1000)
     m = 5
     n = 10
     print(jn_zeros(m, n)[-1])
