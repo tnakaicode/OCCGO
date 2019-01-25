@@ -323,11 +323,11 @@ class OptSystem (object):
             self.srf.RotAxs(deg, axs)
             self.Reflect_ini()
             self.Reflect_srf()
-            
+
             ax = self.tar.GetTarget(axs)
             d0 = d1
             d1 = ax.Location().Distance(self.tar.BeamLocal().Location())
-            print ("Rot ", i, deg, d0, d1)
+            print("Rot ", i, deg, d0, d1)
 
             if d1 > d0:
                 deg = -deg/2
@@ -337,7 +337,7 @@ class OptSystem (object):
         print(self.tar.beam.Location())
         print(self.tar.axs.Location())
         self.Display_Shape([None, "BLUE"])
-        
+
     def Display_Shape(self, colors=["BLUE", "YELLOW"]):
         self.display.DisplayShape(axs_pln(gp_Ax3()))
         self.display.DisplayShape(axs_pln(self.srf.axs), color=colors[0])

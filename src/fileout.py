@@ -1,10 +1,13 @@
 import numpy as np
 from unwrap.unwrap import unwrap
 
-from src.pygrasp.output import float_to_string
-
 from OCC.gp import gp_Pnt, gp_Ax1, gp_Ax3, gp_Vec, gp_Dir, gp_Pnt2d
 from OCC.gp import gp_Trsf, gp_Quaternion, gp_Pln, gp_Mat
+
+
+def pnt_to_xyz(p):
+    return p.X(), p.Y(), p.Z()
+
 
 def occ_to_grasp_rim(axs, pts, filename="pln.rim", name="name", nxy=5):
     pnt = axs.Location()
