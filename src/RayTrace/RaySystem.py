@@ -154,16 +154,17 @@ class SurfSystem (object):
 
     def AxsLocal(self):
         return self.Move_Axs(self.axs, self.axs, self.local)
-    
-    def MultiRay (self, rght=[-10, 0], left=[10, 0], uppr=[0, 10], bott=[0, -10]):
-        ax_rght = gp_Ax3(gp_Pnt(*rght,0), gp_Dir(0,0,1))
-        ax_left = gp_Ax3(gp_Pnt(*left,0), gp_Dir(0,0,1))
-        ax_uppr = gp_Ax3(gp_Pnt(*uppr,0), gp_Dir(0,0,1))
-        ax_bott = gp_Ax3(gp_Pnt(*bott,0), gp_Dir(0,0,1))
-        self.beam_rght = self.Move_Axs(self.beam, gp_Ax3(), ax_rght) 
-        self.beam_left = self.Move_Axs(self.beam, gp_Ax3(), ax_left) 
-        self.beam_uppr = self.Move_Axs(self.beam, gp_Ax3(), ax_uppr) 
-        self.beam_bott = self.Move_Axs(self.beam, gp_Ax3(), ax_bott) 
+
+    def MultiRay(self, rght=[-10, 0], left=[10, 0], uppr=[0, 10], bott=[0, -10]):
+        ax_rght = gp_Ax3(gp_Pnt(*rght, 0), gp_Dir(0, 0, 1))
+        ax_left = gp_Ax3(gp_Pnt(*left, 0), gp_Dir(0, 0, 1))
+        ax_uppr = gp_Ax3(gp_Pnt(*uppr, 0), gp_Dir(0, 0, 1))
+        ax_bott = gp_Ax3(gp_Pnt(*bott, 0), gp_Dir(0, 0, 1))
+        self.beam_rght = self.Move_Axs(self.beam, gp_Ax3(), ax_rght)
+        self.beam_left = self.Move_Axs(self.beam, gp_Ax3(), ax_left)
+        self.beam_uppr = self.Move_Axs(self.beam, gp_Ax3(), ax_uppr)
+        self.beam_bott = self.Move_Axs(self.beam, gp_Ax3(), ax_bott)
+
 
 class RaySystem (object):
 
@@ -377,8 +378,9 @@ class OptSystem (object):
         self.display.FitAll()
         self.start_display()
 
+
 class Multi_RaySystem (object):
-    
+
     def __init__(self, dir_name, ini_name, tar_name):
         self.dir = dir_name
         self.axs = gp_Ax3()
@@ -387,7 +389,6 @@ class Multi_RaySystem (object):
         self.ini.MultiRay()
         self.tar.MultiRay()
         self.display, self.start_display, self.add_menu, self.add_function_to_menu = init_display()
-
 
     def Reflect(self):
         h_surf = BRep_Tool.Surface(self.tar.srf)
@@ -403,7 +404,7 @@ class Multi_RaySystem (object):
                 500, -500
             )
             self.tar.beam = reflect(self.ini.beam, pln)
-    
+
     def BeamReflect(self, beam=gp_Ax3()):
         h_surf = BRep_Tool.Surface(self.tar.srf)
         g_line = gp_Lin(self.ini.beam.Location(), beam.Direction())
@@ -419,14 +420,14 @@ class Multi_RaySystem (object):
             )
             tar_beam = reflect(beam, pln)
         return tar_beam
-    
+
     def MultiReflect(self):
         self.tar.beam = self.BeamReflect(self.ini.beam)
         self.tar.beam_rght = self.BeamReflect(self.ini.beam_rght)
         self.tar.beam_left = self.BeamReflect(self.ini.beam_left)
         self.tar.beam_uppr = self.BeamReflect(self.ini.beam_uppr)
         self.tar.beam_bott = self.BeamReflect(self.ini.beam_bott)
-        
+
     def OptAxs(self, axs="y"):
         print(self.ini.name, "->", self.tar.name)
         if axs == None:
