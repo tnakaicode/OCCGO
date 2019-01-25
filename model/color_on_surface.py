@@ -12,12 +12,12 @@ myBox = BRepPrimAPI_MakeBox(60, 60, 50).Shape()
 view = display.View
 colorscale = view.ColorScale().GetObject()
 
-aMinRange    = colorscale.GetMin()
-aMaxRange    = colorscale.GetMax()
+aMinRange = colorscale.GetMin()
+aMaxRange = colorscale.GetMax()
 aNbIntervals = colorscale.GetNumberOfIntervals()
-aTextHeight  = colorscale.GetTextHeight()
+aTextHeight = colorscale.GetTextHeight()
 labPosition = colorscale.GetLabelPosition()
-position =  gp_XY(colorscale.GetXPosition(), colorscale.GetYPosition())
+position = gp_XY(colorscale.GetXPosition(), colorscale.GetYPosition())
 title = colorscale.GetTitle()
 
 view.ColorScaleDisplay()

@@ -5,6 +5,23 @@ from OCC.gp import gp_Pnt, gp_Ax1, gp_Ax3, gp_Vec, gp_Dir, gp_Pnt2d
 from OCC.gp import gp_Trsf, gp_Quaternion, gp_Pln, gp_Mat
 
 
+def string_to_float(string):
+    try:
+        return float(string)
+    except ValueError:
+        if '-' in string[1:]:
+            return float('E-'.join(string.rsplit('-', 1)))
+        else:
+            return float('E+'.join(string.rsplit('+', 1)))
+
+
+def float_to_string(number):
+    if number == 0 or abs(np.log10(abs(number))) < 100:
+        return ' {: 0.10E}'.format(number)
+    else:
+        return ' {: 0.10E}'.format(number).replace('E', '')
+
+
 def pnt_to_xyz(p):
     return p.X(), p.Y(), p.Z()
 
