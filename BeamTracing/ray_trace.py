@@ -32,7 +32,7 @@ sys.path.append(os.path.join('../'))
 
 
 if __name__ == "__main__":
-    from src.RayTrace.RaySystem import RaySystem, SurfSystem, OptSystem
+    from src.RayTrace.RaySystem import RaySystem, SurfSystem, OptSystem, Multi_RaySystem
     from src.RayTrace.ray_setup import get_axs, get_deg
     from src.Unit import convert_SI, convert
 
@@ -45,18 +45,27 @@ if __name__ == "__main__":
     init = "surf1"
     surf = ["surf2", "surf3", "surf4"]
 
-    obj = RaySystem("./", init, "surf2")
-    obj.ini.beam = get_axs("./" + obj.ini.name + "_beam.cor")
-    obj.ini.Move_Beam(gp_Ax3(), obj.ini.axs)
-
-    obj.Reflect()
+    obj = Multi_RaySystem("./", init, "surf2")
+    obj.ini.beam = get_axs("./" + obj.ini.name + "_beam.cor", obj.ini.axs)
+    
+    obj.ini.beam_rght = get_axs("./" + obj.ini.name + "_beam_rght.cor", obj.ini.axs)
+    obj.ini.beam_left = get_axs("./" + obj.ini.name + "_beam_left.cor", obj.ini.axs)
+    obj.ini.beam_uppr = get_axs("./" + obj.ini.name + "_beam_uppr.cor", obj.ini.axs)
+    obj.ini.beam_bott = get_axs("./" + obj.ini.name + "_beam_bott.cor", obj.ini.axs)
+    
+    obj.MultiReflect()
     obj.Display_Shape(["BLUE", "GREEN"])
+
+    print (obj.tar.beam_bott.Location())
 
     for idx, name in enumerate(surf[:-1]):
         print(name)
         obj.ini = obj.tar
         obj.tar = SurfSystem("./", surf[idx+1])
-        obj.Reflect()
+        print (obj.ini.beam_bott.Location())
+
+        obj.MultiReflect()
+        print (obj.tar.beam_bott.Location())
         obj.Display_Shape(["BLUE", "GREEN"])
 
     obj.display.FitAll()

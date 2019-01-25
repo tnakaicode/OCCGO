@@ -154,7 +154,16 @@ class SurfSystem (object):
 
     def AxsLocal(self):
         return self.Move_Axs(self.axs, self.axs, self.local)
-
+    
+    def MultiRay (self, rght=[-10, 0], left=[10, 0], uppr=[0, 10], bott=[0, -10]):
+        ax_rght = gp_Ax3(gp_Pnt(*rght,0), gp_Dir(0,0,1))
+        ax_left = gp_Ax3(gp_Pnt(*left,0), gp_Dir(0,0,1))
+        ax_uppr = gp_Ax3(gp_Pnt(*uppr,0), gp_Dir(0,0,1))
+        ax_bott = gp_Ax3(gp_Pnt(*bott,0), gp_Dir(0,0,1))
+        self.beam_rght = self.Move_Axs(self.beam, gp_Ax3(), ax_rght) 
+        self.beam_left = self.Move_Axs(self.beam, gp_Ax3(), ax_left) 
+        self.beam_uppr = self.Move_Axs(self.beam, gp_Ax3(), ax_uppr) 
+        self.beam_bott = self.Move_Axs(self.beam, gp_Ax3(), ax_bott) 
 
 class RaySystem (object):
 
@@ -353,6 +362,134 @@ class OptSystem (object):
             make_line(self.ini.beam.Location(), self.srf.beam.Location()), color=colors[0])
         self.display.DisplayShape(
             make_line(self.srf.beam.Location(), self.tar.beam.Location()), color=colors[0])
+        self.display.FitAll()
+
+    def Display_Update(self):
+        self.display.EraseAll()
+        self.display.DisplayShape(axs_pln(gp_Ax3()))
+        self.display.DisplayShape(axs_pln(self.ini.axs))
+        self.display.DisplayShape(axs_pln(self.tar.axs))
+        self.display.DisplayShape(self.ini.srf)
+        self.display.DisplayShape(self.tar.srf)
+        self.display.DisplayShape(self.ini.sxy, color="BLUE")
+        self.display.DisplayShape(self.tar.sxy, color="YELLOW")
+        self.display.DisplayShape(make_line(self.ini.sxy, self.tar.sxy))
+        self.display.FitAll()
+        self.start_display()
+
+class Multi_RaySystem (object):
+    
+    def __init__(self, dir_name, ini_name, tar_name):
+        self.dir = dir_name
+        self.axs = gp_Ax3()
+        self.ini = SurfSystem(self.dir, ini_name)
+        self.tar = SurfSystem(self.dir, tar_name)
+        self.ini.MultiRay()
+        self.tar.MultiRay()
+        self.display, self.start_display, self.add_menu, self.add_function_to_menu = init_display()
+
+
+    def Reflect(self):
+        h_surf = BRep_Tool.Surface(self.tar.srf)
+        g_line = gp_Lin(self.ini.beam.Location(), self.ini.beam.Direction())
+        ray = Geom_Line(g_line)
+        if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints():
+            self.tar.beam = reflect(self.ini.beam, self.tar.srf)
+        else:
+            pln = make_plane(
+                self.tar.axs.Location(),
+                dir_to_vec(self.tar.axs.Direction()),
+                500, -500,
+                500, -500
+            )
+            self.tar.beam = reflect(self.ini.beam, pln)
+    
+    def BeamReflect(self, beam=gp_Ax3()):
+        h_surf = BRep_Tool.Surface(self.tar.srf)
+        g_line = gp_Lin(self.ini.beam.Location(), beam.Direction())
+        ray = Geom_Line(g_line)
+        if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints():
+            tar_beam = reflect(beam, self.tar.srf)
+        else:
+            pln = make_plane(
+                self.tar.axs.Location(),
+                dir_to_vec(self.tar.axs.Direction()),
+                500, -500,
+                500, -500
+            )
+            tar_beam = reflect(beam, pln)
+        return tar_beam
+    
+    def MultiReflect(self):
+        self.tar.beam = self.BeamReflect(self.ini.beam)
+        self.tar.beam_rght = self.BeamReflect(self.ini.beam_rght)
+        self.tar.beam_left = self.BeamReflect(self.ini.beam_left)
+        self.tar.beam_uppr = self.BeamReflect(self.ini.beam_uppr)
+        self.tar.beam_bott = self.BeamReflect(self.ini.beam_bott)
+        
+    def OptAxs(self, axs="y"):
+        print(self.ini.name, "->", self.tar.name)
+        if axs == None:
+            ref = gp_Dir(0, 0, 1)
+            pnt = gp_Pnt(0, 0, 0)
+            ax = gp_Ax3(pnt, ref)
+        elif axs == "x":
+            ref = self.ini.beam.XDirection()
+            pnt = self.tar.BeamLocal().Location()
+            pnt.SetZ(0.0)
+            pnt.SetY(0.0)
+            ax = gp_Ax3(pnt, gp_Dir(0, 0, 1))
+        elif axs == "y":
+            ref = self.ini.beam.YDirection()
+            pnt = self.tar.BeamLocal().Location()
+            pnt.SetZ(0.0)
+            pnt.SetX(0.0)
+            ax = gp_Ax3(pnt, gp_Dir(0, 0, 1))
+        else:
+            ref = gp_Dir(0, 0, 1)
+            pnt = gp_Pnt(0, 0, 0)
+            ax = gp_Ax3(pnt, gp_Dir(0, 0, 1))
+        print("Detect Target Position")
+        print(self.ini.axs.Location())
+        print(self.tar.axs.Location())
+        print(self.ini.beam.Location())
+        print(self.tar.beam.Location())
+        print(self.ini.BeamLocal().Location())
+        print(self.tar.BeamLocal().Location())
+
+        ax = self.tar.Move_Axs(ax, gp_Ax3(), self.tar.axs)
+        v0 = dir_to_vec(self.ini.beam.Direction())
+        v1 = gp_Vec(self.ini.beam.Location(), ax.Location()).Normalized()
+        rf = dir_to_vec(ref)
+        deg = np.rad2deg(v0.AngleWithRef(v1, rf))
+
+        print("Detect Rotation Angle")
+        print(ax.Location())
+
+        print(self.ini.name, axs, deg)
+        print(v0)
+        print(v1)
+        print(rf)
+        self.ini.RotAxs(deg/2, axs=axs)
+
+    def Display_Shape(self, colors=["BLUE", "YELLOW"]):
+        self.display.DisplayShape(axs_pln(gp_Ax3()))
+        self.display.DisplayShape(axs_pln(self.ini.axs), color=colors[0])
+        self.display.DisplayShape(axs_pln(self.tar.axs), color=colors[1])
+        self.display.DisplayShape(self.ini.srf, color=colors[0])
+        self.display.DisplayShape(self.tar.srf)
+        self.display.DisplayShape(self.ini.beam.Location(), color=colors[0])
+        self.display.DisplayShape(self.tar.beam.Location(), color=colors[1])
+        self.display.DisplayShape(
+            make_line(self.ini.beam.Location(), self.tar.beam.Location()), color=colors[0])
+        self.display.DisplayShape(
+            make_line(self.ini.beam_rght.Location(), self.tar.beam_rght.Location()), color=colors[0])
+        self.display.DisplayShape(
+            make_line(self.ini.beam_left.Location(), self.tar.beam_left.Location()), color=colors[0])
+        self.display.DisplayShape(
+            make_line(self.ini.beam_uppr.Location(), self.tar.beam_uppr.Location()), color=colors[0])
+        self.display.DisplayShape(
+            make_line(self.ini.beam_bott.Location(), self.tar.beam_bott.Location()), color=colors[0])
         self.display.FitAll()
 
     def Display_Update(self):
