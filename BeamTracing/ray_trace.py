@@ -45,7 +45,7 @@ if __name__ == "__main__":
     init = "surf1"
     surf = ["surf2", "surf3", "surf4"]
 
-    obj = RaySystem("./", init, "surf2")
+    obj = Multi_RaySystem("./", init, "surf2")
     obj.ini.beam = get_axs("./" + obj.ini.name + "_beam.cor", obj.ini.axs)
     
     obj.ini.beam_rght = get_axs("./" + obj.ini.name + "_beam_rght.cor", obj.ini.axs)
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     obj.ini.beam_uppr = get_axs("./" + obj.ini.name + "_beam_uppr.cor", obj.ini.axs)
     obj.ini.beam_bott = get_axs("./" + obj.ini.name + "_beam_bott.cor", obj.ini.axs)
     
-    obj.Reflect()
+    obj.MultiReflect()
     obj.Display_Shape(["BLUE", "GREEN"])
 
     print (obj.tar.beam.Location())
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         obj.tar = SurfSystem("./", surf[idx+1])
         print (obj.ini.beam.Location())
 
-        obj.Reflect()
+        obj.MultiReflect()
         print (obj.tar.beam.Location())
         obj.Display_Shape(["BLUE", "GREEN"])
 

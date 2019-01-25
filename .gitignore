@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 test4/hoge/.libs/libhoge.YKCPBYTORWDP76PENZHG4TQPGU2B4S73.gfortran-win_amd64.dll
 .vscode/launch.json
 .vscode/settings.json
@@ -29,14 +28,6 @@ test4/hoge.o
 test4/hoge.cp36-win_amd64.pyd
 test4/mod1.mod
 test4/hoge/.libs/libhoge.ARVOGZNVCAS5YQW2HNMFAADP6H7QLLTQ.gfortran-win_amd64.dll
-=======
-src/pyocc/__pycache__/__init__.cpython-36.pyc
-.vscode/launch.json
-.vscode/settings.json
-src/__pycache__/__init__.cpython-36.pyc
-src/pyocc/__pycache__/OCCDisplay.cpython-36.pyc
-src/pyocc/__pycache__/OCCQt.cpython-36.pyc
->>>>>>> 727e901f5a90eb5a20c0e92ecbdb348b8a115749
 
 # Byte-compiled / optimized / DLL files
 
@@ -48,3 +39,4 @@ __pycache__/
 # Jupyter Notebook
 .ipynb_checkpoints
 Coaxial/root.stp
+src/__pycache__/Unit.cpython-36.pyc
