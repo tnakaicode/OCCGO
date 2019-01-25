@@ -15,6 +15,7 @@ from OCC.Geom import Geom_Plane, Geom_Surface, Geom_BSplineSurface
 from OCC.gp import gp_Pln, gp_Trsf, gp_Lin, gp_Elips, gp_Elips2d
 from OCC.gp import gp_Pnt, gp_Vec, gp_Dir, gp_Ax1, gp_Ax2, gp_Ax3
 from OCC.Display.SimpleGui import init_display
+
 import numpy as np
 import matplotlib.pyplot as plt
 import json
@@ -47,25 +48,51 @@ if __name__ == "__main__":
 
     obj = Multi_RaySystem("./", init, "surf2")
     obj.ini.beam = get_axs("./" + obj.ini.name + "_beam.cor", obj.ini.axs)
-    
-    obj.ini.beam_rght = get_axs("./" + obj.ini.name + "_beam_rght.cor", obj.ini.axs)
-    obj.ini.beam_left = get_axs("./" + obj.ini.name + "_beam_left.cor", obj.ini.axs)
-    obj.ini.beam_uppr = get_axs("./" + obj.ini.name + "_beam_uppr.cor", obj.ini.axs)
-    obj.ini.beam_bott = get_axs("./" + obj.ini.name + "_beam_bott.cor", obj.ini.axs)
-    
+
+    obj.ini.beam_rght = get_axs(
+        "./" + obj.ini.name + "_beam_rght.cor", obj.ini.axs)
+    obj.ini.beam_left = get_axs(
+        "./" + obj.ini.name + "_beam_left.cor", obj.ini.axs)
+    obj.ini.beam_uppr = get_axs(
+        "./" + obj.ini.name + "_beam_uppr.cor", obj.ini.axs)
+    obj.ini.beam_bott = get_axs(
+        "./" + obj.ini.name + "_beam_bott.cor", obj.ini.axs)
+
     obj.MultiReflect()
+    print(obj.tar.beam.Location())
+    print(obj.tar.beam_rght.Location())
+    print(obj.tar.beam_left.Location())
+    print(obj.tar.beam_uppr.Location())
+    print(obj.tar.beam_bott.Location())
+    
+    ax = obj.tar.Move_Axs(obj.tar.beam, obj.tar.axs, gp_Ax3())
+    ax0 = obj.tar.Move_Axs(obj.tar.beam_rght, obj.tar.axs, gp_Ax3())
+    ax1 = obj.tar.Move_Axs(obj.tar.beam_left, obj.tar.axs, gp_Ax3())
+    ax2 = obj.tar.Move_Axs(obj.tar.beam_uppr, obj.tar.axs, gp_Ax3())
+    ax3 = obj.tar.Move_Axs(obj.tar.beam_bott, obj.tar.axs, gp_Ax3())
+    print (ax.Location())
+    print (ax0.Location())
+    print (ax1.Location())
+    print (ax2.Location())
+    print (ax3.Location())
+    
     obj.Display_Shape(["BLUE", "GREEN"])
 
-    print (obj.tar.beam.Location())
+    print(obj.tar.beam.Location())
 
     for idx, name in enumerate(surf[:-1]):
         print(name)
         obj.ini = obj.tar
         obj.tar = SurfSystem("./", surf[idx+1])
-        print (obj.ini.beam.Location())
+        print(obj.ini.beam.Location())
 
         obj.MultiReflect()
-        print (obj.tar.beam.Location())
+        print(obj.tar.beam.Location())
+        print(obj.tar.beam_rght.Location())
+        print(obj.tar.beam_left.Location())
+        print(obj.tar.beam_uppr.Location())
+        print(obj.tar.beam_bott.Location())
+        
         obj.Display_Shape(["BLUE", "GREEN"])
 
     obj.display.FitAll()
