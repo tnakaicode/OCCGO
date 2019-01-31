@@ -2,6 +2,7 @@ from OCCUtils.Topology import Topo
 from OCCUtils.Construct import project_edge_onto_plane, project_point_on_curve
 from OCCUtils.Construct import make_wire, make_edge, make_plane, make_line, make_loft
 from OCCUtils.Construct import dir_to_vec, vec_to_dir
+from OCCUtils.Topology import Topo
 from OCC.BRep import BRep_Tool
 from OCC.TopLoc import TopLoc_Location
 from OCC.GeomLProp import GeomLProp_SurfaceTool
@@ -31,10 +32,30 @@ from scipy.integrate import simps
 from optparse import OptionParser
 sys.path.append(os.path.join('../'))
 
+def reflect_axs2 (beam, surf, axs=gp_Ax3(), indx=1):
+    p0, v0 = beam.Location(), dir_to_vec(beam.Direction())
+    h_surf = BRep_Tool.Surface(surf)
+    ray = Geom_Line(gp_Lin(p0, vec_to_dir(v0)))
+    if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints() == 0:
+        print("Out of Surface", axs.Location())
+        pln = make_plane(
+            axs.Location(), dir_to_vec(axs.Direction()), 500, -500, 500, -500
+        )
+        h_surf = BRep_Tool.Surface(pln)
+    GeomAPI_IntCS(ray.GetHandle(), h_surf).IsDone()
+    u, v, w = GeomAPI_IntCS(ray.GetHandle(), h_surf).Parameters(indx)
+    p1, vx, vy = gp_Pnt(), gp_Vec(), gp_Vec()
+    GeomLProp_SurfaceTool.D1(h_surf, u, v, p1, vx, vy)
+    vz = vx.Crossed(vy)
+    vx.Normalize()
+    vy.Normalize()
+    vz.Normalize()
+    v1 = v0.Mirrored(gp_Ax2(p1, vec_to_dir(vz), vec_to_dir(vx)))
+    return gp_Ax3(p1, vec_to_dir(v1), beam.XDirection().Reversed())
 
 if __name__ == "__main__":
-    from src.RayTrace.RaySystem import RaySystem, SurfSystem, OptSystem, Multi_RaySystem
-    from src.RayTrace.ray_setup import get_axs, get_deg, axs_pln
+    from src.RayTrace.RaySystem import RaySystem, SurfSystem, OptSystem, Multi_RaySystem, set_surface
+    from src.RayTrace.ray_setup import get_axs, get_deg, axs_pln, reflect
     from src.Unit import convert_SI, convert
     from src.pyocc.export import export_STEPFile_single
     from src.pyocc.load import read_step_file
@@ -48,10 +69,18 @@ if __name__ == "__main__":
     display, start_display, add_menu, add_function_to_menu = init_display()
 
     beam = get_axs("./beam_cyl.cor")
-    surf = read_step_file("./cylinder.stp")
+    surf = set_surface("./cylinder.stp")
     display.DisplayShape(surf)
-    #display.DisplayShape(axs_pln(gp_Ax3()))
+    display.DisplayShape(axs_pln(gp_Ax3()))
     display.DisplayShape(axs_pln(beam))
 
+    axs1 = beam
+    for i in range(10):
+        axs0 = axs1
+        axs1 = reflect_axs2(axs0, surf, indx=2)
+        display.DisplayShape(make_line(axs0.Location(), axs1.Location()), color="BLUE")
+
+    display.DisplayShape(axs_pln(axs1))
+    
     display.FitAll()
     start_display()

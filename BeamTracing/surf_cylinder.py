@@ -41,6 +41,8 @@ if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option("--dir", dest="dir", default="./")
     parser.add_option("--surf", dest="surf", default="cylinder")
+    parser.add_option("--lxy", dest="lxy",default=(0, 10), type="float", nargs=2)
+    parser.add_option("--rxy", dest="rxy",default=(0, 0), type="float", nargs=2)
     opt, argc = parser.parse_args(argvs)
     print(argc, opt)
 
@@ -48,11 +50,12 @@ if __name__ == "__main__":
 
     api = BRepOffsetAPI_ThruSections()
 
-    pt = np.linspace(0, 100, 10)
-    for d in pt:
-        pnt = gp_Pnt(0, 0, d)
+    pt = np.linspace(*opt.lxy, 10)
+    pr = np.tan(np.deg2rad(5.0)) * pt + 10.0
+    for i, d in enumerate(pt):
+        pnt = gp_Pnt(0, 0, pt[i])
         d_z = gp_Dir(0, 0, 1)
-        obj = Geom_Circle(gp_Ax2(pnt, d_z), 10).Circ()
+        obj = Geom_Circle(gp_Ax2(pnt, d_z), pr[i]).Circ()
         wxy = BRepBuilderAPI_MakeWire(
             BRepBuilderAPI_MakeEdge(obj).Edge()).Wire()
         display.DisplayShape(wxy)
