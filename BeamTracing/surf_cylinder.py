@@ -41,8 +41,10 @@ if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option("--dir", dest="dir", default="./")
     parser.add_option("--surf", dest="surf", default="cylinder")
-    parser.add_option("--lxy", dest="lxy",default=(0, 10), type="float", nargs=2)
-    parser.add_option("--rxy", dest="rxy",default=(0, 0), type="float", nargs=2)
+    parser.add_option("--lxy", dest="lxy", default=(0, 10),
+                      type="float", nargs=2)
+    parser.add_option("--rxy", dest="rxy", default=(0, 0),
+                      type="float", nargs=2)
     opt, argc = parser.parse_args(argvs)
     print(argc, opt)
 

@@ -32,7 +32,8 @@ from scipy.integrate import simps
 from optparse import OptionParser
 sys.path.append(os.path.join('../'))
 
-def reflect_axs2 (beam, surf, axs=gp_Ax3(), indx=1):
+
+def reflect_axs2(beam, surf, axs=gp_Ax3(), indx=1):
     p0, v0 = beam.Location(), dir_to_vec(beam.Direction())
     h_surf = BRep_Tool.Surface(surf)
     ray = Geom_Line(gp_Lin(p0, vec_to_dir(v0)))
@@ -51,13 +52,14 @@ def reflect_axs2 (beam, surf, axs=gp_Ax3(), indx=1):
     v1 = v0.Mirrored(gp_Ax2(p1, vec_to_dir(vz), vec_to_dir(vx)))
     return gp_Ax3(p1, vec_to_dir(v1), beam.XDirection().Reversed()), 1
 
+
 if __name__ == "__main__":
     from src.RayTrace.RaySystem import RaySystem, SurfSystem, OptSystem, Multi_RaySystem, set_surface
     from src.RayTrace.ray_setup import get_axs, get_deg, axs_pln, reflect
     from src.Unit import convert_SI, convert
     from src.pyocc.export import export_STEPFile_single
     from src.pyocc.load import read_step_file
-    
+
     argvs = sys.argv
     parser = OptionParser()
     parser.add_option("--dir", dest="dir", default="./")
@@ -78,9 +80,10 @@ if __name__ == "__main__":
         axs0 = axs1
         axs1, val = reflect_axs2(axs0, surf, indx=2)
         if val != None:
-            display.DisplayShape(make_line(axs0.Location(), axs1.Location()), color="BLUE")
+            display.DisplayShape(
+                make_line(axs0.Location(), axs1.Location()), color="BLUE")
 
     display.DisplayShape(axs_pln(axs1))
-    
+
     display.FitAll()
     start_display()
