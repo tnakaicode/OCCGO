@@ -38,9 +38,9 @@ def reflect_axs2(beam, surf, axs=gp_Ax3(), indx=1):
     h_surf = BRep_Tool.Surface(surf)
     ray = Geom_Line(gp_Lin(p0, vec_to_dir(v0)))
     if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints() == 0:
-        return beam, None
+        return beam, beam, None
     elif GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints() == 1:
-        return beam, None
+        return beam, beam, None
     GeomAPI_IntCS(ray.GetHandle(), h_surf).IsDone()
     u, v, w = GeomAPI_IntCS(ray.GetHandle(), h_surf).Parameters(indx)
     p1, vx, vy = gp_Pnt(), gp_Vec(), gp_Vec()
@@ -50,7 +50,9 @@ def reflect_axs2(beam, surf, axs=gp_Ax3(), indx=1):
     vy.Normalize()
     vz.Normalize()
     v1 = v0.Mirrored(gp_Ax2(p1, vec_to_dir(vz), vec_to_dir(vx)))
-    return gp_Ax3(p1, vec_to_dir(v1), beam.XDirection().Reversed()), 1
+    norm_ax = gp_Ax3(p1, vec_to_dir(vz), vec_to_dir(vx))
+    beam_ax = gp_Ax3(p1, vec_to_dir(v1), beam.XDirection().Reversed())
+    return beam_ax, norm_ax, 1
 
 
 if __name__ == "__main__":
@@ -78,10 +80,11 @@ if __name__ == "__main__":
     val = 1
     while val != None:
         axs0 = axs1
-        axs1, val = reflect_axs2(axs0, surf, indx=2)
+        axs1, axs, val = reflect_axs2(axs0, surf, indx=2)
+        get_deg(axs, dir_to_vec(axs1.Direction()))
         if val != None:
             display.DisplayShape(
-                make_line(axs0.Location(), axs1.Location()), color="BLUE")
+                make_line(axs0.Location(), axs1.Location()), color="GREEN")
 
     display.DisplayShape(axs_pln(axs1))
 
