@@ -37,11 +37,9 @@ def reflect_axs2 (beam, surf, axs=gp_Ax3(), indx=1):
     h_surf = BRep_Tool.Surface(surf)
     ray = Geom_Line(gp_Lin(p0, vec_to_dir(v0)))
     if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints() == 0:
-        print("Out of Surface", axs.Location())
-        pln = make_plane(
-            axs.Location(), dir_to_vec(axs.Direction()), 500, -500, 500, -500
-        )
-        h_surf = BRep_Tool.Surface(pln)
+        return beam, None
+    elif GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints() == 1:
+        return beam, None
     GeomAPI_IntCS(ray.GetHandle(), h_surf).IsDone()
     u, v, w = GeomAPI_IntCS(ray.GetHandle(), h_surf).Parameters(indx)
     p1, vx, vy = gp_Pnt(), gp_Vec(), gp_Vec()
@@ -51,7 +49,7 @@ def reflect_axs2 (beam, surf, axs=gp_Ax3(), indx=1):
     vy.Normalize()
     vz.Normalize()
     v1 = v0.Mirrored(gp_Ax2(p1, vec_to_dir(vz), vec_to_dir(vx)))
-    return gp_Ax3(p1, vec_to_dir(v1), beam.XDirection().Reversed())
+    return gp_Ax3(p1, vec_to_dir(v1), beam.XDirection().Reversed()), 1
 
 if __name__ == "__main__":
     from src.RayTrace.RaySystem import RaySystem, SurfSystem, OptSystem, Multi_RaySystem, set_surface
@@ -75,10 +73,12 @@ if __name__ == "__main__":
     display.DisplayShape(axs_pln(beam))
 
     axs1 = beam
-    for i in range(10):
+    val = 1
+    while val != None:
         axs0 = axs1
-        axs1 = reflect_axs2(axs0, surf, indx=2)
-        display.DisplayShape(make_line(axs0.Location(), axs1.Location()), color="BLUE")
+        axs1, val = reflect_axs2(axs0, surf, indx=2)
+        if val != None:
+            display.DisplayShape(make_line(axs0.Location(), axs1.Location()), color="BLUE")
 
     display.DisplayShape(axs_pln(axs1))
     
