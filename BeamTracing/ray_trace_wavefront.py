@@ -93,7 +93,7 @@ if __name__ == "__main__":
     print(obj.tar.beam_uppr.Location())
     print(obj.tar.beam_bott.Location())
 
-    rxy = [10, 100]
+    rxy = [-10, -100]
 
     px = np.linspace(-1, 1, 100) * 25
     py = np.linspace(-1, 1, 100) * 25

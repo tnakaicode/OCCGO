@@ -31,6 +31,7 @@ from ..pyocc.load import read_step_file
 from ..pyocc.surface import surf_spl
 from ..fileout import occ_to_grasp_cor, occ_to_grasp_rim
 
+
 def wavefront(rxy=[1000, 1000], axs=gp_Ax3()):
     px = np.linspace(-1, 1, 100) * 10
     py = np.linspace(-1, 1, 100) * 10
@@ -47,6 +48,7 @@ def wavefront(rxy=[1000, 1000], axs=gp_Ax3()):
     phas.Location(loc_face)
     return phas
 
+
 def wavefront_xyz(x, y, z, axs=gp_Ax3()):
     phas = surf_spl(x, y, z)
 
@@ -55,6 +57,7 @@ def wavefront_xyz(x, y, z, axs=gp_Ax3()):
     loc_face = TopLoc_Location(trf)
     phas.Location(loc_face)
     return phas
+
 
 def make_edges(pts):
     edg = []
@@ -531,8 +534,9 @@ class Multi_RaySystem (object):
         self.display.FitAll()
         self.start_display()
 
+
 class Beam_RaySystem (object):
-    
+
     def __init__(self, dir_name, ini_name, tar_name):
         self.dir = dir_name
         self.axs = gp_Ax3()
@@ -540,7 +544,7 @@ class Beam_RaySystem (object):
         self.tar = SurfSystem(self.dir, tar_name)
         self.ini.MultiRay()
         self.tar.MultiRay()
-        self.ini.ph_0 = wavefront(rxy=[0,0], axs=self.ini.beam)
+        self.ini.ph_0 = wavefront(rxy=[0, 0], axs=self.ini.beam)
         self.display, self.start_display, self.add_menu, self.add_function_to_menu = init_display()
 
     def Reflect(self):
@@ -658,4 +662,3 @@ class Beam_RaySystem (object):
         self.display.DisplayShape(make_line(self.ini.sxy, self.tar.sxy))
         self.display.FitAll()
         self.start_display()
-
