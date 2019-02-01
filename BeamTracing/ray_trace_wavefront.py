@@ -2,7 +2,6 @@ from OCCUtils.Topology import Topo
 from OCCUtils.Construct import project_edge_onto_plane, project_point_on_curve
 from OCCUtils.Construct import make_wire, make_edge, make_plane, make_line, make_loft
 from OCCUtils.Construct import dir_to_vec, vec_to_dir
-from OCCUtils.Topology import Topo
 from OCC.BRep import BRep_Tool
 from OCC.TopLoc import TopLoc_Location
 from OCC.GeomLProp import GeomLProp_SurfaceTool
@@ -34,29 +33,53 @@ sys.path.append(os.path.join('../'))
 
 
 if __name__ == "__main__":
-    from src.plot import plot_contour_sub
+    from src.RayTrace.RaySystem import RaySystem, SurfSystem, OptSystem, Multi_RaySystem
+    from src.RayTrace.ray_setup import get_axs, get_deg
+    from src.Unit import convert_SI, convert
     from src.geomtory import curvature
 
     argvs = sys.argv
     parser = OptionParser()
     parser.add_option("--dir", dest="dir", default="./")
-    parser.add_option("--radi", dest="radi", default=(-1000, -500),
-                      type="float", nargs=2)
-    parser.add_option("--dist", dest="dist", default=500.0, type="float")
     opt, argc = parser.parse_args(argvs)
     print(argc, opt)
 
-    px = np.linspace(-1, 1, 100) * 100
-    py = np.linspace(-1, 1, 100) * 100
-    mesh = np.meshgrid(px, py)
+    init = "surf1"
+    surf = ["surf2", "surf3", "surf4"]
+
+    obj = Multi_RaySystem("./", init, "surf2")
+    obj.ini.beam = get_axs("./" + obj.ini.name + "_beam.cor", obj.ini.axs)
+
+    obj.ini.beam_rght = get_axs(
+        "./" + obj.ini.name + "_beam_rght.cor", obj.ini.axs)
+    obj.ini.beam_left = get_axs(
+        "./" + obj.ini.name + "_beam_left.cor", obj.ini.axs)
+    obj.ini.beam_uppr = get_axs(
+        "./" + obj.ini.name + "_beam_uppr.cor", obj.ini.axs)
+    obj.ini.beam_bott = get_axs(
+        "./" + obj.ini.name + "_beam_bott.cor", obj.ini.axs)
+
+    obj.MultiReflect()
+    print(obj.tar.beam.Location())
+    print(obj.tar.beam_rght.Location())
+    print(obj.tar.beam_left.Location())
+    print(obj.tar.beam_uppr.Location())
+    print(obj.tar.beam_bott.Location())
     
-    rx_0 = curvature(mesh[0], opt.radi[0], 0)
-    ry_0 = curvature(mesh[1], opt.radi[1], 0)   
-    ph_0 = rx_0 + ry_0
+    ax = obj.tar.Move_Axs(obj.tar.beam, obj.tar.axs, gp_Ax3())
+    ax0 = obj.tar.Move_Axs(obj.tar.beam_rght, obj.tar.axs, gp_Ax3())
+    ax1 = obj.tar.Move_Axs(obj.tar.beam_left, obj.tar.axs, gp_Ax3())
+    ax2 = obj.tar.Move_Axs(obj.tar.beam_uppr, obj.tar.axs, gp_Ax3())
+    ax3 = obj.tar.Move_Axs(obj.tar.beam_bott, obj.tar.axs, gp_Ax3())
+    print (ax.Location())
+    print (ax0.Location())
+    print (ax1.Location())
+    print (ax2.Location())
+    print (ax3.Location())
     
-    rx_r = curvature(mesh[0], opt.radi[0] + opt.dist, 0)
-    ry_r = curvature(mesh[1], opt.radi[1] + opt.dist, 0) 
-    ph_r = ph_0 + rx_r + ry_r
-    
-    plot_contour_sub(mesh, ph_0, dirname="phas_r0")
-    plot_contour_sub(mesh, ph_r, dirname="phas_r")
+    obj.Display_Shape(["BLUE", "GREEN"])
+
+    print(obj.tar.beam.Location())
+
+    obj.display.FitAll()
+    obj.start_display()
