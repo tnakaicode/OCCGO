@@ -48,6 +48,7 @@ def wavefront(rxy=[1000, 1000], axs=gp_Ax3()):
     phas.Location(loc_face)
     return phas
 
+
 def wavefront_xyz(x, y, z, axs=gp_Ax3()):
     phas = surf_spl(x, y, z)
 
@@ -101,17 +102,17 @@ if __name__ == "__main__":
 
     rx_0 = curvature(mesh[0], rxy[0], 0)
     ry_0 = curvature(mesh[1], rxy[1], 0)
-    ph_0 = wavefront_xyz (*mesh, rx_0 + ry_0, obj.ini.beam)
-    
+    ph_0 = wavefront_xyz(*mesh, rx_0 + ry_0, obj.ini.beam)
+
     dist = obj.ini.beam.Location().Distance(obj.tar.beam.Location())
 
-    rx_1 = curvature(mesh[0], rxy[0]+dist/2, 0) 
-    ry_1 = curvature(mesh[1], rxy[1]+dist/2, 0) 
-    ph_1 = wavefront_xyz (*mesh, rx_1 + ry_1 + dist/2, obj.ini.beam) 
-    
-    rx_r = curvature(mesh[0], rxy[0]+dist, 0) 
-    ry_r = curvature(mesh[1], rxy[1]+dist, 0) 
-    ph_r = wavefront_xyz (*mesh, rx_r + ry_r + dist, obj.ini.beam) 
+    rx_1 = curvature(mesh[0], rxy[0]+dist/2, 0)
+    ry_1 = curvature(mesh[1], rxy[1]+dist/2, 0)
+    ph_1 = wavefront_xyz(*mesh, rx_1 + ry_1 + dist/2, obj.ini.beam)
+
+    rx_r = curvature(mesh[0], rxy[0]+dist, 0)
+    ry_r = curvature(mesh[1], rxy[1]+dist, 0)
+    ph_r = wavefront_xyz(*mesh, rx_r + ry_r + dist, obj.ini.beam)
 
     obj.Display_Shape(["BLUE", "GREEN"])
     obj.display.DisplayShape(ph_0, color="RED")
