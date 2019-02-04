@@ -30,6 +30,7 @@ from .ray_setup import get_axs, load_surface, reflect, axs_pln, get_deg
 from ..pyocc.load import read_step_file
 from ..pyocc.surface import surf_spl
 from ..fileout import occ_to_grasp_cor, occ_to_grasp_rim
+from ..geomtory import curvature, fit_surf
 
 
 def wavefront(rxy=[1000, 1000], axs=gp_Ax3()):
