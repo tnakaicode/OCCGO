@@ -31,11 +31,11 @@ from optparse import OptionParser
 sys.path.append(os.path.join('../'))
 
 
-def Transform (ax0=gp_Ax3(), ax1=gp_Ax3(), shape=[]):
+def Transform(ax0=gp_Ax3(), ax1=gp_Ax3(), shape=[]):
     trf = gp_Trsf()
     trf.SetTransformation(ax1, ax0)
     loc_face = TopLoc_Location(trf)
-    
+
     for shp in shape:
         shp.Location(loc_face)
 
@@ -44,12 +44,13 @@ def SetViewer():
     viewer = Viewer()
     viewer.on_select()
 
+
 if __name__ == "__main__":
     from src.pyocc.load import read_step_file_shapes, read_step_file, read_step, read_iges
     from src.pyocc.export import ExportCAFMethod, ExportMethod
     from src.pyocc.OCCQt import Viewer
     from src.RayTrace.ray_setup import get_axs, get_deg, axs_pln, reflect
-    
+
     argvs = sys.argv
     parser = OptionParser()
     parser.add_option("--dir", dest="dir", default="../BeamTracing/")
@@ -72,9 +73,9 @@ if __name__ == "__main__":
     else:
         print("Incorrect file index")
         sys.exit(0)
-    
+
     print(shpe)
-    ax = gp_Ax3(gp_Pnt(*opt.pxyz), gp_Dir(0,0,1))
+    ax = gp_Ax3(gp_Pnt(*opt.pxyz), gp_Dir(0, 0, 1))
     for i, deg in enumerate(opt.rxyz):
         if i == 0:
             axs = gp_Ax1(ax.Location(), ax.XDirection())
@@ -85,7 +86,7 @@ if __name__ == "__main__":
         else:
             axs = gp_Ax1(ax.Location(), ax.Direction())
         ax.Rotate(axs, np.deg2rad(deg))
-    Transform (gp_Ax3(), ax, shpe)
+    Transform(gp_Ax3(), ax, shpe)
 
     display, start_display, add_menu, add_function_to_menu = init_display()
 
@@ -102,9 +103,9 @@ if __name__ == "__main__":
 
     SetViewer()
     display.DisplayShape(shpe)
-    display.DisplayShape(axs_pln(gp_Ax3()))   
-    display.DisplayShape(axs_pln(ax))   
-    display.DisplayShape(gp_Pnt()) 
-    
+    display.DisplayShape(axs_pln(gp_Ax3()))
+    display.DisplayShape(axs_pln(ax))
+    display.DisplayShape(gp_Pnt())
+
     display.FitAll()
     start_display()
