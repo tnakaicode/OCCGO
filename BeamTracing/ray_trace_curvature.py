@@ -5,7 +5,7 @@ from OCCUtils.Construct import dir_to_vec, vec_to_dir
 from OCC.BRep import BRep_Tool
 from OCC.TopLoc import TopLoc_Location
 from OCC.TopoDS import TopoDS_Face
-from OCC.GeomLProp import GeomLProp_SurfaceTool
+from OCC.GeomLProp import GeomLProp_SurfaceTool, GeomLProp_SLProps
 from OCC.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
 from OCC.GeomAPI import GeomAPI_ProjectPointOnSurf, GeomAPI_ProjectPointOnCurve
 from OCC.GeomAPI import GeomAPI_PointsToBSplineSurface, GeomAPI_IntCS
@@ -13,6 +13,7 @@ from OCC.TColgp import TColgp_Array1OfPnt, TColgp_Array2OfPnt
 from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeFace
 from OCC.Geom import Geom_Curve, Geom_Line, Geom_Ellipse
 from OCC.Geom import Geom_Plane, Geom_Surface, Geom_BSplineSurface
+from OCC.Geom import Geom_ConicalSurface
 from OCC.gp import gp_Pln, gp_Trsf, gp_Lin, gp_Elips, gp_Elips2d
 from OCC.gp import gp_Pnt, gp_Vec, gp_Dir, gp_Ax1, gp_Ax2, gp_Ax3
 from OCC.gp import gp_Mat
@@ -63,24 +64,56 @@ def wavefront_xyz(x, y, z, axs=gp_Ax3()):
 
 def second_derivative(h_surf, u=0, v=0):
     p1 = gp_Pnt()
-    vx, vy = gp_Vec(), gp_Vec()
-    vxx, vyy = gp_Vec(), gp_Vec()
-    vxy = gp_Vec()
-    GeomLProp_SurfaceTool.D2(h_surf, u, v, p1, vx, vy, vxx, vyy, vxy)
-    vx.Normalize()
-    vy.Normalize()
-    vxx.Normalize()
-    vyy.Normalize()
-    vxy.Normalize()
+    pu, pv = gp_Vec(), gp_Vec()
+    puu, pvv = gp_Vec(), gp_Vec()
+    puv = gp_Vec()
+    prop = GeomLProp_SLProps(h_surf, u, v, 1, 1)
+    GeomLProp_SurfaceTool.D2(h_surf, u, v, p1, pu, pv, puu, pvv, puv)
+    e0 = pu.Crossed(pv)
+    pu.Normalize()
+    pv.Normalize()
+    e0.Normalize()
+    puu.Normalize()
+    pvv.Normalize()
+    puv.Normalize()
     print(p1)
-    print("vx", vx)
-    print("vy", vy)
-    print("vxx", vxx)
-    print("vyy", vyy)
-    print("vxy", vxy)
-    print(vx.Dot(vyy))
-    print(vy.Dot(vxx))
+    print("pu", pu)
+    print("pv", pv)
+    print("e0", e0)
+    print("puu", puu)
+    print("pvv", pvv)
+    print("puv", puv)
 
+    first_form = np.array([
+        [pu.Dot(pu), pu.Dot(pv)],
+        [pv.Dot(pu), pv.Dot(pv)]
+    ])
+    secnd_form = np.array([
+        [e0.Dot(puu), e0.Dot(puv)],
+        [e0.Dot(puv), e0.Dot(pvv)]
+    ])
+
+    print(first_form)
+    print(secnd_form)
+    print(prop.GaussianCurvature())
+    print(prop.MeanCurvature())
+    d1, d2 = gp_Dir(), gp_Dir()
+    prop.CurvatureDirections(d1, d2)
+    v1 = dir_to_vec(d1)
+    v2 = dir_to_vec(d2)
+    if pu.IsParallel(v1, 1/1000):
+        c1 = prop.MaxCurvature()
+        c2 = prop.MinCurvature() 
+        print(v1.Dot(pu), v1.Dot(pv))
+        print(v2.Dot(pu), v2.Dot(pv))
+    else:
+        c1 = prop.MinCurvature()
+        c2 = prop.MaxCurvature()
+        print(v1.Dot(pu), v1.Dot(pv))
+        print(v2.Dot(pu), v2.Dot(pv))
+    print(c1, 1/c1)
+    print(c2, 1/c2)
+    
 
 if __name__ == "__main__":
     from src.RayTrace.RaySystem import RaySystem, SurfSystem, OptSystem, Multi_RaySystem
@@ -103,13 +136,16 @@ if __name__ == "__main__":
 
     h_surf = BRep_Tool.Surface(surf1.srf)
     second_derivative(h_surf, 0.5, 0.5)
-    #second_derivative(h_surf, 1.0, 0)
-
-    h_surf = BRep_Tool.Surface(surf2.srf)
+    second_derivative(h_surf, 0.5, 0.0)
+    second_derivative(h_surf, 0.0, 0.5)
+    
+    """h_surf = BRep_Tool.Surface(surf2.srf)
     second_derivative(h_surf, 0.5, 0.5)
-    #second_derivative(h_surf, 1.0, 0)
+    second_derivative(h_surf, 0.5, 0.0)
+    second_derivative(h_surf, 0.0, 0.5)
+    second_derivative(h_surf, 0.0, 0.0)"""
 
-    print(surf1.name, surf1.axs.Location())
+    """print(surf1.name, surf1.axs.Location())
     print(surf2.name, surf2.axs.Location())
     print(surf2.srf)
     loc_surf = surf2.srf
@@ -122,4 +158,4 @@ if __name__ == "__main__":
     #second_derivative(h_surf, 1.0, 0)
 
     h_surf = BRep_Tool.Surface(surf2.srf)
-    second_derivative(h_surf, 0.5, 0.5)
+    second_derivative(h_surf, 0.5, 0.5)"""
