@@ -1,17 +1,19 @@
 import numpy as np
-import sys, time, os
+import sys
+import time
+import os
 
-from OCC.XSControl      import XSControl_Writer, XSControl_WorkSession
+from OCC.XSControl import XSControl_Writer, XSControl_WorkSession
 from OCC.STEPCAFControl import STEPCAFControl_Writer
 from OCC.STEPCAFControl import Handle_STEPCAFControl_ExternFile
-from OCC.STEPControl    import STEPControl_Writer
-from OCC.STEPControl    import (STEPControl_AsIs,
-                                STEPControl_ManifoldSolidBrep,
-                                STEPControl_FacetedBrep,
-                                STEPControl_ShellBasedSurfaceModel,
-                                STEPControl_GeometricCurveSet)
-from OCC.Interface   import Interface_Static_SetCVal
-from OCC.IFSelect    import IFSelect_RetDone
+from OCC.STEPControl import STEPControl_Writer
+from OCC.STEPControl import (STEPControl_AsIs,
+                             STEPControl_ManifoldSolidBrep,
+                             STEPControl_FacetedBrep,
+                             STEPControl_ShellBasedSurfaceModel,
+                             STEPControl_GeometricCurveSet)
+from OCC.Interface import Interface_Static_SetCVal
+from OCC.IFSelect import IFSelect_RetDone
 from OCC.TDF import TDF_LabelSequence, TDF_Label, TDF_Tool
 from OCC.TDataStd import Handle_TDataStd_Name, TDataStd_Name_GetID
 from OCC.TDataStd import TDataStd_Name
@@ -26,11 +28,12 @@ from OCC.XCAFDoc import (XCAFDoc_DocumentTool_ShapeTool,
 
 from OCC.TDF import TDF_Data, TDF_Label, TDF_LabelSequence
 
+
 class ExportMethod (object):
-    
+
     def __init__(self, tol=1.0E-6):
         self.obj = STEPControl_Writer()
-        self.obj.SetTolerance (tol)
+        self.obj.SetTolerance(tol)
         Interface_Static_SetCVal("write.step.schema", "AP214")
 
         """
@@ -56,8 +59,8 @@ class ExportMethod (object):
         if mode is 0 all warnings and checks per entity are returned
         if mode is 2 the list of entities per warning is returned. If mode is not set, only the list of all entities per warning is given.
         """
-    
-    def add_shpe (self, shape):
+
+    def add_shpe(self, shape):
         """
         STEPControl_AsIs                   translates an Open CASCADE shape to its highest possible STEP representation.
         STEPControl_ManifoldSolidBrep      translates an Open CASCADE shape to a STEP manifold_solid_brep or brep_with_voids entity.
@@ -66,27 +69,28 @@ class ExportMethod (object):
         STEPControl_GeometricCurveSet      translates an Open CASCADE shape into a STEP geometric_curve_set entity.
         """
         self.obj.Transfer(shape, STEPControl_AsIs)
-    
-    def fileout (self, filename):
+
+    def fileout(self, filename):
         status = self.obj.Write(filename)
         assert(status == IFSelect_RetDone)
 
 
 class ExportCAFMethod (object):
-    
+
     def __init__(self, name="name", tol=1.0E-10):
         self.name = name
         self.step = STEPCAFControl_Writer()
         self.step.SetNameMode(True)
         self.h_doc = Handle_TDocStd_Document()
         self.x_app = XCAFApp_Application.GetApplication().GetObject()
-        self.x_app.NewDocument(TCollection_ExtendedString("MDTV-CAF"), self.h_doc)
-        self.doc   = self.h_doc.GetObject()
+        self.x_app.NewDocument(
+            TCollection_ExtendedString("MDTV-CAF"), self.h_doc)
+        self.doc = self.h_doc.GetObject()
         self.h_shape_tool = XCAFDoc_DocumentTool_ShapeTool(self.doc.Main())
-        self.shape_tool   = self.h_shape_tool.GetObject()
+        self.shape_tool = self.h_shape_tool.GetObject()
         Interface_Static_SetCVal("write.step.schema", "AP214")
-        
-    def Add (self, shape, name="name"):
+
+    def Add(self, shape, name="name"):
         """
         STEPControl_AsIs                   translates an Open CASCADE shape to its highest possible STEP representation.
         STEPControl_ManifoldSolidBrep      translates an Open CASCADE shape to a STEP manifold_solid_brep or brep_with_voids entity.
@@ -96,8 +100,8 @@ class ExportCAFMethod (object):
         """
         label = self.shape_tool.AddShape(shape)
         self.step.Transfer(self.h_doc, STEPControl_AsIs)
-    
-    def Write (self, filename=None):
+
+    def Write(self, filename=None):
         if not filename:
             filename = self.name
         path, ext = os.path.splitext(filename)
@@ -105,7 +109,8 @@ class ExportCAFMethod (object):
             ext = ".stp"
         status = self.step.Write(path + ext)
         assert(status == IFSelect_RetDone)
-        
+
+
 def export_STEPFile_single(shape, filename, tol=1.0E-6):
     """
     Exports a .stp file containing the input shapes
@@ -113,7 +118,7 @@ def export_STEPFile_single(shape, filename, tol=1.0E-6):
     Parameters
     ----------
     shape : TopoDS_Shape
-    
+
     filename : string
         The output filename
     """
@@ -124,23 +129,25 @@ def export_STEPFile_single(shape, filename, tol=1.0E-6):
     h_doc = Handle_TDocStd_Document()
     x_app = XCAFApp_Application.GetApplication().GetObject()
     x_app.NewDocument(TCollection_ExtendedString("MDTV-CAF"), h_doc)
-    doc   = h_doc.GetObject()
+    doc = h_doc.GetObject()
     h_shape_tool = XCAFDoc_DocumentTool_ShapeTool(doc.Main())
-    shape_tool   = h_shape_tool.GetObject()
+    shape_tool = h_shape_tool.GetObject()
     Interface_Static_SetCVal("write.step.schema", "AP214")
-    
+
     # transfer shapes
-    print (filename)
+    print(filename)
     shape_tool.AddShape(shape)
     step.Transfer(h_doc, STEPControl_AsIs)
     status = step.Write(filename)
     assert(status == IFSelect_RetDone)
 
-def export_STEPFile_name (shapes, filename):
-    print (filename)
+
+def export_STEPFile_name(shapes, filename):
+    print(filename)
     step_writer = STEPControl_Writer()
     ws = step_writer.WS().GetObject()
-    print (ws.ModeWriteShape())
+    print(ws.ModeWriteShape())
+
 
 def write_step(shape, file_name):
     step_writer = STEPControl_Writer()

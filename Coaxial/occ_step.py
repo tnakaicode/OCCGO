@@ -2,29 +2,29 @@ import numpy as np
 import sys, time, os
 
 from OCC.Display.SimpleGui import init_display
-from OCC.Core.XSControl      import XSControl_Writer, XSControl_WorkSession
-from OCC.Core.XCAFApp        import XCAFApp_Application
-from OCC.Core.XCAFDoc        import (XCAFDoc_DocumentTool_ShapeTool,
+from OCC.XSControl      import XSControl_Writer, XSControl_WorkSession
+from OCC.XCAFApp        import XCAFApp_Application
+from OCC.XCAFDoc        import (XCAFDoc_DocumentTool_ShapeTool,
                                 XCAFDoc_DocumentTool_ColorTool,
                                 XCAFDoc_DocumentTool_LayerTool,
                                 XCAFDoc_DocumentTool_MaterialTool)
-from OCC.Core.STEPCAFControl import STEPCAFControl_Writer
-from OCC.Core.STEPControl    import STEPControl_Writer
-from OCC.Core.STEPControl    import (STEPControl_AsIs,
+from OCC.STEPCAFControl import STEPCAFControl_Writer
+from OCC.STEPControl    import STEPControl_Writer
+from OCC.STEPControl    import (STEPControl_AsIs,
                                 STEPControl_ManifoldSolidBrep,
                                 STEPControl_FacetedBrep,
                                 STEPControl_ShellBasedSurfaceModel,
                                 STEPControl_GeometricCurveSet)
-from OCC.Core.Interface      import Interface_Static_SetCVal
-from OCC.Core.IFSelect       import IFSelect_RetDone
-from OCC.Core.TDF            import TDF_LabelSequence, TDF_Label, TDF_Tool, TDF_Data
-from OCC.Core.TDataStd       import Handle_TDataStd_Name, TDataStd_Name_GetID
-from OCC.Core.TDataStd       import TDataStd_Name
-from OCC.Core.TCollection    import TCollection_AsciiString
-from OCC.Core.TCollection    import TCollection_ExtendedString
-from OCC.Core.TDocStd        import TDocStd_Document, Handle_TDocStd_Document
+from OCC.Interface      import Interface_Static_SetCVal
+from OCC.IFSelect       import IFSelect_RetDone
+from OCC.TDF            import TDF_LabelSequence, TDF_Label, TDF_Tool, TDF_Data
+from OCC.TDataStd       import Handle_TDataStd_Name, TDataStd_Name_GetID
+from OCC.TDataStd       import TDataStd_Name
+from OCC.TCollection    import TCollection_AsciiString
+from OCC.TCollection    import TCollection_ExtendedString
+from OCC.TDocStd        import TDocStd_Document, Handle_TDocStd_Document
 
-from OCC.Extend.ShapeFactory import make_box
+from OCCUtils.Construct import make_box
 
 class ExportCAFMethod (object):
     
@@ -61,7 +61,7 @@ class ExportCAFMethod (object):
         assert(status == IFSelect_RetDone)
         
 if __name__ == "__main__":
-    from OCC.Core.gp import gp_Pnt
+    from OCC.gp import gp_Pnt
     from OCCUtils.Construct import make_plane, make_vertex, make_circle
     
     display, start_display, add_menu, add_function_to_menu = init_display()
@@ -70,6 +70,7 @@ if __name__ == "__main__":
     root.Add (make_vertex (gp_Pnt()), name="pnt")
     root.Add (make_plane (center=gp_Pnt(0, 0, 0  )), name="pln0")
     root.Add (make_plane (center=gp_Pnt(0, 0, 100)), name="pln1")
+    root.Add (make_plane (center=gp_Pnt(0, 0, 200)), name="pln2")
     root.Add (make_circle (gp_Pnt(0, 0, 0), 100), name="circle")
     root.Add (make_box(100,100,100), name="box001")
     root.Write()
