@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
         obj.MultiReflect()
         print (obj.tar.beam.Location())
-        obj.Display_Shape(["BLUE", "GREEN"])
+        obj.Display_Shape(["RED", "GREEN"])
 
     obj.display.FitAll()
     obj.start_display()
