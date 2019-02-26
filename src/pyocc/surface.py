@@ -15,10 +15,11 @@ from scipy.constants import *
 from OCC.Display.SimpleGui import init_display
 from OCC.gp import gp_Pnt, gp_Ax1, gp_Ax3, gp_Vec, gp_Dir
 from OCC.gp import gp_Trsf, gp_Quaternion, gp_Pln
-from OCC.TColgp import TColgp_Array2OfPnt
+from OCC.TColgp import TColgp_Array2OfPnt, TColgp_Array1OfPnt
 from OCC.Geom import Geom_BSplineSurface, Handle_Geom_BSplineSurface
 from OCC.Geom import Geom_Surface, Handle_Geom_Surface
 from OCC.GeomAPI import GeomAPI_PointsToBSplineSurface
+from OCC.GeomAPI import GeomAPI_PointsToBSpline
 from OCC.GeomAPI import GeomAPI_ProjectPointOnSurf
 from OCC.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
 from OCC.TopoDS import TopoDS_Shape, TopoDS_Shell
@@ -52,6 +53,19 @@ def surf_spl(px, py, pz):
         pnt_2d, 3, 8, GeomAbs_G2, 0.001).Surface()
     surf = BRepBuilderAPI_MakeFace(curv, 1e-6).Face()
     return surf
+
+
+def curv_spl(px, py, axs=gp_Ax3()):
+    nx = px.shape[0]
+    pts = TColgp_Array1OfPnt(1, nx)
+    for idx in range(pts.Lower(), pts.Upper()+1):
+        pnt = gp_Pnt(px[idx-1], py[idx-1], 0)
+        pts.SetValue(idx, pnt)
+
+    curv = GeomAPI_PointsToBSpline(
+        pts, 3, 8, GeomAbs_C2, 0.001).Curve()
+    return curv
+
 
 
 def normal(geom, d0=0, d1=0):
