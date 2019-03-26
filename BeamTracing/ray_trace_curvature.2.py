@@ -67,7 +67,7 @@ def wavefront_xyz(x, y, z, axs=gp_Ax3()):
 
 def second_derivative(h_surf, u=0, v=0):
     prop = GeomLProp_SLProps(h_surf, u, v, 1, 1)
-    
+
     d1, d2 = gp_Dir(), gp_Dir()
     prop.CurvatureDirections(d1, d2)
     v1 = dir_to_vec(d1)
@@ -77,6 +77,7 @@ def second_derivative(h_surf, u=0, v=0):
     print("Max", c1, 1 / c1, v1)
     print("Min", c2, 1 / c2, v2)
     print(v1.Dot(v2))
+    print(prop.Value())
 
 
 if __name__ == "__main__":
@@ -87,5 +88,7 @@ if __name__ == "__main__":
     print(argc, opt)
 
     obj = GOSystem("./", "surf1", "surf2")
-
     obj.ini.Init_Beam()
+
+    h_surf = BRep_Tool.Surface(obj.ini.wave)
+    second_derivative(h_surf, 0.5, 0.5)

@@ -218,6 +218,8 @@ class GaussSystem (SurfSystem):
         print(dx, dy)
         print(rx, ry)
 
+        self.wave = wavefront([rx, ry], self.beam)
+
 
 class RaySystem (object):
 
