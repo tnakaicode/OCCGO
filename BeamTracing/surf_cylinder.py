@@ -1,3 +1,23 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import json
+import glob
+import sys
+import time
+import os
+from unwrap.unwrap import unwrap
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from linecache import getline, clearcache
+from scipy.integrate import simps
+from optparse import OptionParser
+sys.path.append(os.path.join('../'))
+
+from src.fileout import occ_to_grasp_cor, occ_to_grasp_rim
+from src.geomtory import curvature, grasp_sfc
+from src.geomtory import fit_surf
+from src.pyocc.surface import surf_spl
+from src.pyocc.export import export_STEPFile_single
+
 from OCC.Display.SimpleGui import init_display
 from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
 from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
@@ -15,19 +35,6 @@ from OCC.BRepOffsetAPI import BRepOffsetAPI_MakePipe
 from OCC.BRepPrimAPI import BRepPrimAPI_MakePrism
 from OCCUtils.Construct import vec_to_dir, dir_to_vec
 from OCCUtils.Construct import make_edge
-import numpy as np
-import matplotlib.pyplot as plt
-import json
-import glob
-import sys
-import time
-import os
-from unwrap.unwrap import unwrap
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from linecache import getline, clearcache
-from scipy.integrate import simps
-from optparse import OptionParser
-sys.path.append(os.path.join('../'))
 
 
 def wxy_wire(pnt, wxy=[10, 20]):
@@ -49,12 +56,6 @@ def wxy_wire(pnt, wxy=[10, 20]):
 
 
 if __name__ == "__main__":
-    from src.fileout import occ_to_grasp_cor, occ_to_grasp_rim
-    from src.geomtory import curvature, grasp_sfc
-    from src.geomtory import fit_surf
-    from src.pyocc.surface import surf_spl
-    from src.pyocc.export import export_STEPFile_single
-
     argvs = sys.argv
     parser = OptionParser()
     parser.add_option("--dir", dest="dir", default="./")
@@ -79,7 +80,7 @@ if __name__ == "__main__":
         pnt = gp_Pnt(0, 0, pt[i])
         d_z = gp_Dir(0, 0, 1)
         wxy = [pr_x[i], pr_y[i]]
-        obj = wxy_wire (pnt, wxy)
+        obj = wxy_wire(pnt, wxy)
         display.DisplayShape(obj)
         api.AddWire(obj)
 

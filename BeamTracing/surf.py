@@ -1,5 +1,3 @@
-from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
-from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
 import numpy as np
 import matplotlib.pyplot as plt
 import json
@@ -14,12 +12,16 @@ from scipy.integrate import simps
 from optparse import OptionParser
 sys.path.append(os.path.join('../'))
 
+from src.fileout import occ_to_grasp_cor, occ_to_grasp_rim
+from src.geomtory import curvature, grasp_sfc
+from src.geomtory import fit_surf
+from src.pyocc.surface import surf_spl
+from src.pyocc.export import export_STEPFile_single
+
+from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
+from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
 
 if __name__ == "__main__":
-    from src.fileout import occ_to_grasp_cor, occ_to_grasp_rim
-    from src.geomtory import curvature, grasp_sfc
-    from src.geomtory import fit_surf
-
     argvs = sys.argv
     parser = OptionParser()
     parser.add_option("--dir", dest="dir", default="./")
@@ -35,8 +37,8 @@ if __name__ == "__main__":
     opt, argc = parser.parse_args(argvs)
     print(argc, opt)
 
-    px = np.linspace(-1, 1, opt.nxy[0]) * opt.lxy[0]/2
-    py = np.linspace(-1, 1, opt.nxy[1]) * opt.lxy[1]/2
+    px = np.linspace(-1, 1, opt.nxy[0]) * opt.lxy[0] / 2
+    py = np.linspace(-1, 1, opt.nxy[1]) * opt.lxy[1] / 2
     mesh = np.meshgrid(px, py)
     curx = curvature(mesh[0], opt.rxy[0], opt.sxy[0])
     cury = curvature(mesh[1], opt.rxy[1], opt.sxy[1])
