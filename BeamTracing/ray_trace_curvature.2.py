@@ -10,8 +10,9 @@ from scipy.integrate import simps
 from optparse import OptionParser
 sys.path.append(os.path.join('../'))
 
-from src.RayTrace.RaySystem import GaussSystem, GOSystem
+from src.RayTrace.RaySystem import GOSystem
 from src.RayTrace.ray_setup import get_axs, get_deg
+from src.RayTrace.SurfSystem import GaussSystem
 from src.Unit import convert_SI, convert
 from src.geomtory import curvature
 from src.pyocc.surface import surf_spl
@@ -38,48 +39,6 @@ from OCCUtils.Construct import make_wire, make_edge, make_plane, make_line, make
 from OCCUtils.Construct import dir_to_vec, vec_to_dir
 
 
-def wavefront(rxy=[1000, 1000], axs=gp_Ax3()):
-    px = np.linspace(-1, 1, 100) * 10
-    py = np.linspace(-1, 1, 100) * 10
-    mesh = np.meshgrid(px, py)
-
-    rx_0 = curvature(mesh[0], rxy[0], 0)
-    ry_0 = curvature(mesh[1], rxy[1], 0)
-    ph_0 = rx_0 + ry_0
-    phas = surf_spl(*mesh, ph_0)
-
-    trf = gp_Trsf()
-    trf.SetTransformation(axs, gp_Ax3())
-    loc_face = TopLoc_Location(trf)
-    phas.Location(loc_face)
-    return phas
-
-
-def wavefront_xyz(x, y, z, axs=gp_Ax3()):
-    phas = surf_spl(x, y, z)
-
-    trf = gp_Trsf()
-    trf.SetTransformation(axs, gp_Ax3())
-    loc_face = TopLoc_Location(trf)
-    phas.Location(loc_face)
-    return phas
-
-
-def second_derivative(h_surf, u=0, v=0):
-    prop = GeomLProp_SLProps(h_surf, u, v, 1, 1)
-
-    d1, d2 = gp_Dir(), gp_Dir()
-    prop.CurvatureDirections(d1, d2)
-    v1 = dir_to_vec(d1)
-    v2 = dir_to_vec(d2)
-    c1 = prop.MaxCurvature()
-    c2 = prop.MinCurvature()
-    print("Max", c1, 1 / c1, v1)
-    print("Min", c2, 1 / c2, v2)
-    print(v1.Dot(v2))
-    print(prop.Value())
-
-
 if __name__ == "__main__":
     argvs = sys.argv
     parser = OptionParser()
@@ -94,10 +53,15 @@ if __name__ == "__main__":
     obj = GOSystem("./", "surf1", "surf2", wave)
     obj.ini.Init_Beam()
     obj.tar.beam = obj.tar.axs
-        
+
     obj.Reflect()
     obj.Display_Shape()
     obj.display.DisplayShape(obj.ini.wave)
+
+    obj.ini = obj.tar
+    obj.tar = GaussSystem ("./", "surf3")
+    obj.Reflect()
+    obj.Display_Shape()
     
     obj.display.FitAll()
     obj.start_display()

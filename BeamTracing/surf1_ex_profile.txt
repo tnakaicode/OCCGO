@@ -12,7 +12,7 @@ rot 0.00000E+01 deg
 dx 5.00000E-01 deg 
 dy 0.50000E+00 deg 
 rx 2.00000E+02 mm 
-ry 3.00000E+03 mm 
+ry 8.00000E+02 mm 
 gcf1 9.90000E-01 
 gcf2 9.80000E-01 
 coupling 9.80000E-01 

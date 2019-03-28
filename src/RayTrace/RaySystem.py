@@ -533,33 +533,50 @@ class GOSystem (object):
             h_surf = BRep_Tool.Surface(pln)
             self.tar.beam = reflect(self.ini.beam, pln)
 
-        prop_s = self.ini.beam.Location().Distance(self.tar.beam.Location())
         print(self.ini.beam.Location())
         print(self.tar.beam.Location())
-        print(prop_s)
-
+        
         GeomAPI_IntCS(ray.GetHandle(), h_surf).IsDone()
         uvw = GeomAPI_IntCS(ray.GetHandle(), h_surf).Parameters(1)
         u, v, w = uvw
-        print(u, v)
-        v1, v2, r1, r2 = axs_curvature(h_surf, u, v)
-        vz = v1.Crossed(v2)
-        vx = v1
-        tar_surf_axs = gp_Ax3(self.tar.beam.Location(),
-                              vec_to_dir(vz), vec_to_dir(vx))
-        tar_surf = wavefront([r1, r2], tar_surf_axs)
-        self.display.DisplayShape(tar_surf)
+        print(u, v, w)
+        vz, v1, v2, r1, r2 = axs_curvature(h_surf, u, v)
 
-        self.GO_Prop(prop_s)
+        tar_surf_axs = gp_Ax3(self.tar.beam.Location(),
+                              vec_to_dir(vz), vec_to_dir(v1))
+        tar_surf = wavefront([r1, r2], tar_surf_axs)
+        self.display.DisplayShape(tar_surf, color="BLUE")
+        self.display.DisplayShape(axs_pln(tar_surf_axs))
+
+        self.GO_Prop(w)
+
+        h_tar_wave = BRep_Tool.Surface(self.ini_wave)
+        vz, v1, v2, r1, r2 = axs_curvature(h_tar_wave, u, v)
+        tar_wave_axs = self.tar.beam.Translated(gp_Vec(0,0,0))
+        tar_wave_axs.SetXDirection(vec_to_dir(v1))
+        self.tar.wave = wavefront([r1, r2], tar_wave_axs)
+        self.display.DisplayShape(self.tar.wave,  color="RED")
+        self.display.DisplayShape(axs_pln(tar_wave_axs))
 
     def GO_Prop(self, s=0):
         h_ini_wave = BRep_Tool.Surface(self.ini.wave)
-        v1, v2, r1, r2 = axs_curvature(h_ini_wave, 0.5, 0.5)
+        vz, v1, v2, r1, r2 = axs_curvature(h_ini_wave, 0.5, 0.5)
+        
+        r1_z = r1 + s / 2
+        r2_z = r2 + s / 2
+        ini_wave_axs = self.ini.beam.Translated(
+            dir_to_vec(self.ini.beam.Direction()).Scaled(s / 2))
+        ini_wave_axs.SetXDirection(vec_to_dir(v1))
+        ini_wave = wavefront([r1_z, r2_z], ini_wave_axs)
+        self.display.DisplayShape(ini_wave)
+
         r1_z = r1 + s
         r2_z = r2 + s
-        ini_tar_axs = self.tar.beam
-        ini_wave = wavefront([r1_z, r2_z], ini_tar_axs)
-        self.display.DisplayShape(ini_wave)
+        self.ini_wave_axs = self.ini.beam.Translated(
+            dir_to_vec(self.ini.beam.Direction()).Scaled(s))
+        self.ini_wave_axs.SetXDirection(vec_to_dir(v1))
+        self.ini_wave = wavefront([r1_z, r2_z], self.ini_wave_axs)
+        self.display.DisplayShape(self.ini_wave)
 
     def BeamReflect(self, beam=gp_Ax3()):
         h_surf = BRep_Tool.Surface(self.tar.srf)

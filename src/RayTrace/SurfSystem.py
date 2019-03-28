@@ -67,15 +67,27 @@ def axs_curvature(h_surf, u=0, v=0):
 
     d1, d2 = gp_Dir(), gp_Dir()
     prop.CurvatureDirections(d1, d2)
+    vz = dir_to_vec(prop.Normal())
     v1 = dir_to_vec(d1)
     v2 = dir_to_vec(d2)
     c1 = prop.MaxCurvature()
     c2 = prop.MinCurvature()
-    print("Max", c1, 1 / c1, v1)
-    print("Min", c2, 1 / c2, v2)
+
+    if c1 == 0:
+        r1 = 0
+    else:
+        r1 = 1 / c1
+
+    if c2 == 0:
+        r2 = 0
+    else:
+        r2 = 1 / c2
+
+    print("Max", c1, r1, v1)
+    print("Min", c2, r1, v2)
     print(v1.Dot(v2))
     print(prop.Value())
-    return v1, v2, 1 / c1, 1 / c2
+    return vz, v1, v2, r1, r2
 
 
 def make_edges(pts):
@@ -236,5 +248,4 @@ class GaussSystem (SurfSystem):
         print(dx, dy)
         print(rx, ry)
 
-        self.wave = wavefront([rx, ry], self.beam)
-
+        self.wave = wavefront([-rx, -ry], self.beam)
