@@ -84,15 +84,20 @@ if __name__ == "__main__":
     argvs = sys.argv
     parser = OptionParser()
     parser.add_option("--dir", dest="dir", default="./")
+    parser.add_option("--freq", dest="freq", default="170GHz")
     opt, argc = parser.parse_args(argvs)
     print(argc, opt)
 
-    obj = GOSystem("./", "surf1", "surf2")
+    freq = convert_SI(opt.freq, unit_in='GHz', unit_out='Hz')
+    wave = cnt.c / freq * convert(unit_in="m", unit_out="mm")
+
+    obj = GOSystem("./", "surf1", "surf2", wave)
     obj.ini.Init_Beam()
     obj.tar.beam = obj.tar.axs
-    obj.Display_Shape()
         
     obj.Reflect()
+    obj.Display_Shape()
+    obj.display.DisplayShape(obj.ini.wave)
     
     obj.display.FitAll()
     obj.start_display()

@@ -27,219 +27,12 @@ from OCCUtils.Construct import project_edge_onto_plane, project_point_on_curve
 from OCCUtils.Topology import Topo
 
 from .ray_setup import get_axs, load_surface, reflect, axs_pln, get_deg
+from .SurfSystem import SurfSystem, GaussSystem, wavefront, axs_curvature
+from .SurfSystem import make_edges, set_surface, set_axs_pln, setup_sxy
 from ..pyocc.load import read_step_file
 from ..pyocc.surface import surf_spl
 from ..fileout import occ_to_grasp_cor, occ_to_grasp_rim
 from ..geomtory import curvature, fit_surf
-
-
-def wavefront(rxy=[1000, 1000], axs=gp_Ax3()):
-    px = np.linspace(-1, 1, 100) * 10
-    py = np.linspace(-1, 1, 100) * 10
-    mesh = np.meshgrid(px, py)
-
-    rx_0 = curvature(mesh[0], rxy[0], 0)
-    ry_0 = curvature(mesh[1], rxy[1], 0)
-    ph_0 = rx_0 + ry_0
-    phas = surf_spl(*mesh, ph_0)
-
-    trf = gp_Trsf()
-    trf.SetTransformation(axs, gp_Ax3())
-    loc_face = TopLoc_Location(trf)
-    phas.Location(loc_face)
-    return phas
-
-
-def wavefront_xyz(x, y, z, axs=gp_Ax3()):
-    phas = surf_spl(x, y, z)
-
-    trf = gp_Trsf()
-    trf.SetTransformation(axs, gp_Ax3())
-    loc_face = TopLoc_Location(trf)
-    phas.Location(loc_face)
-    return phas
-
-
-def axs_curvature(h_surf, u=0, v=0):
-    prop = GeomLProp_SLProps(2, 0.1)
-    prop.SetSurface(h_surf)
-    prop.SetParameters(u, v)
-
-    d1, d2 = gp_Dir(), gp_Dir()
-    print(prop.Value())
-    print(prop.D2V())
-    print(prop.IsCurvatureDefined())
-    prop.CurvatureDirections(d1, d2)
-    v1 = dir_to_vec(d1)
-    v2 = dir_to_vec(d2)
-    c1 = prop.MaxCurvature()
-    c2 = prop.MinCurvature()
-    print("Max", c1, 1 / c1, v1)
-    print("Min", c2, 1 / c2, v2)
-    print(v1.Dot(v2))
-    print(prop.Value())
-    return v1, v2, 1 / c1, 1 / c2
-
-
-def make_edges(pts):
-    edg = []
-    for i in range(len(pts) - 1):
-        i0, i1 = i, i + 1
-        edg.append(make_edge(pts[i0], pts[i1]))
-    return make_wire(edg)
-
-
-def set_surface(filename):
-    if os.path.exists(filename):
-        shp = read_step_file(filename)
-        for face in Topo(shp).faces():
-            surf = face
-    else:
-        surf = make_plane()
-    return surf
-
-
-def set_axs_pln(name):
-    if os.path.exists(name + "_org.cor"):
-        ax = get_axs(name + "_org.cor")
-    else:
-        ax = gp_Ax3()
-    axs = get_axs(name + ".cor", ax)
-    srf = set_surface(name + ".stp")
-    trf = gp_Trsf()
-    trf.SetTransformation(axs, gp_Ax3())
-    loc_face = TopLoc_Location(trf)
-    srf.Location(loc_face)
-    return axs, srf, trf
-
-
-def setup_sxy(filename, ext="ex"):
-    axs, srf, trf = set_axs_pln(filename)
-    prf = filename + "_" + ext + "_profile.txt"
-    sx = float(getline(prf, 7).split()[1])
-    sy = float(getline(prf, 8).split()[1])
-    sxy = gp_Pnt(sx, sy, 0).Transformed(trf)
-    h_srf = BRep_Tool.Surface(srf)
-    sxy = GeomAPI_ProjectPointOnSurf(sxy, h_srf).Point(1)
-    return axs, srf, trf, sxy
-
-
-class SurfSystem (object):
-
-    def __init__(self, dir_name, name, local=gp_Ax3()):
-        self.dir = dir_name
-        self.name = name
-        self.local = local
-        self.Import()
-        self.beam = self.axs
-
-    def GetTarget(self, axs="y"):
-        if axs == None:
-            pnt = gp_Pnt(0, 0, 0)
-            ax = gp_Ax3(pnt, gp_Dir(0, 0, 1), self.axs.XDirection())
-        elif axs == "x":
-            pnt = self.BeamLocal().Location()
-            pnt.SetZ(0.0)
-            pnt.SetY(0.0)
-            ax = gp_Ax3(pnt, gp_Dir(0, 0, 1), self.axs.XDirection())
-        elif axs == "y":
-            pnt = self.BeamLocal().Location()
-            pnt.SetZ(0.0)
-            pnt.SetX(0.0)
-            ax = gp_Ax3(pnt, gp_Dir(0, 0, 1), self.axs.XDirection())
-        else:
-            ref = gp_Dir(0, 0, 1)
-            pnt = gp_Pnt(0, 0, 0)
-            ax = gp_Ax3(pnt, gp_Dir(0, 0, 1), self.axs.XDirection())
-        return ax
-
-    def Import(self):
-        if os.path.exists(self.dir + self.name + "_org.cor"):
-            self.axs_org = get_axs(self.dir + self.name + "_org.cor")
-        else:
-            self.axs_org = gp_Ax3()
-        self.axs = get_axs(self.dir + self.name + ".cor", self.local)
-        self.srf = set_surface(self.dir + self.name + ".stp")
-        self.trf = gp_Trsf()
-        self.trf.SetTransformation(self.axs, self.local)
-        self.loc_face = TopLoc_Location(self.trf)
-        self.srf.Location(self.loc_face)
-
-    def Move_Beam(self, ax0=gp_Ax3(), ax1=gp_Ax3()):
-        trf = gp_Trsf()
-        trf.SetTransformation(ax1, ax0)
-        loc = TopLoc_Location(trf)
-        self.beam.Transform(trf)
-
-    def Move_Axs(self, axs=gp_Ax3(), ax0=gp_Ax3(), ax1=gp_Ax3()):
-        trf = gp_Trsf()
-        trf.SetTransformation(ax1, ax0)
-        loc = TopLoc_Location(trf)
-        return axs.Transformed(trf)
-
-    def RotAxs(self, deg, axs="y"):
-        if axs == None:
-            rot_axs = gp_Ax1(self.axs.Location(), self.axs.XDirection())
-        elif axs == "x":
-            rot_axs = gp_Ax1(self.axs.Location(), self.axs.XDirection())
-        elif axs == "y":
-            rot_axs = gp_Ax1(self.axs.Location(), self.axs.YDirection())
-        else:
-            rot_axs = gp_Ax1(self.axs.Location(), self.axs.YDirection())
-        self.Move_Beam(gp_Ax3(), gp_Ax3().Rotated(rot_axs, np.deg2rad(deg)))
-        self.axs.Rotate(rot_axs, np.deg2rad(deg))
-        self.srf = set_surface(self.dir + self.name + ".stp")
-        self.trf = gp_Trsf()
-        self.trf.SetTransformation(self.axs, gp_Ax3())
-        self.loc_face = TopLoc_Location(self.trf)
-        self.srf.Location(self.loc_face)
-
-    def BeamLocal(self):
-        return self.Move_Axs(self.beam, self.axs, gp_Ax3())
-
-    def BeamSave(self):
-        get_deg(self.axs, dir_to_vec(self.beam.Direction()))
-        occ_to_grasp_cor(self.BeamLocal(), name=self.name,
-                         filename=self.dir + self.name + "_beam.cor")
-
-    def AxsLocal(self):
-        return self.Move_Axs(self.axs, self.axs, self.local)
-
-    def MultiRay(self, rght=[-10, 0], left=[10, 0], uppr=[0, 10], bott=[0, -10]):
-        ax_rght = gp_Ax3(gp_Pnt(*rght, 0), gp_Dir(0, 0, 1))
-        ax_left = gp_Ax3(gp_Pnt(*left, 0), gp_Dir(0, 0, 1))
-        ax_uppr = gp_Ax3(gp_Pnt(*uppr, 0), gp_Dir(0, 0, 1))
-        ax_bott = gp_Ax3(gp_Pnt(*bott, 0), gp_Dir(0, 0, 1))
-        self.beam_rght = self.Move_Axs(self.beam, gp_Ax3(), ax_rght)
-        self.beam_left = self.Move_Axs(self.beam, gp_Ax3(), ax_left)
-        self.beam_uppr = self.Move_Axs(self.beam, gp_Ax3(), ax_uppr)
-        self.beam_bott = self.Move_Axs(self.beam, gp_Ax3(), ax_bott)
-
-
-class GaussSystem (SurfSystem):
-
-    def __init__(self, dir_name, name, local=gp_Ax3()):
-        super(GaussSystem, self).__init__(dir_name, name, local)
-
-    def Init_Beam(self):
-        prf = self.dir + self.name + "_ex_profile.txt"
-        sx = float(getline(prf, 7).split()[1])
-        sy = float(getline(prf, 8).split()[1])
-        wx = float(getline(prf, 9).split()[1])
-        wy = float(getline(prf, 10).split()[1])
-        rt = float(getline(prf, 11).split()[1])
-        dx = float(getline(prf, 12).split()[1])
-        dy = float(getline(prf, 13).split()[1])
-        rx = float(getline(prf, 14).split()[1])
-        ry = float(getline(prf, 15).split()[1])
-        print(prf)
-        print(sx, sy)
-        print(wx, wy)
-        print(rt)
-        print(dx, dy)
-        print(rx, ry)
-
-        self.wave = wavefront([rx, ry], self.beam)
 
 
 class RaySystem (object):
@@ -714,12 +507,15 @@ class Beam_RaySystem (object):
 
 class GOSystem (object):
 
-    def __init__(self, dir_name, ini_name, tar_name):
+    def __init__(self, dir_name, ini_name, tar_name, wave=1.0):
         self.dir = dir_name
         self.axs = gp_Ax3()
         self.ini = GaussSystem(dir_name, ini_name)
         self.tar = GaussSystem(dir_name, tar_name)
         self.display, self.start_display, self.add_menu, self.add_function_to_menu = init_display()
+
+        self.wave = wave
+        self.knum = 2 * np.pi / wave
 
     def Reflect(self):
         h_surf = BRep_Tool.Surface(self.tar.srf)
@@ -736,37 +532,35 @@ class GOSystem (object):
             )
             h_surf = BRep_Tool.Surface(pln)
             self.tar.beam = reflect(self.ini.beam, pln)
-        
+
+        prop_s = self.ini.beam.Location().Distance(self.tar.beam.Location())
         print(self.ini.beam.Location())
         print(self.tar.beam.Location())
-        
+        print(prop_s)
+
         GeomAPI_IntCS(ray.GetHandle(), h_surf).IsDone()
         uvw = GeomAPI_IntCS(ray.GetHandle(), h_surf).Parameters(1)
         u, v, w = uvw
         print(u, v)
-        h_ini_surf = BRep_Tool.Surface(self.ini.srf)
-        p1, vx, vy = gp_Pnt(), gp_Vec(), gp_Vec()
-        v2x, v2y, vxy = gp_Vec(), gp_Vec(), gp_Vec()
-        GeomLProp_SurfaceTool.D2(h_ini_surf, u, v, p1, vx, vy, v2x, v2y, vxy)
-        print(p1)
-        print(vx)
-        print(vy)
-        print(v2x)
-        print(v2y)
-        print(vxy)
-        v1, v2, r1, r2 = axs_curvature(h_ini_surf, u, v)
-        
+        v1, v2, r1, r2 = axs_curvature(h_surf, u, v)
+        vz = v1.Crossed(v2)
+        vx = v1
+        tar_surf_axs = gp_Ax3(self.tar.beam.Location(),
+                              vec_to_dir(vz), vec_to_dir(vx))
+        tar_surf = wavefront([r1, r2], tar_surf_axs)
+        self.display.DisplayShape(tar_surf)
 
-        print(self.ini.beam.Location())
-        print(self.tar.beam.Location())
-        print(self.ini.beam.Location().Distance(self.tar.beam.Location()))
+        self.GO_Prop(prop_s)
 
+    def GO_Prop(self, s=0):
         h_ini_wave = BRep_Tool.Surface(self.ini.wave)
         v1, v2, r1, r2 = axs_curvature(h_ini_wave, 0.5, 0.5)
+        r1_z = r1 + s
+        r2_z = r2 + s
+        ini_tar_axs = self.tar.beam
+        ini_wave = wavefront([r1_z, r2_z], ini_tar_axs)
+        self.display.DisplayShape(ini_wave)
 
-        print(h_ini_surf.GetObject())
-        print(h_ini_wave)
-        
     def BeamReflect(self, beam=gp_Ax3()):
         h_surf = BRep_Tool.Surface(self.tar.srf)
         g_line = gp_Lin(self.ini.beam.Location(), beam.Direction())
@@ -841,6 +635,8 @@ class GOSystem (object):
         self.display.DisplayShape(axs_pln(self.tar.axs), color=colors[1])
         self.display.DisplayShape(self.ini.srf, color=colors[0])
         self.display.DisplayShape(self.tar.srf, color=colors[1])
+        self.display.DisplayShape(
+            make_line(self.ini.beam.Location(), self.tar.beam.Location()))
         self.display.DisplayShape(self.ini.beam.Location(), color=colors[0])
         self.display.DisplayShape(self.tar.beam.Location(), color=colors[1])
         self.display.FitAll()
