@@ -13,12 +13,12 @@ from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
 from OCC.gp import gp_Pln, gp_Trsf, gp_Lin
 from OCC.Geom import Geom_Plane, Geom_Surface, Geom_BSplineSurface
 from OCC.Geom import Geom_Curve, Geom_Line
+from OCC.GeomLProp import GeomLProp_SurfaceTool, GeomLProp_SLProps
+from OCC.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
+from OCC.GeomAPI import GeomAPI_ProjectPointOnSurf, GeomAPI_ProjectPointOnCurve
+from OCC.GeomAPI import GeomAPI_PointsToBSplineSurface, GeomAPI_IntCS
 from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeFace
 from OCC.TColgp import TColgp_Array1OfPnt, TColgp_Array2OfPnt
-from OCC.GeomAPI import GeomAPI_PointsToBSplineSurface, GeomAPI_IntCS
-from OCC.GeomAPI import GeomAPI_ProjectPointOnSurf, GeomAPI_ProjectPointOnCurve
-from OCC.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
-from OCC.GeomLProp import GeomLProp_SurfaceTool
 from OCC.TopLoc import TopLoc_Location
 from OCC.BRep import BRep_Tool
 from OCCUtils.Construct import dir_to_vec, vec_to_dir
@@ -58,6 +58,27 @@ def wavefront_xyz(x, y, z, axs=gp_Ax3()):
     loc_face = TopLoc_Location(trf)
     phas.Location(loc_face)
     return phas
+
+
+def axs_curvature(h_surf, u=0, v=0):
+    prop = GeomLProp_SLProps(2, 0.1)
+    prop.SetSurface(h_surf)
+    prop.SetParameters(u, v)
+
+    d1, d2 = gp_Dir(), gp_Dir()
+    print(prop.Value())
+    print(prop.D2V())
+    print(prop.IsCurvatureDefined())
+    prop.CurvatureDirections(d1, d2)
+    v1 = dir_to_vec(d1)
+    v2 = dir_to_vec(d2)
+    c1 = prop.MaxCurvature()
+    c2 = prop.MinCurvature()
+    print("Max", c1, 1 / c1, v1)
+    print("Min", c2, 1 / c2, v2)
+    print(v1.Dot(v2))
+    print(prop.Value())
+    return v1, v2, 1 / c1, 1 / c2
 
 
 def make_edges(pts):
@@ -698,6 +719,7 @@ class GOSystem (object):
         self.axs = gp_Ax3()
         self.ini = GaussSystem(dir_name, ini_name)
         self.tar = GaussSystem(dir_name, tar_name)
+        self.display, self.start_display, self.add_menu, self.add_function_to_menu = init_display()
 
     def Reflect(self):
         h_surf = BRep_Tool.Surface(self.tar.srf)
@@ -712,8 +734,39 @@ class GOSystem (object):
                 500, -500,
                 500, -500
             )
+            h_surf = BRep_Tool.Surface(pln)
             self.tar.beam = reflect(self.ini.beam, pln)
+        
+        print(self.ini.beam.Location())
+        print(self.tar.beam.Location())
+        
+        GeomAPI_IntCS(ray.GetHandle(), h_surf).IsDone()
+        uvw = GeomAPI_IntCS(ray.GetHandle(), h_surf).Parameters(1)
+        u, v, w = uvw
+        print(u, v)
+        h_ini_surf = BRep_Tool.Surface(self.ini.srf)
+        p1, vx, vy = gp_Pnt(), gp_Vec(), gp_Vec()
+        v2x, v2y, vxy = gp_Vec(), gp_Vec(), gp_Vec()
+        GeomLProp_SurfaceTool.D2(h_ini_surf, u, v, p1, vx, vy, v2x, v2y, vxy)
+        print(p1)
+        print(vx)
+        print(vy)
+        print(v2x)
+        print(v2y)
+        print(vxy)
+        v1, v2, r1, r2 = axs_curvature(h_ini_surf, u, v)
+        
 
+        print(self.ini.beam.Location())
+        print(self.tar.beam.Location())
+        print(self.ini.beam.Location().Distance(self.tar.beam.Location()))
+
+        h_ini_wave = BRep_Tool.Surface(self.ini.wave)
+        v1, v2, r1, r2 = axs_curvature(h_ini_wave, 0.5, 0.5)
+
+        print(h_ini_surf.GetObject())
+        print(h_ini_wave)
+        
     def BeamReflect(self, beam=gp_Ax3()):
         h_surf = BRep_Tool.Surface(self.tar.srf)
         g_line = gp_Lin(self.ini.beam.Location(), beam.Direction())
@@ -787,19 +840,9 @@ class GOSystem (object):
         self.display.DisplayShape(axs_pln(self.ini.axs), color=colors[0])
         self.display.DisplayShape(axs_pln(self.tar.axs), color=colors[1])
         self.display.DisplayShape(self.ini.srf, color=colors[0])
-        self.display.DisplayShape(self.tar.srf)
+        self.display.DisplayShape(self.tar.srf, color=colors[1])
         self.display.DisplayShape(self.ini.beam.Location(), color=colors[0])
         self.display.DisplayShape(self.tar.beam.Location(), color=colors[1])
-        self.display.DisplayShape(
-            make_line(self.ini.beam.Location(), self.tar.beam.Location()), color=colors[0])
-        self.display.DisplayShape(
-            make_line(self.ini.beam_rght.Location(), self.tar.beam_rght.Location()), color=colors[0])
-        self.display.DisplayShape(
-            make_line(self.ini.beam_left.Location(), self.tar.beam_left.Location()), color=colors[0])
-        self.display.DisplayShape(
-            make_line(self.ini.beam_uppr.Location(), self.tar.beam_uppr.Location()), color=colors[0])
-        self.display.DisplayShape(
-            make_line(self.ini.beam_bott.Location(), self.tar.beam_bott.Location()), color=colors[0])
         self.display.FitAll()
 
     def Display_Update(self):

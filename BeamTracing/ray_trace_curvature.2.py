@@ -89,6 +89,10 @@ if __name__ == "__main__":
 
     obj = GOSystem("./", "surf1", "surf2")
     obj.ini.Init_Beam()
-
-    h_surf = BRep_Tool.Surface(obj.ini.wave)
-    second_derivative(h_surf, 0.5, 0.5)
+    obj.tar.beam = obj.tar.axs
+    obj.Display_Shape()
+        
+    obj.Reflect()
+    
+    obj.display.FitAll()
+    obj.start_display()

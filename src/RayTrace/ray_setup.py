@@ -15,7 +15,7 @@ from OCC.TColgp import TColgp_Array1OfPnt, TColgp_Array2OfPnt
 from OCC.GeomAPI import GeomAPI_PointsToBSplineSurface, GeomAPI_IntCS
 from OCC.GeomAPI import GeomAPI_ProjectPointOnSurf, GeomAPI_ProjectPointOnCurve
 from OCC.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
-from OCC.GeomLProp import GeomLProp_SurfaceTool
+from OCC.GeomLProp import GeomLProp_SurfaceTool, GeomLProp_SLProps
 from OCC.TopLoc import TopLoc_Location
 from OCC.BRep import BRep_Tool
 from OCC.TopoDS import TopoDS_Shape
