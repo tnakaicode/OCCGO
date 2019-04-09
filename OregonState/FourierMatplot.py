@@ -47,7 +47,7 @@ grid(True)
 
 # Slider
 axcolor = 'w'                           
-axnumwaves = plt.axes([0.15, 0.1, 0.75, 0.03], axisbg=axcolor) 
+axnumwaves = plt.axes([0.15, 0.1, 0.75, 0.03]) 
 snumwaves = Slider(axnumwaves, '# Waves', 1, 20, valinit=T)
 # Previous: value of the slider (float) assigned to snumwaves
 
