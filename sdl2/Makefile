@@ -6,7 +6,7 @@ SDL_PREFIX	= /mingw64
 SDL_CONFIG	= $(SDL_PREFIX)/bin/sdl2-config
 CG_LIBS		= 
 
-CROSS_COMPILE	= /mingw64/bin/
+CROSS_COMPILE	= 
 CC		= $(CROSS_COMPILE)gcc
 CXX		= $(CROSS_COMPILE)g++
 
