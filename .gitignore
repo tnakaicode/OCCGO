@@ -41,3 +41,23 @@ __pycache__/
 Coaxial/root.stp
 src/__pycache__/Unit.cpython-36.pyc
 src/__pycache__/Unit.cpython-36.pyc
+
+# configuration, executable, and output files from examples
+dealii-*/*dat
+dealii-*/*eps
+dealii-*/*gmv
+dealii-*/*gnuplot
+dealii-*/*json
+dealii-*/*png
+dealii-*/*pvd
+dealii-*/*svg
+dealii-*/*tex
+dealii-*/*visit
+dealii-*/*vtk
+dealii-*/*vtu
+dealii-*/CMakeFiles/
+dealii-*/Makefile
+dealii-*/CMakeCache.txt
+dealii-*/cmake_install.cmake
+dealii-*/step-?
+dealii-*/step-??
