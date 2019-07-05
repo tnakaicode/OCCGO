@@ -44,9 +44,12 @@
 #include <fstream>
 #include <iostream>
 #include <deal.II/numerics/solution_transfer.h>
+
 namespace Step15
 {
+
 using namespace dealii;
+
 template <int dim>
 class MinimalSurfaceProblem
 {
@@ -73,6 +76,7 @@ private:
   Vector<double> newton_update;
   Vector<double> system_rhs;
 };
+
 template <int dim>
 class BoundaryValues : public Function<dim>
 {
@@ -84,22 +88,26 @@ public:
   virtual double value(const Point<dim> &p,
                        const unsigned int component = 0) const override;
 };
+
 template <int dim>
 double BoundaryValues<dim>::value(const Point<dim> &p,
                                   const unsigned int /*component*/) const
 {
   return std::sin(2 * numbers::PI * (p[0] + p[1]));
 }
+
 template <int dim>
 MinimalSurfaceProblem<dim>::MinimalSurfaceProblem()
     : dof_handler(triangulation), fe(2)
 {
 }
+
 template <int dim>
 MinimalSurfaceProblem<dim>::~MinimalSurfaceProblem()
 {
   dof_handler.clear();
 }
+
 template <int dim>
 void MinimalSurfaceProblem<dim>::setup_system(const bool initial_step)
 {
@@ -120,6 +128,7 @@ void MinimalSurfaceProblem<dim>::setup_system(const bool initial_step)
   sparsity_pattern.copy_from(dsp);
   system_matrix.reinit(sparsity_pattern);
 }
+
 template <int dim>
 void MinimalSurfaceProblem<dim>::assemble_system()
 {
@@ -190,6 +199,7 @@ void MinimalSurfaceProblem<dim>::assemble_system()
                                      newton_update,
                                      system_rhs);
 }
+
 template <int dim>
 void MinimalSurfaceProblem<dim>::solve()
 {
@@ -203,6 +213,7 @@ void MinimalSurfaceProblem<dim>::solve()
   const double alpha = determine_step_length();
   present_solution.add(alpha, newton_update);
 }
+
 template <int dim>
 void MinimalSurfaceProblem<dim>::refine_mesh()
 {
@@ -233,6 +244,7 @@ void MinimalSurfaceProblem<dim>::refine_mesh()
   hanging_node_constraints.distribute(present_solution);
   setup_system(false);
 }
+
 template <int dim>
 void MinimalSurfaceProblem<dim>::set_boundary_values()
 {
@@ -244,6 +256,7 @@ void MinimalSurfaceProblem<dim>::set_boundary_values()
   for (auto &boundary_value : boundary_values)
     present_solution(boundary_value.first) = boundary_value.second;
 }
+
 template <int dim>
 double MinimalSurfaceProblem<dim>::compute_residual(const double alpha) const
 {
@@ -289,11 +302,13 @@ double MinimalSurfaceProblem<dim>::compute_residual(const double alpha) const
       residual(i) = 0;
   return residual.l2_norm();
 }
+
 template <int dim>
 double MinimalSurfaceProblem<dim>::determine_step_length() const
 {
   return 0.1;
 }
+
 template <int dim>
 void MinimalSurfaceProblem<dim>::run()
 {
@@ -302,7 +317,7 @@ void MinimalSurfaceProblem<dim>::run()
   GridGenerator::hyper_ball(triangulation);
   triangulation.refine_global(2);
   double previous_res = 0;
-  while (first_step || (previous_res > 1e-3))
+  while (first_step || (previous_res > 1e-1))
   {
     if (first_step == true)
     {
@@ -328,22 +343,25 @@ void MinimalSurfaceProblem<dim>::run()
       solve();
       std::cout << "  Residual: " << compute_residual(0) << std::endl;
     }
+    
     DataOut<dim> data_out;
     data_out.attach_dof_handler(dof_handler);
     data_out.add_data_vector(present_solution, "solution");
     data_out.add_data_vector(newton_update, "update");
     data_out.build_patches();
-    const std::string filename =
-        "solution-" + Utilities::int_to_string(refinement, 2) + ".vtk";
-    std::ofstream output(filename);
+    
+    //std::ofstream output_eps("grid-" + Utilities::int_to_string(refinement, 3) + ".eps");
+    //data_out.write_eps(triangulation, output_eps);
+    
+    std::ofstream output("solution-" + Utilities::int_to_string(refinement, 3) + ".vtk");
     DataOutBase::VtkFlags vtk_flags;
-    vtk_flags.compression_level =
-        DataOutBase::VtkFlags::ZlibCompressionLevel::best_speed;
+    vtk_flags.compression_level = DataOutBase::VtkFlags::ZlibCompressionLevel::best_speed;
     data_out.set_flags(vtk_flags);
     data_out.write_vtu(output);
   }
 }
 } // namespace Step15
+
 int main()
 {
   try
