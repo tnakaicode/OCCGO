@@ -17,7 +17,6 @@
  * Author: Wolfgang Bangerth, University of Heidelberg, 2000
  */
 
-
 // @sect3{Include files}
 
 // The first few files have already been covered in previous examples and will
@@ -58,7 +57,6 @@
 // <code>grid_in.h</code>:
 #include <deal.II/grid/grid_out.h>
 
-
 // When using locally refined grids, we will get so-called <code>hanging
 // nodes</code>. However, the standard finite element methods assumes that the
 // discrete solution spaces be continuous, so we need to make sure that the
@@ -81,7 +79,6 @@
 
 // Finally, this is as in previous programs:
 using namespace dealii;
-
 
 // @sect3{The <code>Step6</code> class template}
 
@@ -108,9 +105,8 @@ private:
 
   Triangulation<dim> triangulation;
 
-  FE_Q<dim>       fe;
+  FE_Q<dim> fe;
   DoFHandler<dim> dof_handler;
-
 
   // This is the new variable in the main class. We need an object which holds
   // a list of constraints to hold the hanging nodes and the boundary
@@ -118,12 +114,11 @@ private:
   AffineConstraints<double> constraints;
 
   SparseMatrix<double> system_matrix;
-  SparsityPattern      sparsity_pattern;
+  SparsityPattern sparsity_pattern;
 
   Vector<double> solution;
   Vector<double> system_rhs;
 };
-
 
 // @sect3{Nonconstant coefficients}
 
@@ -138,8 +133,6 @@ double coefficient(const Point<dim> &p)
     return 1;
 }
 
-
-
 // @sect3{The <code>Step6</code> class implementation}
 
 // @sect4{Step6::Step6}
@@ -150,11 +143,9 @@ double coefficient(const Point<dim> &p)
 // the desired polynomial degree (here <code>2</code>):
 template <int dim>
 Step6<dim>::Step6()
-  : fe(2)
-  , dof_handler(triangulation)
-{}
-
-
+    : fe(2), dof_handler(triangulation)
+{
+}
 
 // @sect4{Step6::setup_system}
 
@@ -188,7 +179,6 @@ void Step6<dim>::setup_system()
   // ones:
   constraints.clear();
   DoFTools::make_hanging_node_constraints(dof_handler, constraints);
-
 
   // Now we are ready to interpolate the boundary values with indicator 0 (the
   // whole boundary) and store the resulting constraints in our
@@ -237,7 +227,6 @@ void Step6<dim>::setup_system()
   system_matrix.reinit(sparsity_pattern);
 }
 
-
 // @sect4{Step6::assemble_system}
 
 // Next, we have to assemble the matrix again. There are two code changes
@@ -274,48 +263,48 @@ void Step6<dim>::assemble_system()
   FEValues<dim> fe_values(fe,
                           quadrature_formula,
                           update_values | update_gradients |
-                            update_quadrature_points | update_JxW_values);
+                              update_quadrature_points | update_JxW_values);
 
   const unsigned int dofs_per_cell = fe.dofs_per_cell;
-  const unsigned int n_q_points    = quadrature_formula.size();
+  const unsigned int n_q_points = quadrature_formula.size();
 
   FullMatrix<double> cell_matrix(dofs_per_cell, dofs_per_cell);
-  Vector<double>     cell_rhs(dofs_per_cell);
+  Vector<double> cell_rhs(dofs_per_cell);
 
   std::vector<types::global_dof_index> local_dof_indices(dofs_per_cell);
 
   for (const auto &cell : dof_handler.active_cell_iterators())
+  {
+    cell_matrix = 0;
+    cell_rhs = 0;
+
+    fe_values.reinit(cell);
+
+    for (unsigned int q_index = 0; q_index < n_q_points; ++q_index)
     {
-      cell_matrix = 0;
-      cell_rhs    = 0;
+      const double current_coefficient =
+          coefficient<dim>(fe_values.quadrature_point(q_index));
+      for (unsigned int i = 0; i < dofs_per_cell; ++i)
+      {
+        for (unsigned int j = 0; j < dofs_per_cell; ++j)
+          cell_matrix(i, j) +=
+              (current_coefficient *              // a(x_q)
+               fe_values.shape_grad(i, q_index) * // grad phi_i(x_q)
+               fe_values.shape_grad(j, q_index) * // grad phi_j(x_q)
+               fe_values.JxW(q_index));           // dx
 
-      fe_values.reinit(cell);
-
-      for (unsigned int q_index = 0; q_index < n_q_points; ++q_index)
-        {
-          const double current_coefficient =
-            coefficient<dim>(fe_values.quadrature_point(q_index));
-          for (unsigned int i = 0; i < dofs_per_cell; ++i)
-            {
-              for (unsigned int j = 0; j < dofs_per_cell; ++j)
-                cell_matrix(i, j) +=
-                  (current_coefficient *              // a(x_q)
-                   fe_values.shape_grad(i, q_index) * // grad phi_i(x_q)
-                   fe_values.shape_grad(j, q_index) * // grad phi_j(x_q)
-                   fe_values.JxW(q_index));           // dx
-
-              cell_rhs(i) += (1.0 *                               // f(x)
-                              fe_values.shape_value(i, q_index) * // phi_i(x_q)
-                              fe_values.JxW(q_index));            // dx
-            }
-        }
-
-      // Finally, transfer the contributions from @p cell_matrix and
-      // @p cell_rhs into the global objects.
-      cell->get_dof_indices(local_dof_indices);
-      constraints.distribute_local_to_global(
-        cell_matrix, cell_rhs, local_dof_indices, system_matrix, system_rhs);
+        cell_rhs(i) += (1.0 *                               // f(x)
+                        fe_values.shape_value(i, q_index) * // phi_i(x_q)
+                        fe_values.JxW(q_index));            // dx
+      }
     }
+
+    // Finally, transfer the contributions from @p cell_matrix and
+    // @p cell_rhs into the global objects.
+    cell->get_dof_indices(local_dof_indices);
+    constraints.distribute_local_to_global(
+        cell_matrix, cell_rhs, local_dof_indices, system_matrix, system_rhs);
+  }
   // Now we are done assembling the linear system. The constraint matrix took
   // care of applying the boundary conditions and also eliminated hanging node
   // constraints. The constrained nodes are still in the linear system (there
@@ -326,7 +315,6 @@ void Step6<dim>::assemble_system()
   // correct values for these nodes at the end of the <code>solve</code>
   // function.
 }
-
 
 // @sect4{Step6::solve}
 
@@ -348,7 +336,7 @@ template <int dim>
 void Step6<dim>::solve()
 {
   SolverControl solver_control(1000, 1e-12);
-  SolverCG<>    solver(solver_control);
+  SolverCG<> solver(solver_control);
 
   PreconditionSSOR<> preconditioner;
   preconditioner.initialize(system_matrix, 1.2);
@@ -357,7 +345,6 @@ void Step6<dim>::solve()
 
   constraints.distribute(solution);
 }
-
 
 // @sect4{Step6::refine_grid}
 
@@ -421,11 +408,11 @@ void Step6<dim>::refine_grid()
   Vector<float> estimated_error_per_cell(triangulation.n_active_cells());
 
   KellyErrorEstimator<dim>::estimate(
-    dof_handler,
-    QGauss<dim - 1>(fe.degree + 1),
-    std::map<types::boundary_id, const Function<dim> *>(),
-    solution,
-    estimated_error_per_cell);
+      dof_handler,
+      QGauss<dim - 1>(fe.degree + 1),
+      std::map<types::boundary_id, const Function<dim> *>(),
+      solution,
+      estimated_error_per_cell);
 
   // The above function returned one error indicator value for each cell in
   // the <code>estimated_error_per_cell</code> array. Refinement is now done
@@ -468,7 +455,6 @@ void Step6<dim>::refine_grid()
   triangulation.execute_coarsening_and_refinement();
 }
 
-
 // @sect4{Step6::output_results}
 
 // At the end of computations on each grid, and just before we continue the
@@ -488,7 +474,7 @@ template <int dim>
 void Step6<dim>::output_results(const unsigned int cycle) const
 {
   {
-    GridOut       grid_out;
+    GridOut grid_out;
     std::ofstream output("grid-" + std::to_string(cycle) + ".eps");
     grid_out.write_eps(triangulation, output);
   }
@@ -503,7 +489,6 @@ void Step6<dim>::output_results(const unsigned int cycle) const
     data_out.write_vtk(output);
   }
 }
-
 
 // @sect4{Step6::run}
 
@@ -535,32 +520,30 @@ template <int dim>
 void Step6<dim>::run()
 {
   for (unsigned int cycle = 0; cycle < 8; ++cycle)
+  {
+    std::cout << "Cycle " << cycle << ':' << std::endl;
+
+    if (cycle == 0)
     {
-      std::cout << "Cycle " << cycle << ':' << std::endl;
-
-      if (cycle == 0)
-        {
-          GridGenerator::hyper_ball(triangulation);
-          triangulation.refine_global(1);
-        }
-      else
-        refine_grid();
-
-
-      std::cout << "   Number of active cells:       "
-                << triangulation.n_active_cells() << std::endl;
-
-      setup_system();
-
-      std::cout << "   Number of degrees of freedom: " << dof_handler.n_dofs()
-                << std::endl;
-
-      assemble_system();
-      solve();
-      output_results(cycle);
+      GridGenerator::hyper_ball(triangulation);
+      triangulation.refine_global(1);
     }
-}
+    else
+      refine_grid();
 
+    std::cout << "   Number of active cells:       "
+              << triangulation.n_active_cells() << std::endl;
+
+    setup_system();
+
+    std::cout << "   Number of degrees of freedom: " << dof_handler.n_dofs()
+              << std::endl;
+
+    assemble_system();
+    solve();
+    output_results(cycle);
+  }
+}
 
 // @sect3{The <code>main</code> function}
 
@@ -587,10 +570,10 @@ int main()
   // The general idea behind the layout of this function is as follows: let's
   // try to run the program as we did before...
   try
-    {
-      Step6<2> laplace_problem_2d;
-      laplace_problem_2d.run();
-    }
+  {
+    Step6<2> laplace_problem_2d;
+    laplace_problem_2d.run();
+  }
   // ...and if this should fail, try to gather as much information as
   // possible. Specifically, if the exception that was thrown is an object of
   // a class that is derived from the C++ standard class
@@ -611,34 +594,34 @@ int main()
   // program with an error code (this is what the <code>return 1;</code>
   // does):
   catch (std::exception &exc)
-    {
-      std::cerr << std::endl
-                << std::endl
-                << "----------------------------------------------------"
-                << std::endl;
-      std::cerr << "Exception on processing: " << std::endl
-                << exc.what() << std::endl
-                << "Aborting!" << std::endl
-                << "----------------------------------------------------"
-                << std::endl;
+  {
+    std::cerr << std::endl
+              << std::endl
+              << "----------------------------------------------------"
+              << std::endl;
+    std::cerr << "Exception on processing: " << std::endl
+              << exc.what() << std::endl
+              << "Aborting!" << std::endl
+              << "----------------------------------------------------"
+              << std::endl;
 
-      return 1;
-    }
+    return 1;
+  }
   // If the exception that was thrown somewhere was not an object of a class
   // derived from the standard <code>exception</code> class, then we can't do
   // anything at all. We then simply print an error message and exit.
   catch (...)
-    {
-      std::cerr << std::endl
-                << std::endl
-                << "----------------------------------------------------"
-                << std::endl;
-      std::cerr << "Unknown exception!" << std::endl
-                << "Aborting!" << std::endl
-                << "----------------------------------------------------"
-                << std::endl;
-      return 1;
-    }
+  {
+    std::cerr << std::endl
+              << std::endl
+              << "----------------------------------------------------"
+              << std::endl;
+    std::cerr << "Unknown exception!" << std::endl
+              << "Aborting!" << std::endl
+              << "----------------------------------------------------"
+              << std::endl;
+    return 1;
+  }
 
   // If we got to this point, there was no exception which propagated up to
   // the main function (there may have been exceptions, but they were caught
