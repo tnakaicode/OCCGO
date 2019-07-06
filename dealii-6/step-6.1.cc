@@ -27,6 +27,7 @@
 #include <deal.II/lac/precondition.h>
 #include <deal.II/lac/affine_constraints.h>
 #include <deal.II/grid/tria.h>
+#include <deal.II/grid/grid_out.h>
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/tria_iterator.h>
@@ -350,8 +351,9 @@ void MinimalSurfaceProblem<dim>::run()
     data_out.add_data_vector(newton_update, "update");
     data_out.build_patches();
     
-    //std::ofstream output_eps("grid-" + Utilities::int_to_string(refinement, 3) + ".eps");
-    //data_out.write_eps(triangulation, output_eps);
+    GridOut grid_out;
+    std::ofstream output_eps("grid-" + Utilities::int_to_string(refinement, 3) + ".eps");
+    grid_out.write_eps(triangulation, output_eps);
     
     std::ofstream output("solution-" + Utilities::int_to_string(refinement, 3) + ".vtk");
     DataOutBase::VtkFlags vtk_flags;
