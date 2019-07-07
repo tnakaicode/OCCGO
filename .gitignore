@@ -61,3 +61,8 @@ dealii-*/CMakeCache.txt
 dealii-*/cmake_install.cmake
 dealii-*/step-?
 dealii-*/step-??
+
+# mhdfoam
+mhdfoam/0/*
+mhdfoam/constant/*
+mhdfoam/system/*
