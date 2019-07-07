@@ -1,0 +1,8 @@
+sample has been superceded by the postProcess utility:
+    postProcess -func sample
+
+To re-use existing 'sampleDict' files simply add the following entries:
+    type sets;
+    libs ("libsampling.so");
+and run
+    postProcess -func sampleDict

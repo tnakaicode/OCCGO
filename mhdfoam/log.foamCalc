@@ -1,0 +1,36 @@
+foamCalc has been superceded by the postProcess utility:
+    postProcess -help
+
+Usage: postProcess [OPTIONS]
+Options:
+  -case <dir>       Specify case directory to use (instead of the cwd)
+  -constant         Include the 'constant/' dir in the times list
+  -decomposeParDict <file>
+                    Use specified file for decomposePar dictionary
+  -dict <file>      Read control dictionary from specified location
+  -field <name>     Specify the name of the field to be processed, e.g. U
+  -fields <list>    Specify a list of fields to be processed, e.g. '(U T p)'
+  -func <name>      Specify the name of the functionObject to execute, e.g. Q
+  -funcs <list>     Specify the names of the functionObjects to execute, e.g.
+                    '(Q div(U))'
+  -latestTime       Select the latest time
+  -list             List the available configured functionObjects
+  -noFunctionObjects
+                    Do not execute function objects
+  -noZero           Exclude the '0/' dir from the times list
+  -parallel         Run in parallel
+  -profiling        Activate application-level profiling
+  -region <name>    Specify alternative mesh region
+  -time <ranges>    List of ranges. Eg, ':10,20 40:70 1000:', 'none', etc
+  -doc              Display documentation in browser
+  -doc-source       Display source code in browser
+  -help             Display short help and exit
+  -help-full        Display full help and exit
+
+Execute the set of functionObjects specified in the selected dictionary or on
+the command-line for the selected set of times on the selected set of fields
+
+Using: OpenFOAM-v1812 (1812) (see www.OpenFOAM.com)
+Build: 8aec7c1-20181220
+Arch:  LSB;label=32;scalar=64
+
