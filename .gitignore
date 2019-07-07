@@ -63,6 +63,6 @@ dealii-*/step-?
 dealii-*/step-??
 
 # mhdfoam
-mhdfoam/0/*
-mhdfoam/constant/*
-mhdfoam/system/*
+#mhdfoam/0/*
+#mhdfoam/constant/*
+#mhdfoam/system/*
