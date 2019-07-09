@@ -8,8 +8,6 @@ from sklearn.metrics import mean_squared_error
 series = Series.from_csv('daily-total-female-births.csv', header=0)
 print(series.head())
 
-# Persistence Forecast Model
-
 # create lagged dataset
 values = DataFrame(series.values)
 dataframe = concat([values.shift(1), values], axis=1)
@@ -53,6 +51,7 @@ for t in range(len(test_y)):
     yhat = test_X[t]
     error = test_y[t] - yhat
     expected_error.append(error)
+    
     # predict error
     length = len(history)
     lag = [history[i] for i in range(length - window, length)]
@@ -65,6 +64,7 @@ for t in range(len(test_y)):
     predictions.append(yhat)
     history.append(error)
     print('predicted=%f, expected=%f' % (yhat, test_y[t]))
+
 # error
 mse = mean_squared_error(test_y, predictions)
 print('Test MSE: %.3f' % mse)
@@ -72,6 +72,5 @@ print('Test MSE: %.3f' % mse)
 # plot predicted error
 plt.figure()
 plt.plot(test_y)
-# plt.plot(expected_error)
 plt.plot(predictions, color='red')
 plt.show()
