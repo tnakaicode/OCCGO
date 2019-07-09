@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from pandas import Series
 from pandas import DataFrame
 from pandas import concat
+from statsmodels.tsa.ar_model import AR
 
 series = Series.from_csv('daily-total-female-births.csv', header=0)
 print(series.head())
@@ -28,5 +29,18 @@ predictions = [x for x in test_X]
 residuals = [test_y[i]-predictions[i] for i in range(len(predictions))]
 residuals = DataFrame(residuals)
 print(residuals.head())
+
+# persistence model on training set
+train_pred = [x for x in train_X]
+
+# calculate residuals
+train_resid = [train_y[i]-train_pred[i] for i in range(len(train_pred))]
+
+# model the training set residuals
+model = AR(train_resid)
+model_fit = model.fit()
+window = model_fit.k_ar
+coef = model_fit.params
+print('Lag=%d, Coef=%s' % (window, coef))
 
 plt.show()
