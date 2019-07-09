@@ -11,6 +11,8 @@ sys.path.append(os.path.join('../'))
 from src.plot import plot_contour_sub
 from src.profile import mask_eclip
 
+from pymor.algorithms import genericsolvers
+
 """
 
 https://www.dealii.org/current/doxygen/deal.II/step_9.html
@@ -35,6 +37,15 @@ g    = exp(5 (1−| x | ^2) * sin(16pi | x | ^2)
 * error estimator first developed by Kelly
 ita_K = {h_K/24 integral (del K) (del u_h)^2 ds}^(1/2)
 ita_K ~ C * h * del^2(u)_K
+
+* Equation data declaration
+* AdvectionProblem class declaration
+* GradientEstimation class declaration
+* AdvectionProblem class implementation
+GMRES solver
+* GradientEstimation class implementation
+* Main function
+
 """
 
 
