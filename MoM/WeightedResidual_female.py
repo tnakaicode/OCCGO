@@ -43,4 +43,27 @@ window = model_fit.k_ar
 coef = model_fit.params
 print('Lag=%d, Coef=%s' % (window, coef))
 
+# walk forward over time steps in test
+history = train_resid[len(train_resid)-window:]
+history = [history[i] for i in range(len(history))]
+predictions = list()
+expected_error = list()
+for t in range(len(test_y)):
+	# persistence
+	yhat = test_X[t]
+	error = test_y[t] - yhat
+	expected_error.append(error)
+	# predict error
+	length = len(history)
+	lag = [history[i] for i in range(length-window,length)]
+	pred_error = coef[0]
+	for d in range(window):
+		pred_error += coef[d+1] * lag[window-d-1]
+	predictions.append(pred_error)
+	history.append(error)
+	print('predicted error=%f, expected error=%f' % (pred_error, error))
+
+# plot predicted error
+plt.plot(expected_error)
+plt.plot(predictions, color='red')
 plt.show()
