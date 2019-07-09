@@ -3,6 +3,7 @@ from pandas import Series
 from pandas import DataFrame
 from pandas import concat
 from statsmodels.tsa.ar_model import AR
+from sklearn.metrics import mean_squared_error
 
 series = Series.from_csv('daily-total-female-births.csv', header=0)
 print(series.head())
@@ -59,11 +60,19 @@ for t in range(len(test_y)):
 	pred_error = coef[0]
 	for d in range(window):
 		pred_error += coef[d+1] * lag[window-d-1]
-	predictions.append(pred_error)
+    
+	# correct the prediction
+	yhat = yhat + pred_error
+	predictions.append(yhat)
 	history.append(error)
-	print('predicted error=%f, expected error=%f' % (pred_error, error))
+	print('predicted=%f, expected=%f' % (yhat, test_y[t]))
+# error
+mse = mean_squared_error(test_y, predictions)
+print('Test MSE: %.3f' % mse)
 
 # plot predicted error
-plt.plot(expected_error)
+plt.figure()
+plt.plot(test_y)
+#plt.plot(expected_error)
 plt.plot(predictions, color='red')
 plt.show()
