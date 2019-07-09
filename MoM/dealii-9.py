@@ -19,6 +19,10 @@ GMRES solver
 Generalized Minimum RESidual method
 https://www.dealii.org/current/doxygen/deal.II/classSolverGMRES.html
 
+solve for u: b * Delta(u) = f
+u = g on Boundar Omeg
+
+
 d    = 2
 omeg = [−1, 1] ^ d
 b(x) = (2, 1 + 4 / 5 sin(8πx))
@@ -38,7 +42,7 @@ class Problem (object):
         self.s_0 = 0.1
 
     def b_x(self, x, y):
-        return 2, 1 + 4 / 5 * np.sin(8 * np.pi * x)
+        return 2 * np.ones_like(x), 1 + 4 / 5 * np.sin(8 * np.pi * x)
 
     def f_x(self, x, y):
         px = self.x_0[0] - x
@@ -65,6 +69,7 @@ if __name__ == '__main__':
 
     func = prob.f_x(*mesh)
 
+    plot_contour_sub(mesh, prob.b_x(*mesh)[0], dirname="bx_0")
     plot_contour_sub(mesh, prob.b_x(*mesh)[1], dirname="bx_1")
     plot_contour_sub(mesh, prob.f_x(*mesh), dirname="func")
     plot_contour_sub(mesh, prob.g_x(*mesh), dirname="g_func")
