@@ -1,7 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import json, glob
-import sys, time, os
+import json
+import glob
+import sys
+import time
+import os
 import scipy.constants as cnt
 from unwrap.unwrap import unwrap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -59,9 +62,9 @@ if __name__ == "__main__":
     obj.display.DisplayShape(obj.ini.wave)
 
     obj.ini = obj.tar
-    obj.tar = GaussSystem ("./", "surf3")
+    obj.tar = GaussSystem("./", "surf3")
     obj.Reflect()
     obj.Display_Shape()
-    
+
     obj.display.FitAll()
     obj.start_display()

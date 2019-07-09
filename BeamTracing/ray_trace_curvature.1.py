@@ -1,3 +1,24 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import json
+import glob
+import sys
+import time
+import os
+import scipy.constants as cnt
+from unwrap.unwrap import unwrap
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from linecache import getline, clearcache
+from scipy.integrate import simps
+from optparse import OptionParser
+sys.path.append(os.path.join('../'))
+
+from src.RayTrace.RaySystem import RaySystem, SurfSystem, OptSystem, Multi_RaySystem
+from src.RayTrace.ray_setup import get_axs, get_deg, axs_pln
+from src.Unit import convert_SI, convert
+from src.geomtory import curvature
+from src.pyocc.surface import surf_spl, curv_spl
+
 from OCCUtils.Topology import Topo
 from OCCUtils.Construct import project_edge_onto_plane, project_point_on_curve
 from OCCUtils.Construct import make_wire, make_edge, make_plane, make_line, make_loft
@@ -21,21 +42,6 @@ from OCC.gp import gp_Pln, gp_Trsf, gp_Lin, gp_Elips, gp_Elips2d
 from OCC.gp import gp_Pnt, gp_Vec, gp_Dir, gp_Ax1, gp_Ax2, gp_Ax3
 from OCC.gp import gp_Mat
 from OCC.Display.SimpleGui import init_display
-
-import numpy as np
-import matplotlib.pyplot as plt
-import json
-import glob
-import sys
-import time
-import os
-import scipy.constants as cnt
-from unwrap.unwrap import unwrap
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from linecache import getline, clearcache
-from scipy.integrate import simps
-from optparse import OptionParser
-sys.path.append(os.path.join('../'))
 
 
 def wavefront(rxy=[1000, 1000], axs=gp_Ax3()):
@@ -105,9 +111,9 @@ def second_derivative(h_surf, u=0, v=0):
     a1 = gp_Ax3()
     v1 = dir_to_vec(d1)
     v2 = dir_to_vec(d2)
-    if pu.IsParallel(v1, 1/1000):
+    if pu.IsParallel(v1, 1 / 1000):
         c1 = prop.MaxCurvature()
-        c2 = prop.MinCurvature() 
+        c2 = prop.MinCurvature()
         print(v1.Dot(pu), v1.Dot(pv))
         print(v2.Dot(pu), v2.Dot(pv))
     else:
@@ -115,25 +121,17 @@ def second_derivative(h_surf, u=0, v=0):
         c2 = prop.MaxCurvature()
         print(v1.Dot(pu), v1.Dot(pv))
         print(v2.Dot(pu), v2.Dot(pv))
-    print(c1, 1/c1)
-    print(c2, 1/c2)
+    print(c1, 1 / c1)
+    print(c2, 1 / c2)
 
-    px = np.linspace(-1, 1, 100)*100
+    px = np.linspace(-1, 1, 100) * 100
     p1_y = px**2 / c1
     p2_y = px**2 / c1
     curv1 = curv_spl(px, p1_y)
     curv2 = curv_spl(px, p2_y)
-    
 
-    
 
 if __name__ == "__main__":
-    from src.RayTrace.RaySystem import RaySystem, SurfSystem, OptSystem, Multi_RaySystem
-    from src.RayTrace.ray_setup import get_axs, get_deg, axs_pln
-    from src.Unit import convert_SI, convert
-    from src.geomtory import curvature
-    from src.pyocc.surface import surf_spl, curv_spl
-
     argvs = sys.argv
     parser = OptionParser()
     parser.add_option("--dir", dest="dir", default="./")
@@ -146,7 +144,8 @@ if __name__ == "__main__":
     deg = 30
     rad = 0
     obj = Geom_ConicalSurface(axs, np.deg2rad(deg), rad)
-    surf = BRepBuilderAPI_MakeFace(obj.GetHandle(), -np.pi/2, np.pi/2, -100, 100, 1e-6).Face()
+    surf = BRepBuilderAPI_MakeFace(
+        obj.GetHandle(), -np.pi / 2, np.pi / 2, -100, 100, 1e-6).Face()
 
     display.DisplayShape(surf)
     display.DisplayShape(obj)
@@ -165,7 +164,7 @@ if __name__ == "__main__":
     second_derivative(h_surf, 0.5, 0.5)
     second_derivative(h_surf, 0.5, 0.0)
     second_derivative(h_surf, 0.0, 0.5)
-    
+
     """h_surf = BRep_Tool.Surface(surf2.srf)
     second_derivative(h_surf, 0.5, 0.5)
     second_derivative(h_surf, 0.5, 0.0)

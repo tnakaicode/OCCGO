@@ -13,7 +13,6 @@ from scipy.integrate import simps
 from optparse import OptionParser
 sys.path.append(os.path.join('../'))
 
-
 from src.RayTrace.RaySystem import RaySystem, SurfSystem, OptSystem, Multi_RaySystem
 from src.RayTrace.ray_setup import get_axs, get_deg
 from src.Unit import convert_SI, convert
