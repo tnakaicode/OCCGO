@@ -20,8 +20,7 @@ Generalized Minimum RESidual method
 https://www.dealii.org/current/doxygen/deal.II/classSolverGMRES.html
 
 solve for u: b * Delta(u) = f
-u = g on Boundar Omeg
-
+u = g on Boundary Omeg
 
 d    = 2
 omeg = [−1, 1] ^ d
@@ -31,6 +30,11 @@ f(x) = 1 / (10 * s ^ d) for | x - x_0 | < s
 f(x) = 0 else
 x_o  = (-3 / 4, -3 / 4)
 g    = exp(5 (1−| x | ^2) * sin(16pi | x | ^2)
+
+* A simple refinement criterion
+* error estimator first developed by Kelly
+ita_K = {h_K/24 integral (del K) (del u_h)^2 ds}^(1/2)
+ita_K ~ C * h * del^2(u)_K
 """
 
 
