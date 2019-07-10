@@ -12,6 +12,8 @@ from linecache import getline, clearcache
 from scipy.integrate import simps
 from optparse import OptionParser
 
+import plyfile
+
 from OCC.Display.SimpleGui import init_display
 from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
 from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
@@ -26,7 +28,10 @@ if __name__ == "__main__":
     opt, argc = parser.parse_args(argvs)
     print(argc, opt)
 
-    plf_file = opt.file + ".ply"
+    ply_file = opt.file + ".ply"
+    ply_data = plyfile.PlyData.read(ply_file)
+    print(ply_data["vertex"])
+    print(ply_data["face"])
 
     display, start_display, add_menu, add_function_to_menu = init_display()
 
@@ -34,4 +39,3 @@ if __name__ == "__main__":
 
     display.FitAll()
     start_display()
-
