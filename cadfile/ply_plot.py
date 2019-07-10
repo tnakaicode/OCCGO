@@ -8,7 +8,7 @@ ImportError.
 
 from argparse import ArgumentParser
 
-import numpy
+import numpy as np
 from mayavi import mlab
 
 from plyfile import PlyData
@@ -35,15 +35,18 @@ def plot(ply):
 
     mlab.points3d(x, y, z, color=(1, 1, 1), mode='point')
 
-    print (ply['face'])
-    print (ply['face']['vertex_indices'])
+    print(ply['face'])
+    print(ply['face']['vertex_indices'])
+    print(len(ply['face']['vertex_indices']))
 
     if 'face' in ply:
         tri_idx = ply['face']['vertex_indices']
         idx_dtype = tri_idx[0].dtype
+        print(idx_dtype)
 
-        triangles = numpy.fromiter(tri_idx, [('data', idx_dtype, (3,))],
-                                   count=len(tri_idx))['data']
+        # triangles = numpy.fromiter(tri_idx, [('data', idx_dtype, (3,))],
+        #                           count=len(tri_idx))['data']
+        triangles = [(0, i, i + 1) for i in range(1,3)]
 
         mlab.triangular_mesh(x, y, z, triangles,
                              color=(1, 0, 0.4), opacity=0.5)
