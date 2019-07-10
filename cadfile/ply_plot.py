@@ -46,7 +46,11 @@ def plot(ply):
 
         # triangles = numpy.fromiter(tri_idx, [('data', idx_dtype, (3,))],
         #                           count=len(tri_idx))['data']
-        triangles = [(0, i, i + 1) for i in range(1,3)]
+        triangles = [
+            (0,1,2),
+            (0,1,3),
+            (1,2,3),
+        ]
 
         mlab.triangular_mesh(x, y, z, triangles,
                              color=(1, 0, 0.4), opacity=0.5)
