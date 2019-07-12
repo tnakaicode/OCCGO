@@ -27,7 +27,6 @@ class Particle():
         #print("force : ", 24 * eps * (1/r2) * sig6_div_r6 * (1 - 2 * sig6_div_r6) * (pos2 - pos1))
         return 24 * eps * (1/r2) * sig6_div_r6 * (1 - 2 * sig6_div_r6) * (pos2 - pos1)
 
-
 class Calculater():
     # Update pos(ition) and vel(ocity) of particles after dt time
     # used by Runge-Kutta method
@@ -80,6 +79,7 @@ class Calculater():
         particle.vel += dt * f
 
 
+
 class ParticleSystem():
     #
     def __init__(self, cutoff_r, NX, NY, NZ, e=0.9, mass=1, eps=1, sigma=1):
@@ -116,7 +116,7 @@ class ParticleSystem():
         for particle in self.particles:
             calc_method(particle=particle, adjuscent_particles=self.get_particles_adjuscent_cell(
                 particle), ps=self, dt=dt, t=self.time, eps=self.eps, sigma=self.sigma)
-            
+
             # reflect on end of space
             # e := reflect coef
             if particle.pos[0] < 0:
@@ -229,7 +229,7 @@ class ParticleSystem():
         self.take_snapshot(save_to_snapshots=True)
 
     # turn off the mode to write gif
-    # and 
+    # and
     # write gif file
     def stop_output_gif(self, filename="hoge.gif"):
         print("stop_output_gif : ", len(self.snapshots))
@@ -262,43 +262,3 @@ class ParticleSystem():
     @abstractmethod
     def force(self, pos, vel, particle, t):
         raise NotImplementedError()
-
-# the particle group in box under the gravity
-class BoxGravitySystem(ParticleSystem):
-    def __init__(self, cutoff_r, NX, NY, NZ, e, mass, eps, sigma):
-        super().__init__(cutoff_r, NX=NX, NY=NY, NZ=NZ, e=e, mass=mass, eps=eps, sigma=sigma)
-
-    # generate the particles on the bottom of box
-    # 10*10 particles
-    # set the initial velocity
-    # as direction to upper
-    def init_particles(self):
-        for x in np.linspace(0.1*self.X_MAX, 0.2*self.X_MAX, 10):
-            for y in np.linspace(0.1*self.Y_MAX, 0.2*self.Y_MAX, 10):
-                for z in np.linspace(0.1*self.Z_MAX, 0.2*self.Z_MAX, 10):
-                    self.particles.append(Particle(pos=[x, y, z], vel=[
-                                          0.1*self.X_MAX, 0.05*self.Y_MAX, 0.5*self.Z_MAX], mass=self.mass))
-
-    # gravity
-    def force(self, pos, vel, particle, t):
-        return np.array([0.0, 0.0, -particle.mass * 9.8])
-
-
-if __name__ == '__main__':
-    cutoff_r = 1.0
-    e = 0.1
-    mass = 1.0
-    eps = 1
-    sigma = 0.5
-    dt = 0.01
-    system = BoxGravitySystem(
-        cutoff_r=cutoff_r, NX=100, NY=100, NZ=100, e=e, mass=mass, eps=eps, sigma=sigma)
-    time = 0
-    system.start_output_gif(fps=0.1)
-    while time <= 2.5:
-        system.update(dt=dt, calc_method=Calculater.runge_kutta)
-        time = system.get_time()
-        print("Time : ", time)
-        # system.show_snapshot()
-    system.stop_output_gif(
-        filename="BoxGravitySystem_cutoffr-{}_mass-{}_eps-{}_sigma-{}_dt-{}.gif".format(cutoff_r, mass, eps, sigma, dt))
