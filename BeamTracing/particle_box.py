@@ -11,8 +11,8 @@ import math
 import datetime
 sys.path.append(os.path.join('../'))
 
-from src.particle.base import Calculater
 from src.particle.BoxGravity import BoxGravitySystem
+from src.particle.base import Calculater
 
 if __name__ == '__main__':
     cutoff_r = 1.0
@@ -30,5 +30,6 @@ if __name__ == '__main__':
         time = system.get_time()
         print("Time : ", time)
         # system.show_snapshot()
-    system.stop_output_gif(
-        filename="BoxGravitySystem_cutoffr-{}_mass-{}_eps-{}_sigma-{}_dt-{}.gif".format(cutoff_r, mass, eps, sigma, dt))
+    system.stop_output_gif(filename="Particle_BoxGravitySystem.gif")
+    # system.stop_output_gif(
+    #    filename="BoxGravitySystem_cutoffr-{}_mass-{}_eps-{}_sigma-{}_dt-{}.gif".format(cutoff_r, mass, eps, sigma, dt))

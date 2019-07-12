@@ -31,5 +31,4 @@ if __name__ == '__main__':
         time = system.get_time()
         print("Time : ", time)
         # system.show_snapshot()
-    system.stop_output_gif(
-        filename="Particle_TornadeSystem_cutoffr-{}_mass-{}_eps-{}_sigma-{}_dt-{}.gif".format(cutoff_r, mass, eps, sigma, dt))
+    system.stop_output_gif(filename="Particle_TornadeSystem.gif")
