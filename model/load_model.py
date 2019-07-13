@@ -1,21 +1,3 @@
-from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
-from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
-from OCC.gp import gp_Pln, gp_Trsf, gp_Lin
-from OCC.Geom import Geom_Plane, Geom_Surface, Geom_BSplineSurface
-from OCC.Geom import Geom_Curve, Geom_Line
-from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeFace
-from OCC.TColgp import TColgp_Array1OfPnt, TColgp_Array2OfPnt
-from OCC.GeomAPI import GeomAPI_PointsToBSplineSurface, GeomAPI_IntCS
-from OCC.GeomAPI import GeomAPI_ProjectPointOnSurf, GeomAPI_ProjectPointOnCurve
-from OCC.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
-from OCC.GeomLProp import GeomLProp_SurfaceTool
-from OCC.TopLoc import TopLoc_Location
-from OCC.BRep import BRep_Tool
-from OCCUtils.Construct import dir_to_vec, vec_to_dir
-from OCCUtils.Construct import make_wire, make_edge, make_plane, make_line
-from OCCUtils.Construct import project_edge_onto_plane, project_point_on_curve
-from OCCUtils.Topology import Topo
-from OCC.Display.SimpleGui import init_display
 import numpy as np
 import matplotlib.pyplot as plt
 import json
@@ -29,6 +11,30 @@ from linecache import getline, clearcache
 from scipy.integrate import simps
 from optparse import OptionParser
 sys.path.append(os.path.join('../'))
+
+from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
+from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
+from OCC.gp import gp_Pln, gp_Trsf, gp_Lin
+from OCC.Geom import Geom_Plane, Geom_Surface, Geom_BSplineSurface
+from OCC.Geom import Geom_Curve, Geom_Line
+from OCC.BRep import BRep_Tool
+from OCC.TopLoc import TopLoc_Location
+from OCC.TColgp import TColgp_Array1OfPnt, TColgp_Array2OfPnt
+from OCC.GeomAPI import GeomAPI_PointsToBSplineSurface, GeomAPI_IntCS
+from OCC.GeomAPI import GeomAPI_ProjectPointOnSurf, GeomAPI_ProjectPointOnCurve
+from OCC.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
+from OCC.GeomLProp import GeomLProp_SurfaceTool
+from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeFace
+from OCCUtils.Construct import dir_to_vec, vec_to_dir
+from OCCUtils.Construct import make_wire, make_edge, make_plane, make_line
+from OCCUtils.Construct import project_edge_onto_plane, project_point_on_curve
+from OCCUtils.Topology import Topo
+from OCC.Display.SimpleGui import init_display
+
+from src.pyocc.load import read_step_file_shapes, read_step_file, read_step, read_iges
+from src.pyocc.export import ExportCAFMethod, ExportMethod
+from src.pyocc.OCCQt import Viewer
+from src.RayTrace.ray_setup import get_axs, get_deg, axs_pln, reflect
 
 
 def Transform(ax0=gp_Ax3(), ax1=gp_Ax3(), shape=[]):
@@ -46,11 +52,6 @@ def SetViewer():
 
 
 if __name__ == "__main__":
-    from src.pyocc.load import read_step_file_shapes, read_step_file, read_step, read_iges
-    from src.pyocc.export import ExportCAFMethod, ExportMethod
-    from src.pyocc.OCCQt import Viewer
-    from src.RayTrace.ray_setup import get_axs, get_deg, axs_pln, reflect
-
     argvs = sys.argv
     parser = OptionParser()
     parser.add_option("--dir", dest="dir", default="../BeamTracing/")

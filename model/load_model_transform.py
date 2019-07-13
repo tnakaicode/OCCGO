@@ -1,3 +1,17 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import json
+import sys
+import time
+import os
+import glob
+from unwrap.unwrap import unwrap
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from linecache import getline, clearcache
+from scipy.integrate import simps
+from optparse import OptionParser
+sys.path.append(os.path.join('../'))
+
 from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
 from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
 from OCC.gp import gp_Pln, gp_Trsf, gp_Lin
@@ -16,19 +30,11 @@ from OCCUtils.Construct import make_wire, make_edge, make_plane, make_line
 from OCCUtils.Construct import project_edge_onto_plane, project_point_on_curve
 from OCCUtils.Topology import Topo
 from OCC.Display.SimpleGui import init_display
-import numpy as np
-import matplotlib.pyplot as plt
-import json
-import sys
-import time
-import os
-import glob
-from unwrap.unwrap import unwrap
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from linecache import getline, clearcache
-from scipy.integrate import simps
-from optparse import OptionParser
-sys.path.append(os.path.join('../'))
+
+from src.pyocc.load import read_step_file_shapes, read_step_file, read_step, read_iges
+from src.pyocc.export import ExportCAFMethod, ExportMethod
+from src.pyocc.OCCQt import Viewer
+from src.RayTrace.ray_setup import get_axs, get_deg, axs_pln, reflect
 
 
 def Transform(ax0=gp_Ax3(), ax1=gp_Ax3(), shape=[]):
@@ -46,11 +52,6 @@ def SetViewer():
 
 
 if __name__ == "__main__":
-    from src.pyocc.load import read_step_file_shapes, read_step_file, read_step, read_iges
-    from src.pyocc.export import ExportCAFMethod, ExportMethod
-    from src.pyocc.OCCQt import Viewer
-    from src.RayTrace.ray_setup import get_axs, get_deg, axs_pln, reflect
-
     argvs = sys.argv
     parser = OptionParser()
     parser.add_option("--dir", dest="dir", default="../BeamTracing/")

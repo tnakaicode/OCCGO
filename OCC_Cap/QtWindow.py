@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
+
 class MainWindow(QWidget):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -24,6 +25,7 @@ class MainWindow(QWidget):
 
     def setParam(self, param):
         self.label.setText(param)
+
 
 class SubWindow:
     def __init__(self, parent=None):
@@ -50,6 +52,7 @@ class SubWindow:
 
     def show(self):
         self.w.exec_()
+
 
 if __name__ == '__main__':
     import sys
