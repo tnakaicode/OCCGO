@@ -79,8 +79,8 @@ class Surf (OCC_Display):
 
     def __init__(self):
         super(Surf, self).__init__()
-        self.nx = 50
-        self.ny = 100
+        self.nx = 10
+        self.ny = 20
         self.lx = 150
         self.ly = 200
         self.ini_mesh()
@@ -107,19 +107,40 @@ class Surf (OCC_Display):
                 )
                 self.pnt_2d.SetValue(idx_row, idx_col, pnt)
                 self.display.DisplayShape(pnt)
-        
-        self.gen_face()
-    
-    def gen_face (self):
-        curv = GeomAPI_PointsToBSplineSurface(self.pnt_2d, 3, 8, GeomAbs_G2, 0.001).Surface()
+
+    def gen_face(self):
+        curv = GeomAPI_PointsToBSplineSurface(
+            self.pnt_2d, 3, 8, GeomAbs_G2, 0.001).Surface()
         surf = BRepBuilderAPI_MakeFace(curv, 1e-6).Face()
         self.display.DisplayShape(surf)
+
+    def gen_fill(self):
+        # curv = GeomAPI_PointsToBSplineSurface(
+        #    self.pnt_2d, 3, 8, GeomAbs_G2, 0.001).Surface()
+        # surf = BRepBuilderAPI_MakeFace(curv, 1e-6).Face()
+        # self.display.DisplayShape(surf)
+
+        for idx_row in range(self.pnt_2d.LowerRow(), self.pnt_2d.UpperRow()):
+            for idx_col in range(self.pnt_2d.LowerCol(), self.pnt_2d.UpperCol()):
+                i00, i01 = idx_row, idx_row+1
+                i10, i11 = idx_col, idx_col + 1
+                p1 = self.pnt_2d.Value(i00, i10)
+                p2 = self.pnt_2d.Value(i01, i10)
+                p3 = self.pnt_2d.Value(i01, i11)
+                p4 = self.pnt_2d.Value(i00, i11)
+                edge = [p1, p2, p3, p4]
+                edge.append(edge[0])
+                poly = [make_edge(edge[i], edge[i+1])
+                        for i in range(len(edge)-1)]
+                face = make_n_sided(poly)
+                self.display.DisplayShape(face)
 
 
 if __name__ == "__main__":
     print("ok")
     obj = Surf()
-    obj.gen_surf()
+    obj.gen_surf(sxy=[50, 100])
+    obj.gen_fill()
 
-
+    obj.display.FitAll()
     obj.start_display()
