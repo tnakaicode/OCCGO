@@ -5,7 +5,7 @@ project (Animation)
 add_definitions (-DWINVER=0x0501 -DUNICODE -D_UNICODE)
 set (CMAKE_MFC_FLAG 2)
 
-set (Animation_SRC_DIR      ${MFC_STANDARD_SAMPLES_DIR}/09_Animation/src)
+set (Animation_SRC_DIR      ./src)
 set (Animation_HEADER_FILES ${Animation_SRC_DIR}/AnimationApp.h
                             ${Animation_SRC_DIR}/AnimationDoc.h
                             ${Animation_SRC_DIR}/AnimationView3D.h
@@ -45,17 +45,6 @@ add_executable (Animation WIN32 ${Animation_SOURCE_FILES}
                                 ${Animation_RESOURCE_FILES})
 
 set_property (TARGET Animation PROPERTY FOLDER "Samples/mfc")
-
-if (SINGLE_GENERATOR)
-  install (TARGETS Animation DESTINATION "${INSTALL_DIR_BIN}")
-else()
-  install (TARGETS Animation
-           CONFIGURATIONS Release RelWithDebInfo
-           DESTINATION "${INSTALL_DIR_BIN}")
-  install (TARGETS Animation
-           CONFIGURATIONS Debug
-           DESTINATION "${INSTALL_DIR_BIN}d")
-endif()
 
 include_directories (${CMAKE_BINARY_DIR}/inc
                      ${Animation_RESOURCE_DIR}
