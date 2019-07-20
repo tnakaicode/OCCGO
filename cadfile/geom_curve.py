@@ -14,9 +14,10 @@ from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
 from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
 from OCC.gp import gp_Pln, gp_Trsf, gp_Lin
 from OCC.gp import gp_Pnt2d
-from OCC.gp import gp_Circ
+from OCC.gp import gp_Circ, gp_Elips
 from OCC.Core.Geom import Geom_BezierCurve, Geom_BSplineCurve
-from OCC.Core.Geom import Geom_Circle
+from OCC.Core.Geom import Geom_Circle, Geom_Ellipse, Geom_Curve
+from OCC.Core.Geom import Geom_BSplineSurface, Geom_BezierSurface
 from OCC.Core.GeomAPI import GeomAPI_PointsToBSpline
 from OCC.Core.TColgp import TColgp_Array1OfPnt, TColgp_Array1OfPnt2d
 from OCC.Core.TColGeom import TColGeom_Array1OfCurve
@@ -29,6 +30,22 @@ def curvature(px, r=1000, s=0.0, t=10.0):
     else:
         py = (px + s)**2 / (2*r) + t
     return py
+
+
+def pnt_eclips(pnt, wxy=[10, 20]):
+    if wxy[0] >= wxy[1]:
+        ax2 = gp_Ax2(pnt, gp_Dir(0, 0, 1), gp_Dir(1, 0, 0))
+        w_x = wxy[0]
+        w_y = wxy[1]
+    elif wxy[1] >= wxy[0]:
+        ax2 = gp_Ax2(pnt, gp_Dir(0, 0, 1), gp_Dir(0, 1, 0))
+        w_x = wxy[1]
+        w_y = wxy[0]
+    else:
+        ax2 = gp_Ax2(pnt, gp_Dir(0, 0, 1), gp_Dir(1, 0, 0))
+        w_x = wxy[0]
+        w_y = wxy[1]
+    return Geom_Ellipse(ax2, w_x, w_y)
 
 
 def get_airfol_data(filename="./dae51.dat"):
@@ -71,16 +88,16 @@ class Airfoil (object):
     def __init__(self, url):
         self.display, self.start_display, self.add_menu, self.add_function_to_menu = init_display()
         self.url = url
-    
 
-    def gen_circle(self):
-        px = np.linspace(0, 1000, 100)
-        py = curvature (px, r=1000, s=500, t=100)
-        for i, x in enumerate(px):
-            pnt = gp_Pnt(0, 0, x)
-            ax2 = gp_Ax2(pnt, gp_Dir(1, 0, 0))
-            crl = Geom_Circle(ax2, py[i])
-            
+    def gen_circle(self, pz, pr0, pr1):
+        num = pz.shape[0]
+        crv = TColGeom_Array1OfCurve(1, num)
+        for i, z in enumerate(pz):
+            pnt = gp_Pnt(0, 0, z)
+            wxy = [np.abs(pr0[i]), np.abs(pr1[i])]
+            ecl = pnt_eclips(pnt, wxy)
+            crv.SetValue(i+1, ecl)
+            self.display.DisplayShape(ecl)
 
     def get_airfoil(self, name="dae51"):
         filename = self.url + name + ".dat"
@@ -96,7 +113,7 @@ class Airfoil (object):
             pts.SetValue(i+1, pnt)
         geo_spl = GeomAPI_PointsToBSpline(pts)
         return geo_spl
-    
+
     def Display(self):
         for i, xyz in enumerate(self.upp):
             pnt = gp_Pnt(*xyz)
@@ -110,7 +127,7 @@ class Airfoil (object):
         self.display.DisplayShape(self.bot_spl.Curve())
 
         self.display.FitAll()
-        #self.start_display()
+        # self.start_display()
 
 
 if __name__ == "__main__":
@@ -122,9 +139,19 @@ if __name__ == "__main__":
 
     cfg = json.load(open("airfoil.json", "r"))
     airfilo_url = cfg["url"]
-    
+
     obj = Airfoil(airfilo_url)
-    #obj.get_airfoil("dae51")
-    obj.gen_circle()
+    # obj.get_airfoil("dae51")
+
+    """
+    y = x^2 / 2r
+    x = sqrt (2r * y)
+    r = x^2 / 2y
+    """
+
+    pz = np.linspace(0, 1000, 100)
+    p0 = curvature(pz, r=-(750**2/(2*500)), s=-750, t=500)
+    p1 = curvature(pz, r=-(750**2/(2*750)), s=-750, t=750)
+    obj.gen_circle(pz, p0, p1)
 
     obj.start_display()
