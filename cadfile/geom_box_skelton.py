@@ -14,8 +14,8 @@ if __name__ == "__main__":
 
     pnt = gp_Pnt()
     display.DisplayShape(pnt)
-    display.DisplayShape(make_box(pnt, 100, 100, 100), transparency=0.1)
-    display.DisplayShape(make_box(gp_Pnt(50,50,50), 10, 10, 10))
+    display.DisplayShape(make_box(pnt, 100, 100, 100), transparency=0.01)
+    display.DisplayShape(make_box(gp_Pnt(50, 50, 50), 10, 10, 10))
 
     display.FitAll()
     start_display()
