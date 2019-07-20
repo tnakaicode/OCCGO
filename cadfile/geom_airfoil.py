@@ -48,8 +48,45 @@ def gen_data_spline(dat):
     for i, xyz in enumerate(dat):
         pnt = gp_Pnt(*xyz)
         pts.SetValue(i+1, pnt)
-    geo_spl = GeomAPI_PointsToBSpline(pts)
+    geo_spl = GeomAPI_PointsToBSpline(pts, 4)
     return geo_spl.Curve()
+
+
+class Airfoil (object):
+
+    def __init__(self, url):
+        self.display, self.start_display, self.add_menu, self.add_function_to_menu = init_display()
+        self.url = url
+
+    def get_airfoil(self, name="dae51"):
+        filename = self.url + name + ".dat"
+        self.upp, self.bot = get_airfol_data(filename)
+        self.upp_spl = self.gen_data_spline(self.upp)
+        self.bot_spl = self.gen_data_spline(self.bot)
+
+    def gen_data_spline(self, dat):
+        num = dat.shape[0]
+        pts = TColgp_Array1OfPnt(1, num)
+        for i, xyz in enumerate(dat):
+            pnt = gp_Pnt(*xyz)
+            pts.SetValue(i+1, pnt)
+        geo_spl = GeomAPI_PointsToBSpline(pts)
+        return geo_spl
+
+    def Display(self):
+        for i, xyz in enumerate(self.upp):
+            pnt = gp_Pnt(*xyz)
+            self.display.DisplayShape(pnt)
+
+        for i, xyz in enumerate(self.bot):
+            pnt = gp_Pnt(*xyz)
+            self.display.DisplayShape(pnt)
+
+        self.display.DisplayShape(self.upp_spl.Curve())
+        self.display.DisplayShape(self.bot_spl.Curve())
+
+        self.display.FitAll()
+        #self.start_display()
 
 
 if __name__ == "__main__":
@@ -65,21 +102,8 @@ if __name__ == "__main__":
     filename = airfilo_url + airfilo_dat
     print(filename)
 
-    # get_airfol_data()
-    upp, bot = get_airfol_data(filename)
-    # upp.shape()
-    print(upp.shape)
-    print(upp[:, 0])
+    obj = Airfoil(airfilo_url)
+    obj.get_airfoil()
+    obj.Display()
 
-    display, start_display, add_menu, add_function_to_menu = init_display()
-
-    display.DisplayShape(gen_data_spline(upp))
-    display.DisplayShape(gen_data_spline(bot))
-
-    display.FitAll()
-    start_display()
-
-    plt.figure()
-    plt.plot(upp[:, 0], upp[:, 1])
-    plt.plot(bot[:, 0], bot[:, 1])
-    plt.show()
+    obj.start_display()
