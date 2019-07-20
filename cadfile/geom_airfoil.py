@@ -13,6 +13,8 @@ from OCC.Display.SimpleGui import init_display
 from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
 from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
 from OCC.gp import gp_Pln, gp_Trsf, gp_Lin
+from OCC.Core.GeomAPI import GeomAPI_PointsToBSpline
+from OCC.Core.TColgp import TColgp_Array1OfPnt
 
 
 def get_airfol_data(filename="./dae51.dat"):
@@ -40,6 +42,16 @@ def get_airfol_data(filename="./dae51.dat"):
     return np.array(upp), np.array(bot)
 
 
+def gen_data_spline(dat):
+    num = dat.shape[0]
+    pts = TColgp_Array1OfPnt(1, num)
+    for i, xyz in enumerate(dat):
+        pnt = gp_Pnt(*xyz)
+        pts.SetValue(i+1, pnt)
+    geo_spl = GeomAPI_PointsToBSpline(pts)
+    return geo_spl.Curve()
+
+
 if __name__ == "__main__":
     argvs = sys.argv
     parser = OptionParser()
@@ -56,7 +68,16 @@ if __name__ == "__main__":
     # get_airfol_data()
     upp, bot = get_airfol_data(filename)
     # upp.shape()
+    print(upp.shape)
     print(upp[:, 0])
+
+    display, start_display, add_menu, add_function_to_menu = init_display()
+
+    display.DisplayShape(gen_data_spline(upp))
+    display.DisplayShape(gen_data_spline(bot))
+
+    display.FitAll()
+    start_display()
 
     plt.figure()
     plt.plot(upp[:, 0], upp[:, 1])
