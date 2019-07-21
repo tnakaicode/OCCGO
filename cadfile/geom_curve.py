@@ -21,6 +21,8 @@ from OCC.Core.Geom import Geom_BSplineSurface, Geom_BezierSurface
 from OCC.Core.GeomAPI import GeomAPI_PointsToBSpline
 from OCC.Core.TColgp import TColgp_Array1OfPnt, TColgp_Array1OfPnt2d
 from OCC.Core.TColGeom import TColGeom_Array1OfCurve
+from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_ThruSections
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeWire
 
 
 def curvature(px, r=1000, s=0.0, t=10.0):
@@ -91,13 +93,27 @@ class Airfoil (object):
 
     def gen_circle(self, pz, pr0, pr1):
         num = pz.shape[0]
-        crv = TColGeom_Array1OfCurve(1, num)
+        self.crv = TColGeom_Array1OfCurve(1, num)
         for i, z in enumerate(pz):
             pnt = gp_Pnt(0, 0, z)
             wxy = [np.abs(pr0[i]), np.abs(pr1[i])]
             ecl = pnt_eclips(pnt, wxy)
-            crv.SetValue(i+1, ecl)
+            self.crv.SetValue(i+1, ecl)
             self.display.DisplayShape(ecl)
+
+    def gen_through(self):
+        obj = BRepOffsetAPI_ThruSections()
+
+        ax2_1 = gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1))
+        crl_1 = gp_Circ(ax2_1, 100)
+        obj.AddWire(crl_1)
+
+        ax2_2 = gp_Ax2(gp_Pnt(0, 0, 100), gp_Dir(0, 0, 1))
+        crl_2 = gp_Circ(ax2_2, 200)
+        obj.AddWire(crl_2)
+
+        obj.Build()
+        self.display.DisplayShape(obj.Shape())
 
     def get_airfoil(self, name="dae51"):
         filename = self.url + name + ".dat"
@@ -114,7 +130,7 @@ class Airfoil (object):
         geo_spl = GeomAPI_PointsToBSpline(pts)
         return geo_spl
 
-    def Display(self):
+    def OCC_Display(self):
         for i, xyz in enumerate(self.upp):
             pnt = gp_Pnt(*xyz)
             self.display.DisplayShape(pnt)
@@ -150,8 +166,9 @@ if __name__ == "__main__":
     """
 
     pz = np.linspace(0, 1000, 100)
-    p0 = curvature(pz, r=-(750**2/(2*500)), s=-750, t=500)
-    p1 = curvature(pz, r=-(750**2/(2*750)), s=-750, t=750)
-    obj.gen_circle(pz, p0, p1)
+    p0 = curvature(pz, r=-(750**2/(2*500)), s=-500, t=500)
+    p1 = curvature(pz, r=-(750**2/(2*750)), s=-500, t=750)
+    #obj.gen_circle(pz, p0, p1)
+    obj.gen_through()
 
     obj.start_display()
