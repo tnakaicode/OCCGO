@@ -10,10 +10,10 @@ import scipy.constants as cnt
 from optparse import OptionParser
 
 from OCC.Display.SimpleGui import init_display
-from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
-from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
-from OCC.gp import gp_Pln, gp_Trsf, gp_Lin
-from OCC.gp import gp_Pnt2d
+from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
+from OCC.Core.gp import gp_Pln, gp_Trsf, gp_Lin
+from OCC.Core.gp import gp_Pnt2d
 from OCC.Core.GeomAPI import GeomAPI_PointsToBSpline
 from OCC.Core.Geom2dAPI import Geom2dAPI_PointsToBSpline
 from OCC.Core.TColgp import TColgp_Array1OfPnt, TColgp_Array1OfPnt2d

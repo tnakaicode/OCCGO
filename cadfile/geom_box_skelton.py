@@ -2,9 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from OCC.Display.SimpleGui import init_display
-from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
-from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
-from OCC.gp import gp_Pln, gp_Trsf, gp_Lin
+from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
+from OCC.Core.gp import gp_Pln, gp_Trsf, gp_Lin
 
 from OCC.Extend.ShapeFactory import make_box
 # from OCCUtils.Construct import make_box

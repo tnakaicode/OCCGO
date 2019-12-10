@@ -10,11 +10,11 @@ import scipy.constants as cnt
 from optparse import OptionParser
 
 from OCC.Display.SimpleGui import init_display
-from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
-from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
-from OCC.gp import gp_Pln, gp_Trsf, gp_Lin
-from OCC.gp import gp_Pnt2d
-from OCC.gp import gp_Circ, gp_Elips
+from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
+from OCC.Core.gp import gp_Pln, gp_Trsf, gp_Lin
+from OCC.Core.gp import gp_Pnt2d
+from OCC.Core.gp import gp_Circ, gp_Elips
 from OCC.Core.Geom import Geom_BezierCurve, Geom_BSplineCurve
 from OCC.Core.Geom import Geom_Circle, Geom_Ellipse, Geom_Curve
 from OCC.Core.Geom import Geom_BSplineSurface, Geom_BezierSurface

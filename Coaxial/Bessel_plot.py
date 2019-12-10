@@ -15,7 +15,7 @@ from scipy.integrate import simps
 from scipy.optimize import curve_fit
 from scipy.special import jv, jvp, jn_zeros, jnp_zeros
 from scipy.special import yv, yvp, yn_zeros, ynp_zeros
-sys.path.append(os.path.join('..'))
+sys.path.append(os.path.join('../'))
 
 from src.Unit import convert_SI, convert
 

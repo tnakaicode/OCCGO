@@ -6,7 +6,8 @@ VTK_DATA_ROOT = vtkGetDataRoot()
 
 # NOTE: This test only works if the current directory is writable
 #
-try:
+
+if __name__ == "__main__":
     filename = "plyWriter.ply"
     channel = open(filename, "wb")
     channel.close()
@@ -127,6 +128,3 @@ try:
     ren1.GetActiveCamera().Zoom(3.0)"""
 
 #    iren.Start()
-
-except IOError:
-    print("Unable to test the writers.")
