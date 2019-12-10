@@ -17,7 +17,7 @@ T = 2.                                                    # Period
 numwaves =  2
 fig, ax = plt.subplots()
 plt.subplots_adjust(left=0.15, bottom=0.25)         # L & B margins
-t = np.arange(0.0, pi, 0.01)               
+t = np.arange(0.0, np.pi, 0.01)               
 t1 = np.arange(0.0,T/2,0.01)               
 t2 = t[100:300]                               
 f1 = t1                                 
@@ -28,17 +28,17 @@ plot(t2,f2,color='b')
 
 def Four(M,T,t):         # M = number waves, T = period, t = time
     sumy = 0                                            
-    om = 2.*pi/T                                    # Omega = 2pi/T
+    om = 2.*np.pi/T                                    # Omega = 2pi/T
     fac = 1                                     
     for m in range(1,M):         # M variable selected with slider
-        sumy += fac* sin(m*om*t)                      
+        sumy += fac* np.sin(m*om*t)                      
         fac = -fac                        
-    sumy = (2.0/pi)*sumy                           # Common factor
+    sumy = (2.0/np.pi)*sumy                           # Common factor
     return sumy
 
 s = Four(M,T,t)                                    # Initial plot   
 l, = plt.plot(t,s, lw=1, color='red')
-plt.axis([0, pi, -4.0, 4.0])             # minx, maxx, miny, maxy
+plt.axis([0, np.pi, -4.0, 4.0])             # minx, maxx, miny, maxy
 
 xlabel('Time')                                        
 ylabel('Signal')                                      
@@ -47,7 +47,7 @@ grid(True)
 
 # Slider
 axcolor = 'w'                           
-axnumwaves = plt.axes([0.15, 0.1, 0.75, 0.03], axisbg=axcolor) 
+axnumwaves = plt.axes([0.15, 0.1, 0.75, 0.03]) 
 snumwaves = Slider(axnumwaves, '# Waves', 1, 20, valinit=T)
 # Previous: value of the slider (float) assigned to snumwaves
 

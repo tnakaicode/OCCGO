@@ -7,6 +7,7 @@
 *.py[cod]
 *.pyc[cod]
 
+test4/hoge/.libs/libhoge.YKCPBYTORWDP76PENZHG4TQPGU2B4S73.gfortran-win_amd64.dll
 .vscode/launch.json
 .vscode/settings.json
 OregonState/CWT.py
