@@ -1,20 +1,20 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys, time, os
-sys.path.append(os.path.join(".."))
+sys.path.append(os.path.join("../"))
 
 from src.pyocc.OCCQt import Viewer
 from src.pyocc.OCCDisplay import OCCDisplay
 
 from OCC.Display.SimpleGui import init_display
-from OCC.gp import gp_Pln
-from OCC.gp import gp_Pnt, gp_Vec, gp_Ax1, gp_Ax2, gp_Ax3
-from OCC.TopoDS  import TopoDS_Compound
-from OCC.BOPAlgo import BOPAlgo_MakerVolume, BOPAlgo_Builder
-from OCC.BRep    import BRep_Builder
-from OCC.BRepAlgoAPI import BRepAlgoAPI_Cut
-from OCC.BRepPrimAPI import BRepPrimAPI_MakeBox
-from OCC.Graphic3d   import Graphic3d_EF_PDF
+from OCC.Core.gp import gp_Pln
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Ax1, gp_Ax2, gp_Ax3
+from OCC.Core.TopoDS  import TopoDS_Compound
+from OCC.Core.BOPAlgo import BOPAlgo_MakerVolume, BOPAlgo_Builder
+from OCC.Core.BRep    import BRep_Builder
+from OCC.Core.BRepAlgoAPI import BRepAlgoAPI_Cut
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
+from OCC.Core.Graphic3d   import Graphic3d_EF_PDF
 from OCCUtils.Topology  import Topo
 from OCCUtils.Construct import make_box, make_face
 from OCCUtils.Construct import vec_to_dir

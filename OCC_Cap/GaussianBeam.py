@@ -2,30 +2,30 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from OCC.Display.SimpleGui import init_display
-from OCC.gp import gp_Pnt, gp_Vec, gp_Dir, gp_Ax1, gp_Ax2, gp_Ax3
-from OCC.gp import gp_Pln, gp_Trsf, gp_Lin, gp_Elips, gp_Elips2d
-from OCC.Geom import Geom_Plane, Geom_Surface, Geom_BSplineSurface
-from OCC.Geom import Geom_Curve, Geom_Line, Geom_Ellipse
-from OCC.GeomAPI import GeomAPI_PointsToBSplineSurface
-from OCC.GeomAPI import GeomAPI_IntCS, GeomAPI_IntSS
-from OCC.GeomAPI import GeomAPI_ProjectPointOnSurf
-from OCC.GeomAPI import GeomAPI_ProjectPointOnCurve
-from OCC.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
-from OCC.GeomLProp import GeomLProp_SurfaceTool
-from OCC.GeomProjLib import geomprojlib_Project
-from OCC.IntAna import IntAna_IntConicQuad
-from OCC.TopoDS import TopoDS_HShape, TopoDS_Shape
-from OCC.TopoDS import TopoDS_Face, TopoDS_Wire
-from OCC.TopLoc import TopLoc_Location
-from OCC.TColgp import TColgp_Array2OfPnt
-from OCC.BRep import BRep_Tool
-from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeFace
-from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
-from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeWire
-from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeShell
-from OCC.BRepOffsetAPI import BRepOffsetAPI_ThruSections
-from OCC.BRepOffsetAPI import BRepOffsetAPI_MakePipe
-from OCC.BRepPrimAPI import BRepPrimAPI_MakePrism
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir, gp_Ax1, gp_Ax2, gp_Ax3
+from OCC.Core.gp import gp_Pln, gp_Trsf, gp_Lin, gp_Elips, gp_Elips2d
+from OCC.Core.Geom import Geom_Plane, Geom_Surface, Geom_BSplineSurface
+from OCC.Core.Geom import Geom_Curve, Geom_Line, Geom_Ellipse
+from OCC.Core.GeomAPI import GeomAPI_PointsToBSplineSurface
+from OCC.Core.GeomAPI import GeomAPI_IntCS, GeomAPI_IntSS
+from OCC.Core.GeomAPI import GeomAPI_ProjectPointOnSurf
+from OCC.Core.GeomAPI import GeomAPI_ProjectPointOnCurve
+from OCC.Core.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
+from OCC.Core.GeomLProp import GeomLProp_SurfaceTool
+from OCC.Core.GeomProjLib import geomprojlib_Project
+from OCC.Core.IntAna import IntAna_IntConicQuad
+from OCC.Core.TopoDS import TopoDS_HShape, TopoDS_Shape
+from OCC.Core.TopoDS import TopoDS_Face, TopoDS_Wire
+from OCC.Core.TopLoc import TopLoc_Location
+from OCC.Core.TColgp import TColgp_Array2OfPnt
+from OCC.Core.BRep import BRep_Tool
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeWire
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeShell
+from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_ThruSections
+from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_MakePipe
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakePrism
 from OCCUtils.Construct import make_plane, make_loft
 from OCCUtils.Construct import dir_to_vec, vec_to_dir
 from OCCUtils.Topology import Topo, dumpTopology

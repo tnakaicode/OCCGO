@@ -1,9 +1,9 @@
 from OCC.Display.SimpleGui import init_display
-from OCC.gp import gp_Pln
-from OCC.gp import gp_Pnt, gp_Vec
-from OCC.TopoDS  import TopoDS_Compound
-from OCC.BOPAlgo import BOPAlgo_MakerVolume, BOPAlgo_Builder
-from OCC.BRep    import BRep_Builder
+from OCC.Core.gp import gp_Pln
+from OCC.Core.gp import gp_Pnt, gp_Vec
+from OCC.Core.TopoDS  import TopoDS_Compound
+from OCC.Core.BOPAlgo import BOPAlgo_MakerVolume, BOPAlgo_Builder
+from OCC.Core.BRep    import BRep_Builder
 from OCCUtils.Topology  import Topo
 from OCCUtils.Construct import make_box, make_face
 from OCCUtils.Construct import vec_to_dir
