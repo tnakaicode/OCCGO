@@ -6,19 +6,19 @@ import sys
 import time
 import os
 
-from OCC.gp import gp_Pnt, gp_Vec, gp_Dir, gp_Ax1, gp_Ax2, gp_Ax3
-from OCC.gp import gp_Pln, gp_Trsf, gp_Lin
-from OCC.Geom import Geom_Plane, Geom_Surface, Geom_BSplineSurface
-from OCC.Geom import Geom_Curve, Geom_Line
-from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeFace
-from OCC.TColgp import TColgp_Array1OfPnt, TColgp_Array2OfPnt
-from OCC.GeomAPI import GeomAPI_PointsToBSplineSurface, GeomAPI_IntCS
-from OCC.GeomAPI import GeomAPI_ProjectPointOnSurf, GeomAPI_ProjectPointOnCurve
-from OCC.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
-from OCC.GeomLProp import GeomLProp_SurfaceTool, GeomLProp_SLProps
-from OCC.TopLoc import TopLoc_Location
-from OCC.BRep import BRep_Tool
-from OCC.TopoDS import TopoDS_Shape
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir, gp_Ax1, gp_Ax2, gp_Ax3
+from OCC.Core.gp import gp_Pln, gp_Trsf, gp_Lin
+from OCC.Core.Geom import Geom_Plane, Geom_Surface, Geom_BSplineSurface
+from OCC.Core.Geom import Geom_Curve, Geom_Line
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace
+from OCC.Core.TColgp import TColgp_Array1OfPnt, TColgp_Array2OfPnt
+from OCC.Core.GeomAPI import GeomAPI_PointsToBSplineSurface, GeomAPI_IntCS
+from OCC.Core.GeomAPI import GeomAPI_ProjectPointOnSurf, GeomAPI_ProjectPointOnCurve
+from OCC.Core.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
+from OCC.Core.GeomLProp import GeomLProp_SurfaceTool, GeomLProp_SLProps
+from OCC.Core.TopLoc import TopLoc_Location
+from OCC.Core.BRep import BRep_Tool
+from OCC.Core.TopoDS import TopoDS_Shape
 from OCCUtils.Construct import dir_to_vec, vec_to_dir
 from OCCUtils.Construct import make_wire, make_edge, make_plane, make_line
 from OCCUtils.Construct import project_edge_onto_plane, project_point_on_curve

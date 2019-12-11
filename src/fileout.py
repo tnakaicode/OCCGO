@@ -1,8 +1,8 @@
 import numpy as np
 from unwrap.unwrap import unwrap
 
-from OCC.gp import gp_Pnt, gp_Ax1, gp_Ax3, gp_Vec, gp_Dir, gp_Pnt2d
-from OCC.gp import gp_Trsf, gp_Quaternion, gp_Pln, gp_Mat
+from OCC.Core.gp import gp_Pnt, gp_Ax1, gp_Ax3, gp_Vec, gp_Dir, gp_Pnt2d
+from OCC.Core.gp import gp_Trsf, gp_Quaternion, gp_Pln, gp_Mat
 
 
 def string_to_float(string):

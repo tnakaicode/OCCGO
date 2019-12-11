@@ -18,8 +18,8 @@ from src.geomtory import fit_surf
 from src.pyocc.surface import surf_spl
 from src.pyocc.export import export_STEPFile_single
 
-from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
-from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
+from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
 
 if __name__ == "__main__":
     argvs = sys.argv

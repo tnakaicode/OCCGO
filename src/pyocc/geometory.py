@@ -1,12 +1,12 @@
 from OCC.Display.SimpleGui import init_display
-from OCC.gp import gp_Pnt, gp_Vec, gp_Ax3
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Ax3
 from OCCUtils.Topology import Topo
 from OCCUtils.Construct import make_wire, make_edge, make_plane, make_circle, make_line
-from OCC.BRep import BRep_Tool
-from OCC.TopTools import (TopTools_ListOfShape,
+from OCC.Core.BRep import BRep_Tool
+from OCC.Core.TopTools import (TopTools_ListOfShape,
                           TopTools_ListIteratorOfListOfShape,
                           TopTools_IndexedDataMapOfShapeListOfShape)
-from OCC.TopoDS import (topods, TopoDS_Wire, TopoDS_Vertex, TopoDS_Edge,
+from OCC.Core.TopoDS import (topods, TopoDS_Wire, TopoDS_Vertex, TopoDS_Edge,
                         TopoDS_Face, TopoDS_Shell, TopoDS_Solid,
                         TopoDS_Compound, TopoDS_CompSolid, topods_Edge,
                         topods_Vertex, TopoDS_Iterator)

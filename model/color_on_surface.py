@@ -1,7 +1,7 @@
-from OCC.BRepPrimAPI import BRepPrimAPI_MakeBox
-from OCC.AIS import AIS_Shape
-from OCC.Quantity import Quantity_NOC_BLACK
-from OCC.gp import gp_XY
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
+from OCC.Core.AIS import AIS_Shape
+from OCC.Core.Quantity import Quantity_NOC_BLACK
+from OCC.Core.gp import gp_XY
 
 from OCC.Display.SimpleGui import init_display
 

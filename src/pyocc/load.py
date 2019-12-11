@@ -19,19 +19,19 @@ from __future__ import print_function
 
 import sys
 
-from OCC.STEPControl import STEPControl_Reader
-from OCC.IGESControl import IGESControl_Reader
-from OCC.IFSelect import IFSelect_RetDone, IFSelect_ItemsByEntity
-from OCC.Quantity import Quantity_Color, Quantity_TOC_RGB
-from OCC.TDocStd import Handle_TDocStd_Document
-from OCC.XCAFApp import XCAFApp_Application
-from OCC.XCAFDoc import (XCAFDoc_DocumentTool_ShapeTool,
+from OCC.Core.STEPControl import STEPControl_Reader
+from OCC.Core.IGESControl import IGESControl_Reader
+from OCC.Core.IFSelect import IFSelect_RetDone, IFSelect_ItemsByEntity
+from OCC.Core.Quantity import Quantity_Color, Quantity_TOC_RGB
+from OCC.Core.TDocStd import Handle_TDocStd_Document
+from OCC.Core.XCAFApp import XCAFApp_Application
+from OCC.Core.XCAFDoc import (XCAFDoc_DocumentTool_ShapeTool,
                          XCAFDoc_DocumentTool_ColorTool,
                          XCAFDoc_DocumentTool_LayerTool,
                          XCAFDoc_DocumentTool_MaterialTool)
-from OCC.STEPCAFControl import STEPCAFControl_Reader
-from OCC.TDF import TDF_LabelSequence
-from OCC.TCollection import TCollection_ExtendedString
+from OCC.Core.STEPCAFControl import STEPCAFControl_Reader
+from OCC.Core.TDF import TDF_LabelSequence
+from OCC.Core.TCollection import TCollection_ExtendedString
 
 
 def read_step_file(filename):

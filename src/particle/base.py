@@ -25,7 +25,8 @@ class Particle():
             return np.array([0.0, 0.0, 0.0])
         sig6_div_r6 = (sigma**2 / r2)**3
         #print("force : ", 24 * eps * (1/r2) * sig6_div_r6 * (1 - 2 * sig6_div_r6) * (pos2 - pos1))
-        return 24 * eps * (1/r2) * sig6_div_r6 * (1 - 2 * sig6_div_r6) * (pos2 - pos1)
+        return 24 * eps * (1 / r2) * sig6_div_r6 * (1 - 2 * sig6_div_r6) * (pos2 - pos1)
+
 
 class Calculater():
     # Update pos(ition) and vel(ocity) of particles after dt time
@@ -43,17 +44,17 @@ class Calculater():
         l2 = 0
         for p in adjuscent_particles:
             l2 = dt * Particle.force(particle.pos +
-                                     l1/2, p.pos, eps, sigma) / particle.mass
-        l2 += dt * ps.force(particle.pos + l1/2,
-                            particle.vel + k1/2, particle, t + dt/2)
+                                     l1 / 2, p.pos, eps, sigma) / particle.mass
+        l2 += dt * ps.force(particle.pos + l1 / 2,
+                            particle.vel + k1 / 2, particle, t + dt / 2)
 
         k3 = dt * (particle.vel + k2 / 2)
         l3 = 0
         for p in adjuscent_particles:
             l3 = dt * Particle.force(particle.pos +
-                                     l2/2, p.pos, eps, sigma) / particle.mass
-        l3 += dt * ps.force(particle.pos + l2/2,
-                            particle.vel + k2/2, particle, t + dt/2)
+                                     l2 / 2, p.pos, eps, sigma) / particle.mass
+        l3 += dt * ps.force(particle.pos + l2 / 2,
+                            particle.vel + k2 / 2, particle, t + dt / 2)
 
         k4 = dt * (particle.vel + k3)
         l4 = 0
@@ -63,8 +64,8 @@ class Calculater():
         l4 += dt * ps.force(particle.pos + l3,
                             particle.vel + k3, particle, t + dt)
 
-        particle.pos += (k1 + 2*k2 + 2*k3 + k4)/6
-        particle.vel += (l1 + 2*l2 + 2*l3 + l4)/6
+        particle.pos += (k1 + 2 * k2 + 2 * k3 + k4) / 6
+        particle.vel += (l1 + 2 * l2 + 2 * l3 + l4) / 6
 
     # Update pos(ition) and vel(ocity) of particles after dt time
     # used by Euler method
@@ -77,7 +78,6 @@ class Calculater():
         f += dt * ps.force(particle.pos, particle.vel, particle, t)
         particle.pos += dt * particle.vel
         particle.vel += dt * f
-
 
 
 class ParticleSystem():
@@ -251,7 +251,7 @@ class ParticleSystem():
 
     # detect Kinetic Energy of all paricle
     def get_kinetic_energy(self):
-        return sum([(p.mass*np.array(p.vel)**2).sum()/2 for p in self.particles])
+        return sum([(p.mass * np.array(p.vel)**2).sum() / 2 for p in self.particles])
 
     # initialize the status of particle
     @abstractmethod

@@ -3,30 +3,30 @@ import sys
 import time
 import os
 
-from OCC.XSControl import XSControl_Writer, XSControl_WorkSession
-from OCC.STEPCAFControl import STEPCAFControl_Writer
-from OCC.STEPCAFControl import Handle_STEPCAFControl_ExternFile
-from OCC.STEPControl import STEPControl_Writer
-from OCC.STEPControl import (STEPControl_AsIs,
+from OCC.Core.XSControl import XSControl_Writer, XSControl_WorkSession
+from OCC.Core.STEPCAFControl import STEPCAFControl_Writer
+from OCC.Core.STEPCAFControl import Handle_STEPCAFControl_ExternFile
+from OCC.Core.STEPControl import STEPControl_Writer
+from OCC.Core.STEPControl import (STEPControl_AsIs,
                              STEPControl_ManifoldSolidBrep,
                              STEPControl_FacetedBrep,
                              STEPControl_ShellBasedSurfaceModel,
                              STEPControl_GeometricCurveSet)
-from OCC.Interface import Interface_Static_SetCVal
-from OCC.IFSelect import IFSelect_RetDone
-from OCC.TDF import TDF_LabelSequence, TDF_Label, TDF_Tool
-from OCC.TDataStd import Handle_TDataStd_Name, TDataStd_Name_GetID
-from OCC.TDataStd import TDataStd_Name
-from OCC.TCollection import TCollection_AsciiString
-from OCC.TCollection import TCollection_ExtendedString
-from OCC.TDocStd import TDocStd_Document, Handle_TDocStd_Document
-from OCC.XCAFApp import XCAFApp_Application
-from OCC.XCAFDoc import (XCAFDoc_DocumentTool_ShapeTool,
+from OCC.Core.Interface import Interface_Static_SetCVal
+from OCC.Core.IFSelect import IFSelect_RetDone
+from OCC.Core.TDF import TDF_LabelSequence, TDF_Label, TDF_Tool
+from OCC.Core.TDataStd import Handle_TDataStd_Name, TDataStd_Name_GetID
+from OCC.Core.TDataStd import TDataStd_Name
+from OCC.Core.TCollection import TCollection_AsciiString
+from OCC.Core.TCollection import TCollection_ExtendedString
+from OCC.Core.TDocStd import TDocStd_Document, Handle_TDocStd_Document
+from OCC.Core.XCAFApp import XCAFApp_Application
+from OCC.Core.XCAFDoc import (XCAFDoc_DocumentTool_ShapeTool,
                          XCAFDoc_DocumentTool_ColorTool,
                          XCAFDoc_DocumentTool_LayerTool,
                          XCAFDoc_DocumentTool_MaterialTool)
 
-from OCC.TDF import TDF_Data, TDF_Label, TDF_LabelSequence
+from OCC.Core.TDF import TDF_Data, TDF_Label, TDF_LabelSequence
 
 
 class ExportMethod (object):

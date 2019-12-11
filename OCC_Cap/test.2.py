@@ -1,7 +1,7 @@
 import operator
 
-import OCC.GProp
-import OCC.BRepGProp
+import OCC.Core.GProp
+import OCC.Core.BRepGProp
 
 import ifcopenshell
 import ifcopenshell.geom
@@ -24,13 +24,13 @@ def create_shape(elem):
     return ifcopenshell.geom.create_shape(settings, elem)
 
 def calc_volume(s):
-    props = OCC.GProp.GProp_GProps()
-    OCC.BRepGProp.brepgprop_VolumeProperties(s.geometry, props)
+    props = GProp.GProp_GProps()
+    BRepGProp.brepgprop_VolumeProperties(s.geometry, props)
     return props.Mass()
     
 def calc_area(s):
-    props = OCC.GProp.GProp_GProps()
-    OCC.BRepGProp.brepgprop_SurfaceProperties(s.geometry, props)
+    props = GProp.GProp_GProps()
+    BRepGProp.brepgprop_SurfaceProperties(s.geometry, props)
     return props.Mass()
     
 def normalize(li):

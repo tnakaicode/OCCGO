@@ -20,10 +20,11 @@ for k in range(25, 75):
 for iter in range(Niter):
     if iter % 10 == 0:
         print(iter)
-    for i in range(1, Nmax-2):
-        for j in range(1, Nmax-2):
-            V[i, j] = 0.25*(V[i+1, j]+V[i-1, j]+V[i, j+1]+V[i, j-1])
-    print("iter, V[Nmax/5,Nmax/5]", iter, V[Nmax//5, Nmax//5])
+    for i in range(1, Nmax - 2):
+        for j in range(1, Nmax - 2):
+            V[i, j] = 0.25 * (V[i + 1, j] + V[i - 1, j] +
+                              V[i, j + 1] + V[i, j - 1])
+    print("iter, V[Nmax/5,Nmax/5]", iter, V[Nmax // 5, Nmax // 5])
 x = range(0, 50, 2)
 y = range(0, 50, 2)
 X, Y = np.meshgrid(x, y)

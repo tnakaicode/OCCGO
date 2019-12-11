@@ -2,6 +2,7 @@ from abc import abstractmethod
 from collections import MutableMapping
 import os
 
+
 class Base(MutableMapping, object):
     """
     Notes
@@ -28,7 +29,7 @@ class Base(MutableMapping, object):
     @abstractmethod
     def Write(self, *args, **kwargs):
         pass
-    
+
     @abstractmethod
     def Build(self, *args, **kwargs):
         pass

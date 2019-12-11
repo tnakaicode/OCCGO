@@ -19,20 +19,20 @@ from src.pyocc.surface import surf_spl
 from src.pyocc.export import export_STEPFile_single
 
 from OCC.Display.SimpleGui import init_display
-from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
-from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
-from OCC.gp import gp_Circ, gp_Circ2d
-from OCC.Geom import Geom_Plane, Geom_Surface, Geom_BSplineSurface
-from OCC.Geom import Geom_Curve, Geom_Line, Geom_Ellipse
-from OCC.Geom import Geom_Circle
-from OCC.BRep import BRep_Tool
-from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeFace
-from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
-from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeWire
-from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeShell
-from OCC.BRepOffsetAPI import BRepOffsetAPI_ThruSections
-from OCC.BRepOffsetAPI import BRepOffsetAPI_MakePipe
-from OCC.BRepPrimAPI import BRepPrimAPI_MakePrism
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
+from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
+from OCC.Core.gp import gp_Circ, gp_Circ2d
+from OCC.Core.Geom import Geom_Plane, Geom_Surface, Geom_BSplineSurface
+from OCC.Core.Geom import Geom_Curve, Geom_Line, Geom_Ellipse
+from OCC.Core.Geom import Geom_Circle
+from OCC.Core.BRep import BRep_Tool
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeWire
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeShell
+from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_ThruSections
+from OCC.Core.BRepOffsetAPI import BRepOffsetAPI_MakePipe
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakePrism
 from OCCUtils.Construct import vec_to_dir, dir_to_vec
 from OCCUtils.Construct import make_edge
 

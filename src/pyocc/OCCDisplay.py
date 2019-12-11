@@ -7,7 +7,7 @@ import os
 from .OCCQt import Viewer
 
 from OCC.Display.SimpleGui import init_display
-from OCC.Graphic3d import (Graphic3d_EF_PDF,
+from OCC.Core.Graphic3d import (Graphic3d_EF_PDF,
                            Graphic3d_EF_SVG,
                            Graphic3d_EF_TEX,
                            Graphic3d_EF_PostScript,

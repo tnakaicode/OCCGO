@@ -16,8 +16,8 @@ from src.RayTrace.ray_setup import get_axs, get_deg
 from src.fileout import occ_to_grasp_cor, occ_to_grasp_rim
 
 from OCCUtils.Construct import vec_to_dir, dir_to_vec
-from OCC.gp import gp_Ax1, gp_Ax2, gp_Ax3
-from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
+from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
 
 if __name__ == "__main__":
     argvs = sys.argv

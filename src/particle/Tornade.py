@@ -11,6 +11,8 @@ import datetime
 from .base import Calculater, Particle, ParticleSystem
 
 # the system of acting force to rotate like as tornade
+
+
 class TornadeSystem(ParticleSystem):
     def __init__(self, cutoff_r, NX, NY, NZ, e, mass, eps, sigma):
         super().__init__(cutoff_r, NX=NX, NY=NY, NZ=NZ, e=e, mass=mass, eps=eps, sigma=sigma)
@@ -28,5 +30,4 @@ class TornadeSystem(ParticleSystem):
     # rot (r) == [0, 0, 1]
     def force(self, pos, vel, particle, t):
         # - 0.5 * np.array(vel)
-        return 0.05 * pos[2] * np.array([-(pos[1] - self.Y_MAX/2), pos[0] - self.X_MAX/2, 0.0])
-
+        return 0.05 * pos[2] * np.array([-(pos[1] - self.Y_MAX / 2), pos[0] - self.X_MAX / 2, 0.0])

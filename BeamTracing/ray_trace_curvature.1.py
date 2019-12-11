@@ -23,24 +23,24 @@ from OCCUtils.Topology import Topo
 from OCCUtils.Construct import project_edge_onto_plane, project_point_on_curve
 from OCCUtils.Construct import make_wire, make_edge, make_plane, make_line, make_loft
 from OCCUtils.Construct import dir_to_vec, vec_to_dir
-from OCC.BRep import BRep_Tool, BRep_PointsOnSurface
-from OCC.BRep import BRep_ListNodeOfListOfPointRepresentation
-from OCC.TopLoc import TopLoc_Location
-from OCC.TopoDS import TopoDS_Face
-from OCC.GeomLProp import GeomLProp_SurfaceTool, GeomLProp_SLProps
-from OCC.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
-from OCC.GeomAPI import GeomAPI_ProjectPointOnSurf, GeomAPI_ProjectPointOnCurve
-from OCC.GeomAPI import GeomAPI_PointsToBSplineSurface, GeomAPI_IntCS
-from OCC.GeomAPI import GeomAPI_ExtremaCurveCurve, GeomAPI_Interpolate
-from OCC.TColgp import TColgp_Array1OfPnt, TColgp_Array2OfPnt
-from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeFace
-from OCC.BRepBuilderAPI import BRepBuilderAPI_ParametersOutOfRange
-from OCC.Geom import Geom_Curve, Geom_Line, Geom_Ellipse
-from OCC.Geom import Geom_Plane, Geom_Surface, Geom_BSplineSurface, Geom_BSplineCurve
-from OCC.Geom import Geom_ConicalSurface, Geom_Conic
-from OCC.gp import gp_Pln, gp_Trsf, gp_Lin, gp_Elips, gp_Elips2d
-from OCC.gp import gp_Pnt, gp_Vec, gp_Dir, gp_Ax1, gp_Ax2, gp_Ax3
-from OCC.gp import gp_Mat
+from OCC.Core.BRep import BRep_Tool, BRep_PointsOnSurface
+from OCC.Core.BRep import BRep_ListNodeOfListOfPointRepresentation
+from OCC.Core.TopLoc import TopLoc_Location
+from OCC.Core.TopoDS import TopoDS_Face
+from OCC.Core.GeomLProp import GeomLProp_SurfaceTool, GeomLProp_SLProps
+from OCC.Core.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
+from OCC.Core.GeomAPI import GeomAPI_ProjectPointOnSurf, GeomAPI_ProjectPointOnCurve
+from OCC.Core.GeomAPI import GeomAPI_PointsToBSplineSurface, GeomAPI_IntCS
+from OCC.Core.GeomAPI import GeomAPI_ExtremaCurveCurve, GeomAPI_Interpolate
+from OCC.Core.TColgp import TColgp_Array1OfPnt, TColgp_Array2OfPnt
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_ParametersOutOfRange
+from OCC.Core.Geom import Geom_Curve, Geom_Line, Geom_Ellipse
+from OCC.Core.Geom import Geom_Plane, Geom_Surface, Geom_BSplineSurface, Geom_BSplineCurve
+from OCC.Core.Geom import Geom_ConicalSurface, Geom_Conic
+from OCC.Core.gp import gp_Pln, gp_Trsf, gp_Lin, gp_Elips, gp_Elips2d
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir, gp_Ax1, gp_Ax2, gp_Ax3
+from OCC.Core.gp import gp_Mat
 from OCC.Display.SimpleGui import init_display
 
 

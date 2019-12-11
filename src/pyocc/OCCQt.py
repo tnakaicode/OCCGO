@@ -1,9 +1,9 @@
 import sys
 import time
 import os
-from OCC.BRep import BRep_Tool
-from OCC.TopAbs import TopAbs_VERTEX
-from OCC.TopoDS import TopoDS_Iterator, topods_Vertex
+from OCC.Core.BRep import BRep_Tool
+from OCC.Core.TopAbs import TopAbs_VERTEX
+from OCC.Core.TopoDS import TopoDS_Iterator, topods_Vertex
 from OCCUtils.Topology import shapeTypeString, dumpTopology
 from PyQt5.QtWidgets import QApplication, qApp
 from PyQt5.QtWidgets import QDialog, QCheckBox

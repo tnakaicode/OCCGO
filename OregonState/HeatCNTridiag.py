@@ -31,19 +31,19 @@ def Tridiag(a, d, c, b, Ta, Td, Tc, Tb, x, n):
     Max = 51
     h = zeros((Max), float)
     p = zeros((Max), float)
-    for i in range(1, n+1):
+    for i in range(1, n + 1):
         a[i] = Ta[i]
         b[i] = Tb[i]
         c[i] = Tc[i]
         d[i] = Td[i]
-    h[1] = c[1]/d[1]
-    p[1] = b[1]/d[1]
-    for i in range(2, n+1):
-        h[i] = c[i] / (d[i]-a[i]*h[i-1])
-        p[i] = (b[i] - a[i]*p[i-1]) / (d[i]-a[i]*h[i-1])
+    h[1] = c[1] / d[1]
+    p[1] = b[1] / d[1]
+    for i in range(2, n + 1):
+        h[i] = c[i] / (d[i] - a[i] * h[i - 1])
+        p[i] = (b[i] - a[i] * p[i - 1]) / (d[i] - a[i] * h[i - 1])
     x[n] = p[n]
     for i in range(n - 1, 1, -1):
-        x[i] = p[i] - h[i]*x[i+1]
+        x[i] = p[i] - h[i] * x[i + 1]
 
 
 width = 1.0
@@ -57,35 +57,35 @@ h = width / (n - 1)
 k = height / (m - 1)
 r = ct * ct * k / (h * h)
 
-for j in range(1, m+1):
+for j in range(1, m + 1):
     t[1, j] = 0.0
     t[n, j] = 0.0                                                   # BCs
 for i in range(2, n):
     t[i][1] = np.sin(np.pi * h * i)                  # ICs
-for i in range(1, n+1):
-    Td[i] = 2. + 2./r
+for i in range(1, n + 1):
+    Td[i] = 2. + 2. / r
 Td[1] = 1.
 Td[n] = 1.
 for i in range(1, n):
     Ta[i] = -1.0
     Tc[i] = -1.0     # Off diagonal
-Ta[n-1] = 0.0
+Ta[n - 1] = 0.0
 Tc[1] = 0.0
 Tb[1] = 0.0
 Tb[n] = 0.0
 print("I'm working hard, wait for fig while I count to 50")
 
-for j in range(2, m+1):
+for j in range(2, m + 1):
     print(j)
     for i in range(2, n):
-        Tb[i] = t[i-1][j-1] + t[i+1][j-1] \
-            + (2/r-2) * t[i][j-1]
+        Tb[i] = t[i - 1][j - 1] + t[i + 1][j - 1] \
+            + (2 / r - 2) * t[i][j - 1]
     Tridiag(a, d, c, b, Ta, Td, Tc, Tb, x, n)            # Solve system
-    for i in range(1, n+1):
+    for i in range(1, n + 1):
         t[i][j] = x[i]
 print("Finished")
-x = list(range(1, m+1))                            # Plot every other x
-y = list(range(1, n+1))                                 # every other y
+x = list(range(1, m + 1))                            # Plot every other x
+y = list(range(1, n + 1))                                 # every other y
 X, Y = p.meshgrid(x, y)
 
 
