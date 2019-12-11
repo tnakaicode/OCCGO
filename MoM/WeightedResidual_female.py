@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
+import pandas
 from pandas import Series
 from pandas import DataFrame
 from pandas import concat
 from statsmodels.tsa.ar_model import AR
 from sklearn.metrics import mean_squared_error
 
-series = Series.from_csv('daily-total-female-births.csv', header=0)
+series = pandas.Series.from_csv('daily-total-female-births.csv', header=0)
 print(series.head())
 
 # create lagged dataset

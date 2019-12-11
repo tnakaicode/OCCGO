@@ -72,7 +72,6 @@ if __name__ == '__main__':
     f5 = gen_fmn(px, 5)
     f6 = gen_fmn(px, 6)
 
-
     f_ex = - px**4 / 3 - px**2 / 2 + 5 * px / 6
 
     plt.figure()
@@ -83,7 +82,7 @@ if __name__ == '__main__':
     plt.plot(px, f4)
     plt.plot(px, f5)
     plt.plot(px, f6)
-    
+
     #plt.plot(px, gen_fmn(px, 4))
     #plt.plot(px, gen_fmn(px, 5))
     plt.show()
