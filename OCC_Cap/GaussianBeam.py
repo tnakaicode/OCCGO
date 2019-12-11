@@ -41,9 +41,9 @@ def surf_trf(axs, face):
 def surf_spl(px, py, pz, axs=gp_Ax3()):
     nx, ny = px.shape
     pnt_2d = TColgp_Array2OfPnt(1, nx, 1, ny)
-    for row in range(pnt_2d.LowerRow(), pnt_2d.UpperRow()+1):
-        for col in range(pnt_2d.LowerCol(), pnt_2d.UpperCol()+1):
-            i, j = row-1, col-1
+    for row in range(pnt_2d.LowerRow(), pnt_2d.UpperRow() + 1):
+        for col in range(pnt_2d.LowerCol(), pnt_2d.UpperCol() + 1):
+            i, j = row - 1, col - 1
             pnt = gp_Pnt(px[i, j], py[i, j], pz[i, j])
             pnt_2d.SetValue(row, col, pnt)
     curv = GeomAPI_PointsToBSplineSurface(
@@ -55,12 +55,12 @@ def surf_spl(px, py, pz, axs=gp_Ax3()):
 
 if __name__ == "__main__":
     wave = 1.765
-    knum = 2*np.pi / wave
+    knum = 2 * np.pi / wave
 
     pz = np.linspace(0, 500, 10)
     w0 = 15.0
-    rz = pz + 1/pz*(np.pi*w0/wave)**2
-    wz = w0 * np.sqrt(1 + (wave*pz/(np.pi*w0**2))**2)
+    rz = pz + 1 / pz * (np.pi * w0 / wave)**2
+    wz = w0 * np.sqrt(1 + (wave * pz / (np.pi * w0**2))**2)
     t0 = wave / (np.pi * w0)
 
     plt.figure()
@@ -68,15 +68,15 @@ if __name__ == "__main__":
 
     plt.figure()
     plt.plot(pz, wz)
-    plt.plot(pz, np.tan(t0)*pz)
+    plt.plot(pz, np.tan(t0) * pz)
     plt.show()
 
     display, start_display, add_menu, add_function_to_menu = init_display()
 
     api = BRepOffsetAPI_ThruSections()
     for z in np.linspace(0, 1000, 10):
-        r_z = z + 1/z*(np.pi*w0/wave)**2
-        w_z = w0 * np.sqrt(1 + (wave*z/(np.pi*w0**2))**2)
+        r_z = z + 1 / z * (np.pi * w0 / wave)**2
+        w_z = w0 * np.sqrt(1 + (wave * z / (np.pi * w0**2))**2)
         print(z, r_z, w_z)
         pnt = gp_Pnt(0, 0, z)
         axs = gp_Ax3(pnt, gp_Dir(0, 0, 1))
@@ -84,7 +84,7 @@ if __name__ == "__main__":
         px = np.linspace(-1, 1, 100) * 100
         py = np.linspace(-1, 1, 100) * 100
         pxy = np.meshgrid(px, py)
-        pz = -1*(pxy[0]**2/(2*r_z) + pxy[1]**2/(2*r_z))
+        pz = -1 * (pxy[0]**2 / (2 * r_z) + pxy[1]**2 / (2 * r_z))
         pln = surf_spl(*pxy, pz, axs)
         wxy = Geom_Ellipse(ax2, w_z, w_z).Elips()
         wxy = BRepBuilderAPI_MakeWire(
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     px = np.linspace(-1, 1, 100) * 100
     py = np.linspace(-1, 1, 100) * 100
     mesh = np.meshgrid(px, py)
-    surf = mesh[0]**2/1000 + mesh[1]**2/1000
+    surf = mesh[0]**2 / 1000 + mesh[1]**2 / 1000
     #pln = make_plane (axs.Location(), dir_to_vec(axs.Direction()))
     pln = surf_spl(*mesh, surf, axs)
     display.DisplayShape(pln)
@@ -124,8 +124,8 @@ if __name__ == "__main__":
         x = curv_p.X() - gp_Pnt().X()
         y = curv_p.Y() - gp_Pnt().Y()
         z = curv_p.Z() - gp_Pnt().Z()
-        r_z = z + 1/z*(np.pi*w0/wave)**2
-        w_z = w0 * np.sqrt(1 + (wave*z/(np.pi*w0**2))**2)
+        r_z = z + 1 / z * (np.pi * w0 / wave)**2
+        w_z = w0 * np.sqrt(1 + (wave * z / (np.pi * w0**2))**2)
         print(x, y, z, r_z, w_z)
         display.DisplayShape(curv_p)
     display.DisplayShape(curv)
