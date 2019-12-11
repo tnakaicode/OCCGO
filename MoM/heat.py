@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     fom, _ = discretize_instationary_cg(p, diameter=1 / 10, nt=100)
 
-    # fom.visualize(fom.solve())
+    fom.solve()
 
     lti = fom.to_lti()
 
@@ -65,21 +65,18 @@ if __name__ == '__main__':
     fig, ax = plt.subplots()
     ax.plot(poles.real, poles.imag, '.')
     ax.set_title('System poles')
-    plt.show()
 
     # Magnitude plot of the full model
     w = np.logspace(-1, 3, 100)
     fig, ax = plt.subplots()
     lti.mag_plot(w, ax=ax)
     ax.set_title('Magnitude plot of the full model')
-    plt.show()
 
     # Hankel singular values
     hsv = lti.hsv()
     fig, ax = plt.subplots()
     ax.semilogy(range(1, len(hsv) + 1), hsv, '.-')
     ax.set_title('Hankel singular values')
-    plt.show()
 
     # Norms of the system
     print(f'FOM H_2-norm:    {lti.h2_norm():e}')
