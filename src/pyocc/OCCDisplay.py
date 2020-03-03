@@ -7,12 +7,6 @@ import os
 from .OCCQt import Viewer
 
 from OCC.Display.SimpleGui import init_display
-# from OCC.Core.Graphic3d import (Graphic3d_EF_PDF,
-#                                Graphic3d_EF_SVG,
-#                                Graphic3d_EF_TEX,
-#                                Graphic3d_EF_PostScript,
-#                                Graphic3d_EF_EnhPostScript)
-
 from PyQt5.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, QVBoxLayout
 
 
@@ -41,17 +35,11 @@ class OCCDisplay (Viewer):
     def export_cap(self):
         print(os.getcwd())
         self.SubWindow()
-        name = self.txt.text()
-        indx = name.split(".")[-1]
+        rootname, ext_name = os.path.splitext(self.txt.text())
+        if ext_name == "":
+            name = rootname + ".png"
+        else:
+            name = rootname + ".png"
 
-        self.display.View.Dump(name)
-        # if indx == "pdf":
-        #    ef_type = Graphic3d_EF_PDF
-        # elif indx == "ps":
-        #    ef_type = Graphic3d_EF_PostScript
-        # elif indx == "svg":
-        #    ef_type = Graphic3d_EF_SVG
-        # else:
-        #    ef_type = Graphic3d_EF_PDF
         print(name)
-        #self.display_obj.Export (name, ef_type)
+        self.display.View.Dump(name)
