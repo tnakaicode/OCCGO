@@ -114,13 +114,13 @@ if __name__ == "__main__":
     #print (TopoDS_Face(pln))
     print(surf_wxy, pln)
     for face in Topo(surf_wxy).faces():
-        surf_wxy = BRep_Tool.Surface(face).GetObject()
+        surf_wxy = BRep_Tool.Surface(face)
     for face in Topo(pln).faces():
-        pln = BRep_Tool.Surface(face).GetObject()
-    curv = GeomAPI_IntSS(pln.GetHandle(), surf_wxy.GetHandle(), 1.0e-7).Line(1)
+        pln = BRep_Tool.Surface(face)
+    curv = GeomAPI_IntSS(pln, surf_wxy, 1.0e-7).Line(1)
     print(curv)
     for p in np.linspace(0, 1, 10):
-        curv_p = curv.GetObject().Value(p)
+        curv_p = curv.Value(p)
         x = curv_p.X() - gp_Pnt().X()
         y = curv_p.Y() - gp_Pnt().Y()
         z = curv_p.Z() - gp_Pnt().Z()
