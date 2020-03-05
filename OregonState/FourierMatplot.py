@@ -12,11 +12,13 @@ from matplotlib.widgets import Slider
 from pylab import *
 
 M = 4
-T = 2.                                                    # Period
+T = 2.
+# Period
 
 numwaves = 2
 fig, ax = plt.subplots()
-plt.subplots_adjust(left=0.15, bottom=0.25)         # L & B margins
+plt.subplots_adjust(left=0.15, bottom=0.25)
+# L & B margins
 t = np.arange(0.0, np.pi, 0.01)
 t1 = np.arange(0.0, T / 2, 0.01)
 t2 = t[100:300]
@@ -27,20 +29,26 @@ plot(t1, f1)
 plot(t2, f2, color='b')
 
 
-def Four(M, T, t):         # M = number waves, T = period, t = time
+def Four(M, T, t):
+    # M = number waves, T = period, t = time
     sumy = 0
-    om = 2. * np.pi / T                                    # Omega = 2pi/T
+    om = 2. * np.pi / T
+    # Omega = 2pi/T
     fac = 1
-    for m in range(1, M):         # M variable selected with slider
+    for m in range(1, M):
+        # M variable selected with slider
         sumy += fac * np.sin(m * om * t)
         fac = -fac
-    sumy = (2.0 / np.pi) * sumy                           # Common factor
+    sumy = (2.0 / np.pi) * sumy
+    # Common factor
     return sumy
 
 
-s = Four(M, T, t)                                    # Initial plot
+# Initial plot
+s = Four(M, T, t)
 l, = plt.plot(t, s, lw=1, color='red')
-plt.axis([0, np.pi, -4.0, 4.0])             # minx, maxx, miny, maxy
+plt.axis([0, np.pi, -4.0, 4.0])
+# minx, maxx, miny, maxy
 
 xlabel('Time')
 ylabel('Signal')
@@ -64,10 +72,12 @@ def hzfunc():
 hzfunc()
 
 
-def update(val):                                # Update slider
+def update(val):
+    # Update slider
     global numwaves
     numwaves = int(snumwaves.val)
-    l.set_ydata(Four(numwaves, T, t))             # Change nwaves
+    l.set_ydata(Four(numwaves, T, t))
+    # Change nwaves
     fig.canvas.draw_idle()
 
 

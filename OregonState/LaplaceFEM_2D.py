@@ -11,9 +11,7 @@
 # LaplaceFEM_2D.py solve 2D Laplace Eq via Finite elements method; utf-8coding
 
 import numpy as np
-from numpy import *
-from numpy.linalg import solve
-import pylab as p
+import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 # Num squares, nodes, triangles, mesh coords, Initialization
@@ -32,12 +30,12 @@ Nn = (Nx + 1) * (Ny + 1)
 Dx = (Xurc - Xllc) / Nx
 Dy = (Yurc - Yllc) / Ny
 Ne = 2 * Ns
-ge = zeros(Ne, float)
-x = zeros(Ne, float)
-y = zeros(Ne, float)
-Ebcnod = zeros(Ne, int)
-Ebcval = zeros(Ne, int)
-node = zeros((Ne + 1, Ne + 1), int)
+ge = np.zeros(Ne, float)
+x = np.zeros(Ne, float)
+y = np.zeros(Ne, float)
+Ebcnod = np.zeros(Ne, int)
+Ebcval = np.zeros(Ne, int)
+node = np.zeros((Ne + 1, Ne + 1), int)
 
 for i in range(1, Nn + 1):
     x[i] = (i - 1) % (Nx + 1) * Dx
@@ -65,8 +63,8 @@ for i in range(0, Nn):
         Ebcval[Tnebc] = U0
 
 # Initialize A matrix, b vector, form matrix
-A = zeros((Nn + 1, Nn + 1), float)
-b = zeros((Nn + 1, 1), float)
+A = np.zeros((Nn + 1, Nn + 1), float)
+b = np.zeros((Nn + 1, 1), float)
 for e in range(1, Ne):
     x21 = x[node[e, 2]] - x[node[e, 1]]
     x31 = x[node[e, 3]] - x[node[e, 1]]
@@ -110,12 +108,12 @@ for i in range(1, Tnebc):
     b[Ebcnod[i]] = Ebcval[i]
 
 # Solution, place on grid, plot
-V = linalg.solve(A, b)
-(X, Y) = p.meshgrid(arange(Xllc, Xurc + 0.1, 0.1 * (Xurc - Xllc)),
-                    arange(Yllc, Yurc + 0.1, 0.1 * (Yurc - Yllc)))
-Vgrid = zeros((11, 11), float)
-for i in arange(1, 11):
-    for j in arange(1, 11):
+V = np.linalg.solve(A, b)
+(X, Y) = np.meshgrid(np.arange(Xllc, Xurc + 0.1, 0.1 * (Xurc - Xllc)),
+                     np.arange(Yllc, Yurc + 0.1, 0.1 * (Yurc - Yllc)))
+Vgrid = np.zeros((11, 11), float)
+for i in np.arange(1, 11):
+    for j in np.arange(1, 11):
         for e in range(0, Ne):
             x2p = x[node[e, 2]] - X[i, j]
             x3p = x[node[e, 3]] - X[i, j]
@@ -149,10 +147,10 @@ for i in arange(1, 11):
                     + N3 * V[node[e, 3]]
 
 # Plot the finite element solution of V using a contour plot
-fig = p.figure()
+fig = plt.figure()
 ax = Axes3D(fig)
 ax.plot_wireframe(X, Y, Vgrid, color='r')
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Potential')
-p.show()
+plt.show()

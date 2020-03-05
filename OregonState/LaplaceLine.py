@@ -30,11 +30,11 @@ y = range(0, 50, 2)
 X, Y = np.meshgrid(x, y)
 Z = V[X, Y]
 
-fig = plt.figure()                            # Create figure
-ax = Axes3D(fig)                                # Plot axes
-ax.plot_wireframe(X, Y, Z, color='r')      # Red wireframe
+fig = plt.figure()
+ax = Axes3D(fig)
+ax.plot_wireframe(X, Y, Z, color='r')
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('V(x,y)')
 ax.set_title('Potential within Square V(x=0)=100V (Rotatable)')
-plt.show()                                          # Show fig
+plt.show()
