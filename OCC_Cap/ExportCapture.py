@@ -25,7 +25,9 @@ class OCCObject (OCCDisplay):
 
     def __init__(self):
         super(OCCObject, self).__init__()
-        print(self.app, self.vi, self.wi)
+        print(self.app)
+        print(self.vi)
+        print(self.wi)
 
     def Test(self):
         self.display.DisplayShape(make_box(100, 100, 100))

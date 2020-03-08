@@ -78,13 +78,13 @@ class SetDir (object):
 
 class plot2d (SetDir):
 
-    def __init__(self):
+    def __init__(self, aspect="equal"):
         SetDir.__init__(self)
-        self.new_fig()
+        self.new_fig(aspect)
 
-    def new_fig(self):
+    def new_fig(self, aspect="equal"):
         self.fig, self.axs = plt.subplots()
-        self.axs.set_aspect('equal')
+        self.axs.set_aspect(aspect)
         self.axs.xaxis.grid()
         self.axs.yaxis.grid()
 

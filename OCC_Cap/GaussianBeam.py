@@ -1,5 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+import time
+import os
+sys.path.append(os.path.join("../"))
+
+from src.base import plot2d, plotocc
 
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir, gp_Ax1, gp_Ax2, gp_Ax3
@@ -63,13 +69,15 @@ if __name__ == "__main__":
     wz = w0 * np.sqrt(1 + (wave * pz / (np.pi * w0**2))**2)
     t0 = wave / (np.pi * w0)
 
-    plt.figure()
-    plt.plot(pz, rz)
+    obj_plt = plot2d(aspect="auto")
+    obj_plt.axs.plot(pz, rz)
 
-    plt.figure()
-    plt.plot(pz, wz)
-    plt.plot(pz, np.tan(t0) * pz)
-    plt.show()
+    obj_plt.new_fig(aspect="auto")
+    obj_plt.axs.plot(pz, wz)
+    obj_plt.axs.plot(pz, np.tan(t0) * pz)
+    obj_plt.Show()
+
+    #obj = plotocc()
 
     display, start_display, add_menu, add_function_to_menu = init_display()
 
