@@ -159,14 +159,12 @@ def plot_covariance_ellipse(xEst, PEst):
 
 def main():
     print(__file__ + " start!!")
-
     time = 0.0
 
     # State Vector [x y yaw v]'
     xEst = np.matrix(np.zeros((4, 1)))
     xTrue = np.matrix(np.zeros((4, 1)))
     PEst = np.eye(4)
-
     xDR = np.matrix(np.zeros((4, 1)))  # Dead reckoning
 
     # history
@@ -178,9 +176,7 @@ def main():
     while SIM_TIME >= time:
         time += DT
         u = calc_input()
-
         xTrue, z, xDR, ud = observation(xTrue, xDR, u)
-
         xEst, PEst = ekf_estimation(xEst, PEst, z, ud)
 
         # store data history
@@ -192,12 +188,9 @@ def main():
         if show_animation:
             plt.cla()
             plt.plot(hz[:, 0], hz[:, 1], ".g")
-            plt.plot(np.array(hxTrue[0, :]).flatten(),
-                     np.array(hxTrue[1, :]).flatten(), "-b")
-            plt.plot(np.array(hxDR[0, :]).flatten(),
-                     np.array(hxDR[1, :]).flatten(), "-k")
-            plt.plot(np.array(hxEst[0, :]).flatten(),
-                     np.array(hxEst[1, :]).flatten(), "-r")
+            plt.plot(hxTrue[0, :], hxTrue[1, :], "-b")
+            plt.plot(hxDR[0, :], hxDR[1, :], "-k")
+            plt.plot(hxEst[0, :], hxEst[1, :], "-r")
             plot_covariance_ellipse(xEst, PEst)
             plt.axis("equal")
             plt.grid(True)
