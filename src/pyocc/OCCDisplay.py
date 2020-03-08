@@ -5,17 +5,18 @@ import time
 import os
 
 from .OCCQt import Viewer
+from ..base import plotocc
 
 from OCC.Display.SimpleGui import init_display
 from PyQt5.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, QVBoxLayout
 
 
-class OCCDisplay (Viewer):
+class OCCDisplay (Viewer, plotocc):
 
     def __init__(self):
-        self.display, self.start_display, self.add_menu, self.add_function_to_menu = init_display()
+        plotocc.__init__(self)
         self.display_obj = self.display.View.View()
-        super(OCCDisplay, self).__init__()
+        Viewer.__init__(self)
         self.on_select()
 
     def SubWindow(self):
@@ -37,9 +38,9 @@ class OCCDisplay (Viewer):
         self.SubWindow()
         rootname, ext_name = os.path.splitext(self.txt.text())
         if ext_name == "":
-            name = rootname + ".png"
+            name = self.tmpdir + rootname + ".png"
         else:
-            name = rootname + ".png"
+            name = self.tmpdir + rootname + ".png"
 
         print(name)
         self.display.View.Dump(name)

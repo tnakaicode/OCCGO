@@ -36,7 +36,7 @@ class OCCObject (OCCDisplay):
     def Cap(self):
         menu_name = "ScreenCapture"
         self.add_menu(menu_name)
-        self.add_function_to_menu(menu_name, self.export_cap)
+        self.add_function_menu(menu_name, self.export_cap)
 
 
 if __name__ == "__main__":

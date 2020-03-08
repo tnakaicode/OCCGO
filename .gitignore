@@ -1,22 +1,16 @@
+*.pdf
+*.html
 .vscode/*
-.*/*
-.vscode/settings.json
 
 # Byte-compiled / optimized / DLL files
-*/__pycache__/
+__pycache__/
 *.py[cod]
-*.pyc[cod]
 
-test4/hoge/.libs/libhoge.YKCPBYTORWDP76PENZHG4TQPGU2B4S73.gfortran-win_amd64.dll
-.vscode/launch.json
-.vscode/settings.json
-OregonState/CWT.py
-OregonState/EqHeat_Mayavi.py
-OregonState/FDTD.py
-OregonState/FourierMatplot.py
-OregonState/HeatCNTridiag.py
-model/test1.py
-src/__pycache__/__init__.cpython-36.pyc
-src/pyocc/__pycache__/OCCDisplay.cpython-36.pyc
-src/pyocc/__pycache__/OCCQt.cpython-36.pyc
-src/pyocc/__pycache__/__init__.cpython-36.pyc
+# Temp
+tmp/*
+cfd_python/ch10/*
+temp_*/*
+*/temp_*/*
+
+# cpp
+a.exe
