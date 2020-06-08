@@ -15,6 +15,7 @@ temp_*/*
 # cpp
 a.exe
 
+cfg/*
 input/*.cor
 input/*.sfc
 input/*.rim
