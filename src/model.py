@@ -45,6 +45,28 @@ class model_base (object):
         for xyz in self.dat:
             self.pts.append(gp_Pnt(*xyz))
         self.rim = make_polygon(self.pts, closed=True)
+    
+    def export_dict (self):
+        meta = {}
+        meta["name"] = self.name
+
+        p = self.axs.Location()
+        dx = self.axs.XDirection()
+        dy = self.axs.YDirection()
+        dz = self.axs.Direction()
+        meta["axs"] = {}
+        meta["axs"]["xyz"] = [p.X(), p.Y(), p.Z()]
+        meta["axs"]["dir_x"] = [dx.X(), dx.Y(), dx.Z()]
+        meta["axs"]["dir_y"] = [dy.X(), dy.Y(), dy.Z()]
+        meta["axs"]["dir_z"] = [dz.X(), dz.Y(), dz.Z()]
+
+        dat = []
+        for pnt in self.pts:
+            dat.append([pnt.X(), pnt.Y(), pnt.Z()])
+        meta["rim"] = {}
+        meta["rim"]["xyz"] = dat
+        
+        return meta
 
 
 class model (plotocc):
