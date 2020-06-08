@@ -16,3 +16,6 @@ md2 = obj.set_model(name="surf")
 
 print(md0.axs.Location())
 print(md2.axs.Location())
+
+obj.display.DisplayShape(md1.rim)
+obj.show()
