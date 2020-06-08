@@ -14,3 +14,7 @@ temp_*/*
 
 # cpp
 a.exe
+
+input/*.cor
+input/*.sfc
+input/*.rim
