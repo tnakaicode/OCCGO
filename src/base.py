@@ -623,13 +623,13 @@ class plotocc (SetDir):
         n_sided.Build()
         face = n_sided.Face()
         if skin == None:
-            return poly
+            return pnts, poly
         elif skin == 0:
-            return face
+            return pnts, face
         else:
             solid = BRepOffset_MakeOffset(
                 face, skin, 1.0E-5, BRepOffset_Skin, False, True, GeomAbs_Arc, True, True)
-            return solid.Shape()
+            return pnts, solid.Shape()
 
     def make_StarWire(self, num=5, radi=[2.0, 1.0], shft=0.0, axs=gp_Ax3(), skin=None):
         lxy = radi
@@ -652,13 +652,13 @@ class plotocc (SetDir):
         n_sided.Build()
         face = n_sided.Face()
         if skin == None:
-            return poly
+            return pnts, poly
         elif skin == 0:
-            return face
+            return pnts, face
         else:
             solid = BRepOffset_MakeOffset(
                 face, skin, 1.0E-5, BRepOffset_Skin, False, True, GeomAbs_Arc, True, True)
-            return solid.Shape()
+            return pnts, solid.Shape()
 
     def make_FaceByOrder(self, pts=[]):
         pnt = []
