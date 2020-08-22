@@ -20,7 +20,7 @@ from OCC.Core.GeomProjLib import geomprojlib_Project
 def reflect(p0, v0, face):
     h_surf = BRep_Tool.Surface(face)
     ray = Geom_Line(gp_Lin(p0, vec_to_dir(v0)))
-    uvw = GeomAPI_IntCS(ray.GetHandle(), h_surf).Parameters(1)
+    uvw = GeomAPI_IntCS(ray, h_surf).Parameters(1)
     u, v, w = uvw
     p1, vx, vy = gp_Pnt(), gp_Vec(), gp_Vec()
     GeomLProp_SurfaceTool.D1(h_surf, u, v, p1, vx, vy)
@@ -65,12 +65,12 @@ def get_ellips(axs, wxy, face=None):
     if face == None:
         return el
     else:
-        curv = geomprojlib_Project(el.GetHandle(), BRep_Tool.Surface(face))
+        curv = geomprojlib_Project(el, BRep_Tool.Surface(face))
         return curv
 
 
 def Prj_pnt_to_face(axs, pnt, face):
     lin = gp_Lin(pnt, axs.Direction())
-    sxy = GeomAPI_IntCS(Geom_Line(lin).GetHandle(),
+    sxy = GeomAPI_IntCS(Geom_Line(lin),
                         BRep_Tool.Surface(face)).Point(1)
     return sxy

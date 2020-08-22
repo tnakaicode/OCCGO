@@ -5,26 +5,25 @@ import os
 
 from OCC.Core.XSControl import XSControl_Writer, XSControl_WorkSession
 from OCC.Core.STEPCAFControl import STEPCAFControl_Writer
-from OCC.Core.STEPCAFControl import Handle_STEPCAFControl_ExternFile
+from OCC.Core.STEPCAFControl import STEPCAFControl_ExternFile
 from OCC.Core.STEPControl import STEPControl_Writer
 from OCC.Core.STEPControl import (STEPControl_AsIs,
-                             STEPControl_ManifoldSolidBrep,
-                             STEPControl_FacetedBrep,
-                             STEPControl_ShellBasedSurfaceModel,
-                             STEPControl_GeometricCurveSet)
+                                  STEPControl_ManifoldSolidBrep,
+                                  STEPControl_FacetedBrep,
+                                  STEPControl_ShellBasedSurfaceModel,
+                                  STEPControl_GeometricCurveSet)
 from OCC.Core.Interface import Interface_Static_SetCVal
 from OCC.Core.IFSelect import IFSelect_RetDone
 from OCC.Core.TDF import TDF_LabelSequence, TDF_Label, TDF_Tool
-from OCC.Core.TDataStd import Handle_TDataStd_Name, TDataStd_Name_GetID
-from OCC.Core.TDataStd import TDataStd_Name
+from OCC.Core.TDataStd import TDataStd_Name, TDataStd_Name_GetID
 from OCC.Core.TCollection import TCollection_AsciiString
 from OCC.Core.TCollection import TCollection_ExtendedString
-from OCC.Core.TDocStd import TDocStd_Document, Handle_TDocStd_Document
+from OCC.Core.TDocStd import TDocStd_Document, TDocStd_Document
 from OCC.Core.XCAFApp import XCAFApp_Application
 from OCC.Core.XCAFDoc import (XCAFDoc_DocumentTool_ShapeTool,
-                         XCAFDoc_DocumentTool_ColorTool,
-                         XCAFDoc_DocumentTool_LayerTool,
-                         XCAFDoc_DocumentTool_MaterialTool)
+                              XCAFDoc_DocumentTool_ColorTool,
+                              XCAFDoc_DocumentTool_LayerTool,
+                              XCAFDoc_DocumentTool_MaterialTool)
 
 from OCC.Core.TDF import TDF_Data, TDF_Label, TDF_LabelSequence
 
@@ -81,7 +80,7 @@ class ExportCAFMethod (object):
         self.name = name
         self.step = STEPCAFControl_Writer()
         self.step.SetNameMode(True)
-        self.h_doc = Handle_TDocStd_Document()
+        self.h_doc = TDocStd_Document()
         self.x_app = XCAFApp_Application.GetApplication().GetObject()
         self.x_app.NewDocument(
             TCollection_ExtendedString("MDTV-CAF"), self.h_doc)
@@ -126,7 +125,7 @@ def export_STEPFile_single(shape, filename, tol=1.0E-6):
     step = STEPCAFControl_Writer()
     step.SetNameMode(True)
     step.SetPropsMode(True)
-    h_doc = Handle_TDocStd_Document()
+    h_doc = TDocStd_Document()
     x_app = XCAFApp_Application.GetApplication().GetObject()
     x_app.NewDocument(TCollection_ExtendedString("MDTV-CAF"), h_doc)
     doc = h_doc.GetObject()

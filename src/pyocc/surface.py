@@ -16,8 +16,8 @@ from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Pnt, gp_Ax1, gp_Ax3, gp_Vec, gp_Dir
 from OCC.Core.gp import gp_Trsf, gp_Quaternion, gp_Pln
 from OCC.Core.TColgp import TColgp_Array2OfPnt, TColgp_Array1OfPnt
-from OCC.Core.Geom import Geom_BSplineSurface, Handle_Geom_BSplineSurface
-from OCC.Core.Geom import Geom_Surface, Handle_Geom_Surface
+from OCC.Core.Geom import Geom_BSplineSurface
+from OCC.Core.Geom import Geom_Surface
 from OCC.Core.GeomAPI import GeomAPI_PointsToBSplineSurface
 from OCC.Core.GeomAPI import GeomAPI_PointsToBSpline
 from OCC.Core.GeomAPI import GeomAPI_ProjectPointOnSurf

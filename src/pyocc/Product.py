@@ -78,7 +78,7 @@ class Part (Base):
                     pass
                 ais.SetColor(color)
             try:
-                context.Context.Display(ais.GetHandle())
+                context.Context.Display(ais)
                 #context.register_select_callback(print_xy_click)
             except:
                 context.DisplayShape(component)

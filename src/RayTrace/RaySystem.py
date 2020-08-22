@@ -64,7 +64,7 @@ class RaySystem (object):
         h_surf = BRep_Tool.Surface(self.tar.srf)
         g_line = gp_Lin(self.ini.beam.Location(), self.ini.beam.Direction())
         ray = Geom_Line(g_line)
-        if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints():
+        if GeomAPI_IntCS(ray, h_surf).NbPoints():
             self.tar.beam = reflect(self.ini.beam, self.tar.srf)
         else:
             pln = make_plane(
@@ -160,7 +160,7 @@ class OptSystem (object):
         h_surf = BRep_Tool.Surface(self.srf.srf)
         g_line = gp_Lin(self.ini.beam.Location(), self.ini.beam.Direction())
         ray = Geom_Line(g_line)
-        if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints():
+        if GeomAPI_IntCS(ray, h_surf).NbPoints():
             self.srf.beam = reflect(self.ini.beam, self.srf.srf)
         else:
             pln = make_plane(
@@ -175,7 +175,7 @@ class OptSystem (object):
         h_surf = BRep_Tool.Surface(self.tar.srf)
         g_line = gp_Lin(self.srf.beam.Location(), self.srf.beam.Direction())
         ray = Geom_Line(g_line)
-        if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints():
+        if GeomAPI_IntCS(ray, h_surf).NbPoints():
             self.tar.beam = reflect(self.srf.beam, self.tar.srf)
         else:
             pln = make_plane(
@@ -263,7 +263,7 @@ class Multi_RaySystem (object):
         h_surf = BRep_Tool.Surface(self.tar.srf)
         g_line = gp_Lin(self.ini.beam.Location(), self.ini.beam.Direction())
         ray = Geom_Line(g_line)
-        if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints():
+        if GeomAPI_IntCS(ray, h_surf).NbPoints():
             self.tar.beam = reflect(self.ini.beam, self.tar.srf)
         else:
             pln = make_plane(
@@ -278,7 +278,7 @@ class Multi_RaySystem (object):
         h_surf = BRep_Tool.Surface(self.tar.srf)
         g_line = gp_Lin(self.ini.beam.Location(), beam.Direction())
         ray = Geom_Line(g_line)
-        if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints():
+        if GeomAPI_IntCS(ray, h_surf).NbPoints():
             tar_beam = reflect(beam, self.tar.srf)
         else:
             pln = make_plane(
@@ -343,9 +343,9 @@ class Multi_RaySystem (object):
         self.ini.RotAxs(deg / 2, axs=axs)
 
     def Display_Shape(self, colors=["BLUE", "YELLOW"]):
-        self.display.DisplayShape(axs_pln(gp_Ax3()))
-        self.display.DisplayShape(axs_pln(self.ini.axs), color=colors[0])
-        self.display.DisplayShape(axs_pln(self.tar.axs), color=colors[1])
+        #self.display.DisplayShape(axs_pln(gp_Ax3()))
+        #self.display.DisplayShape(axs_pln(self.ini.axs), color=colors[0])
+        #self.display.DisplayShape(axs_pln(self.tar.axs), color=colors[1])
         self.display.DisplayShape(self.ini.srf, color=colors[0])
         self.display.DisplayShape(self.tar.srf)
         self.display.DisplayShape(self.ini.beam.Location(), color=colors[0])
@@ -392,7 +392,7 @@ class Beam_RaySystem (object):
         h_surf = BRep_Tool.Surface(self.tar.srf)
         g_line = gp_Lin(self.ini.beam.Location(), self.ini.beam.Direction())
         ray = Geom_Line(g_line)
-        if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints():
+        if GeomAPI_IntCS(ray, h_surf).NbPoints():
             self.tar.beam = reflect(self.ini.beam, self.tar.srf)
         else:
             pln = make_plane(
@@ -407,7 +407,7 @@ class Beam_RaySystem (object):
         h_surf = BRep_Tool.Surface(self.tar.srf)
         g_line = gp_Lin(self.ini.beam.Location(), beam.Direction())
         ray = Geom_Line(g_line)
-        if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints():
+        if GeomAPI_IntCS(ray, h_surf).NbPoints():
             tar_beam = reflect(beam, self.tar.srf)
         else:
             pln = make_plane(
@@ -521,7 +521,7 @@ class GOSystem (object):
         h_surf = BRep_Tool.Surface(self.tar.srf)
         g_line = gp_Lin(self.ini.beam.Location(), self.ini.beam.Direction())
         ray = Geom_Line(g_line)
-        if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints():
+        if GeomAPI_IntCS(ray, h_surf).NbPoints():
             self.tar.beam = reflect(self.ini.beam, self.tar.srf)
         else:
             pln = make_plane(
@@ -536,8 +536,8 @@ class GOSystem (object):
         print(self.ini.beam.Location())
         print(self.tar.beam.Location())
         
-        GeomAPI_IntCS(ray.GetHandle(), h_surf).IsDone()
-        uvw = GeomAPI_IntCS(ray.GetHandle(), h_surf).Parameters(1)
+        GeomAPI_IntCS(ray, h_surf).IsDone()
+        uvw = GeomAPI_IntCS(ray, h_surf).Parameters(1)
         u, v, w = uvw
         print(u, v, w)
         vz, v1, v2, r1, r2 = axs_curvature(h_surf, u, v)
@@ -582,7 +582,7 @@ class GOSystem (object):
         h_surf = BRep_Tool.Surface(self.tar.srf)
         g_line = gp_Lin(self.ini.beam.Location(), beam.Direction())
         ray = Geom_Line(g_line)
-        if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints():
+        if GeomAPI_IntCS(ray, h_surf).NbPoints():
             tar_beam = reflect(beam, self.tar.srf)
         else:
             pln = make_plane(

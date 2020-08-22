@@ -145,7 +145,7 @@ if __name__ == "__main__":
     rad = 0
     obj = Geom_ConicalSurface(axs, np.deg2rad(deg), rad)
     surf = BRepBuilderAPI_MakeFace(
-        obj.GetHandle(), -np.pi / 2, np.pi / 2, -100, 100, 1e-6).Face()
+        obj, -np.pi / 2, np.pi / 2, -100, 100, 1e-6).Face()
 
     display.DisplayShape(surf)
     display.DisplayShape(obj)

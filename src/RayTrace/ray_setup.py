@@ -43,14 +43,14 @@ def reflect(beam, face, axs=gp_Ax3()):
     p0, v0 = beam.Location(), dir_to_vec(beam.Direction())
     h_surf = BRep_Tool.Surface(face)
     ray = Geom_Line(gp_Lin(p0, vec_to_dir(v0)))
-    if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints() == 0:
+    if GeomAPI_IntCS(ray, h_surf).NbPoints() == 0:
         print("Out of Surface", axs.Location())
         pln = make_plane(
             axs.Location(), dir_to_vec(axs.Direction()), 500, -500, 500, -500
         )
         h_surf = BRep_Tool.Surface(pln)
-    GeomAPI_IntCS(ray.GetHandle(), h_surf).IsDone()
-    uvw = GeomAPI_IntCS(ray.GetHandle(), h_surf).Parameters(1)
+    GeomAPI_IntCS(ray, h_surf).IsDone()
+    uvw = GeomAPI_IntCS(ray, h_surf).Parameters(1)
     u, v, w = uvw
     p1, vx, vy = gp_Pnt(), gp_Vec(), gp_Vec()
     GeomLProp_SurfaceTool.D1(h_surf, u, v, p1, vx, vy)
@@ -104,8 +104,8 @@ def get_deg(axs, vec):
     pln_x = Geom_Plane(axs.Location(), axs.YDirection())
     pln_y = Geom_Plane(axs.Location(), axs.XDirection())
     vec_p = gp_Pnt((gp_Vec(axs.Location().XYZ()) + vec).XYZ())
-    pnt_x = GeomAPI_ProjectPointOnSurf(vec_p, pln_x.GetHandle()).Point(1)
-    pnt_y = GeomAPI_ProjectPointOnSurf(vec_p, pln_y.GetHandle()).Point(1)
+    pnt_x = GeomAPI_ProjectPointOnSurf(vec_p, pln_x).Point(1)
+    pnt_y = GeomAPI_ProjectPointOnSurf(vec_p, pln_y).Point(1)
     vec_x = gp_Vec(axs.Location(), pnt_x)
     vec_y = gp_Vec(axs.Location(), pnt_y)
     deg_x = vec_x.AngleWithRef(vz, vy)

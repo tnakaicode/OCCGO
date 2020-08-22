@@ -43,12 +43,12 @@ def reflect_axs2(beam, surf, axs=gp_Ax3(), indx=1):
     p0, v0 = beam.Location(), dir_to_vec(beam.Direction())
     h_surf = BRep_Tool.Surface(surf)
     ray = Geom_Line(gp_Lin(p0, vec_to_dir(v0)))
-    if GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints() == 0:
+    if GeomAPI_IntCS(ray, h_surf).NbPoints() == 0:
         return beam, beam, None
-    elif GeomAPI_IntCS(ray.GetHandle(), h_surf).NbPoints() == 1:
+    elif GeomAPI_IntCS(ray, h_surf).NbPoints() == 1:
         return beam, beam, None
-    GeomAPI_IntCS(ray.GetHandle(), h_surf).IsDone()
-    u, v, w = GeomAPI_IntCS(ray.GetHandle(), h_surf).Parameters(indx)
+    GeomAPI_IntCS(ray, h_surf).IsDone()
+    u, v, w = GeomAPI_IntCS(ray, h_surf).Parameters(indx)
     p1, vx, vy = gp_Pnt(), gp_Vec(), gp_Vec()
     GeomLProp_SurfaceTool.D1(h_surf, u, v, p1, vx, vy)
     vz = vx.Crossed(vy)
@@ -73,8 +73,8 @@ if __name__ == "__main__":
     beam = get_axs("./beam_cyl.cor")
     surf = set_surface("./cylinder.stp")
     display.DisplayShape(surf)
-    display.DisplayShape(axs_pln(gp_Ax3()))
-    display.DisplayShape(axs_pln(beam))
+    # display.DisplayShape(axs_pln(gp_Ax3()))
+    # display.DisplayShape(axs_pln(beam))
 
     axs1 = beam
     val = 1
@@ -86,7 +86,7 @@ if __name__ == "__main__":
             display.DisplayShape(
                 make_line(axs0.Location(), axs1.Location()), color="GREEN")
 
-    display.DisplayShape(axs_pln(axs1))
+    # display.DisplayShape(axs_pln(axs1))
 
     display.FitAll()
     start_display()

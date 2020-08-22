@@ -23,7 +23,7 @@ from OCC.Core.STEPControl import STEPControl_Reader
 from OCC.Core.IGESControl import IGESControl_Reader
 from OCC.Core.IFSelect import IFSelect_RetDone, IFSelect_ItemsByEntity
 from OCC.Core.Quantity import Quantity_Color, Quantity_TOC_RGB
-from OCC.Core.TDocStd import Handle_TDocStd_Document
+from OCC.Core.TDocStd import TDocStd_Document
 from OCC.Core.XCAFApp import XCAFApp_Application
 from OCC.Core.XCAFDoc import (XCAFDoc_DocumentTool_ShapeTool,
                          XCAFDoc_DocumentTool_ColorTool,
@@ -59,7 +59,7 @@ def read_step_file_shapes(filename):
     _shapes = []
 
     # create an handle to a document
-    h_doc = Handle_TDocStd_Document()
+    h_doc = TDocStd_Document()
 
     # Create the application
     app = XCAFApp_Application.GetApplication().GetObject()
@@ -74,7 +74,7 @@ def read_step_file_shapes(filename):
 
     status = step_reader.ReadFile(filename)
     if status == IFSelect_RetDone:
-        step_reader.Transfer(doc.GetHandle())
+        step_reader.Transfer(doc)
 
     labels = TDF_LabelSequence()
     shape_tool = h_shape_tool.GetObject()
