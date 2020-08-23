@@ -11,7 +11,7 @@
 - PyMor DEMO heat
   - $$ a < b $$
 
-<h1> <div class="page"\></h1>
+<div class="page"\>
 
 $$ \begin{aligned}
     \partial_t z(x, y, t) &= \Delta z(x, y, t), & 0 < x, y < 1,\ t > 0 \\
