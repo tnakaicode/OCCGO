@@ -324,10 +324,10 @@ def propagator2d_fraunhoffer(p_x, p_y, image, wavelength=1e-10):
 def line_image(image, horizontal_or_vertical='H'):
     if horizontal_or_vertical == "H":
         npixels = image.shape[0]
-        tmp = image[:, image.shape[1] / 2]
+        tmp = image[:, int(image.shape[1] / 2)]
     else:
         npixels = image.shape[1]
-        tmp = image[image.shape[0] / 2, :]
+        tmp = image[int(image.shape[0] / 2), :]
     return tmp
 
 

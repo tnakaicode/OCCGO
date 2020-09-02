@@ -48,14 +48,14 @@ def coherence_length_histogram(lambda0, distance, sigma, mu=0.0, npoints=1000, d
     if do_plot:
         import matplotlib.pyplot as plt
 
-        count, bins, ignored = plt.hist(s1, 100, normed=True)
+        count, bins, ignored = plt.hist(s1, 100)
         plt.plot(bins, 1 / (sigma * numpy.sqrt(2 * numpy.pi)) * numpy.exp(- (bins - mu)**2 / (2 * sigma**2)),
                  linewidth=2, color='r')
         plt.show()
 
         # https://arxiv.org/pdf/1508.02238v1.pdf
         count, bins, ignored = plt.hist(
-            1e6 * separation_at_source, 100, normed=True)
+            1e6 * separation_at_source, 100)
         sigma_estimated = sigma * numpy.sqrt(2)
         print("StDev of source separation = %f um; estimating = %f um" %
               (1e6 * std0(separation_at_source), 1e6 * sigma_estimated))
@@ -64,7 +64,7 @@ def coherence_length_histogram(lambda0, distance, sigma, mu=0.0, npoints=1000, d
         plt.show()
 
         #
-        count, bins, ignored = plt.hist(1e6 * cl, 500, normed=True, range=[
+        count, bins, ignored = plt.hist(1e6 * cl, 500, range=[
                                         0, 10 * 1e6 * coherence_length_transverse(lambda0, distance, 2.35 * sigma)])
         plt.show()
 
