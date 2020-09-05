@@ -38,11 +38,11 @@ class GaussianProfile(plot2d):
         plot2d.__init__(self)
         self.cfg_txt = cfgtxt
 
-        lx, ly = [float(v) for v in getline(self.cfg_txt, 1).split()]
-        sx, sy = [float(v) for v in getline(self.cfg_txt, 2).split()]
-        nx, ny = [int(v) for v in getline(self.cfg_txt, 3).split()]
-        px = np.linspace(-1, 1, nx) * lx / 2 - sx
-        py = np.linspace(-1, 1, ny) * ly / 2 - sy
+        nx, ny = [int(v) for v in getline(self.cfg_txt, 1).split()]
+        xs, xe = [float(v) for v in getline(self.cfg_txt, 2).split()]
+        ys, ye = [float(v) for v in getline(self.cfg_txt, 3).split()]
+        px = np.linspace(-xs, xe, nx)
+        py = np.linspace(-ys, ye, ny)
         self.mesh = np.meshgrid(px, py)
 
         self.setup_freq()
