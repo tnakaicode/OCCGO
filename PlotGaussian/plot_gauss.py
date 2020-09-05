@@ -23,18 +23,20 @@ class GaussianProfile(plot2d):
     def __init__(self, cfgtxt="plot_gauss.txt"):
         plot2d.__init__(self)
         self.cfg_txt = cfgtxt
+        self.setup_mesh()
+        self.setup_freq()
 
+        self.ampl = self.setup_ampl()
+        self.phas = self.setup_phas()
+        self.func = self.ampl * np.exp(1j * self.knum * self.phas)
+
+    def setup_mesh(self):
         nx, ny = [int(v) for v in getline(self.cfg_txt, 1).split()]
         xs, xe = [float(v) for v in getline(self.cfg_txt, 2).split()]
         ys, ye = [float(v) for v in getline(self.cfg_txt, 3).split()]
         px = np.linspace(xs, xe, nx)
         py = np.linspace(ys, ye, ny)
         self.mesh = np.meshgrid(px, py)
-
-        self.setup_freq()
-        self.ampl = self.setup_ampl()
-        self.phas = self.setup_phas()
-        self.func = self.ampl * np.exp(1j * self.knum * self.phas)
 
     def setup_func(self):
         self.setup_freq()
