@@ -29,4 +29,6 @@ if __name__ == '__main__':
 
     cfg_txt = opt.file
     obj = GaussianProfile(cfg_txt)
+    obj.tmpdir = "./img/"
+    obj.tempname = obj.tmpdir + "gaussian"
     obj.profile_out()

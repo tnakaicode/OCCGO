@@ -93,6 +93,36 @@ class GaussianProfile(plot2d):
         g_func = g_ampl * np.exp(1j * np.zeros_like(g_ampl))
         return g_func
 
+    def contourf_comp(self, mesh, func1, func2, loc=[0, 0], txt="", title="name", pngname=None, level=None):
+        sx, sy = loc
+        nx, ny = func1.shape
+        xs, ys = mesh[0][0, 0], mesh[1][0, 0]
+        xe, ye = mesh[0][0, -1], mesh[1][-1, 0]
+        dx, dy = mesh[0][0, 1] - mesh[0][0, 0], mesh[1][1, 0] - mesh[1][0, 0]
+        mx, my = int((sy - ys) / dy), int((sx - xs) / dx)
+        tx, ty = 1.1, 0.0
+
+        self.new_2Dfig()
+        self.div_axs()
+        self.ax_x.plot(mesh[0][mx, :], func1[mx, :])
+        self.ax_x.plot(mesh[0][mx, :], func2[mx, :])
+        self.ax_x.set_title("y = {:.2f}".format(sy))
+
+        self.ax_y.plot(func1[:, my], mesh[1][:, my])
+        self.ax_y.plot(func2[:, my], mesh[1][:, my])
+        self.ax_y.set_title("x = {:.2f}".format(sx))
+
+        self.fig.text(tx, ty, txt, transform=self.ax_x.transAxes)
+        im = self.axs.contourf(*mesh, func1, cmap="jet", levels=level)
+        self.axs.set_title(title)
+        self.fig.colorbar(im, ax=self.axs, shrink=0.9)
+
+        plt.tight_layout()
+        if pngname == None:
+            self.SavePng_Serial(pngname)
+        else:
+            self.SavePng(pngname)
+
     def profile_out(self):
         ampl = np.abs(self.func)**2
         ampl_norm = ampl / ampl.max()
@@ -100,7 +130,11 @@ class GaussianProfile(plot2d):
         phas = np.angle(self.func)
         phas_norm = unwrap(phas)
         sxy = get_centroid(self.mesh, ampl)
-        wxy = get_wxy(self.mesh, ampl)
+        wxy, rot = get_wxy(self.mesh, ampl)
+
+        g_ampl = np.abs(self.g_func)**2
+        g_ampl = g_ampl / g_ampl.max()
+        g_db10 = 10 * np.log10(g_ampl)
 
         name = self.tempname
         self.contourf_div(self.mesh, ampl, sxy, pngname=name + "_ampl.png")
@@ -110,6 +144,10 @@ class GaussianProfile(plot2d):
                           pngname=name + "_ampl_n.png")
         self.contourf_div(self.mesh, phas_norm, sxy,
                           pngname=name + "_phas_n.png")
+        self.contourf_comp(self.mesh, ampl_norm, g_ampl, sxy,
+                           pngname=name + "_ampl_compare.png")
+        self.contourf_comp(self.mesh, db10, g_db10, sxy,
+                           pngname=name + "_10db_compare.png")
 
 
 if __name__ == '__main__':
