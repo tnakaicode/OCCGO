@@ -12,24 +12,10 @@ sys.path.append(os.path.join("../"))
 from src.base import plot2d, plot3d
 from src.Unit import knum_from_freq, knum_from_wave
 from src.geomtory import curvature
+from src.profile import gaussian_func, rot_mesh
 
 import logging
 logging.getLogger('matplotlib').setLevel(logging.ERROR)
-
-
-def gauss_1d(px, sx=0, wx=10):
-    py = np.exp(-0.5 * ((px - sx) / wx)**2)
-    return py
-
-
-def gauss_2d(mesh, sxy=[0, 0], wxy=[10, 10], deg=0.0):
-    x, y = mesh[0] - sxy[0], mesh[1] - sxy[1]
-    rot = np.deg2rad(deg)
-    px = x * np.cos(rot) - y * np.sin(rot)
-    py = y * np.cos(rot) + x * np.sin(rot)
-    fx = np.exp(-0.5 * (px / wxy[0])**2)
-    fy = np.exp(-0.5 * (py / wxy[1])**2)
-    return fx * fy
 
 
 class GaussianProfile(plot2d):
@@ -41,10 +27,16 @@ class GaussianProfile(plot2d):
         nx, ny = [int(v) for v in getline(self.cfg_txt, 1).split()]
         xs, xe = [float(v) for v in getline(self.cfg_txt, 2).split()]
         ys, ye = [float(v) for v in getline(self.cfg_txt, 3).split()]
-        px = np.linspace(-xs, xe, nx)
-        py = np.linspace(-ys, ye, ny)
+        px = np.linspace(xs, xe, nx)
+        py = np.linspace(ys, ye, ny)
         self.mesh = np.meshgrid(px, py)
 
+        self.setup_freq()
+        self.ampl = self.setup_ampl()
+        self.phas = self.setup_phas()
+        self.func = self.ampl * np.exp(1j * self.knum * self.phas)
+
+    def setup_func(self):
         self.setup_freq()
         self.ampl = self.setup_ampl()
         self.phas = self.setup_phas()
@@ -67,7 +59,8 @@ class GaussianProfile(plot2d):
         wxy = [float(v) for v in getline(self.cfg_txt, 6).split()]
         sxy = [float(v) for v in getline(self.cfg_txt, 7).split()]
         deg = float(getline(self.cfg_txt, 8).split()[0])
-        ampl = gauss_2d(self.mesh, sxy, wxy, np.rad2deg(deg)) * val[0] + val[1]
+        ampl = gaussian_func(self.mesh, sxy, wxy, np.rad2deg(deg))
+        ampl = ampl * val[0] + val[1]
         return ampl
 
     def setup_phas(self):
@@ -98,3 +91,7 @@ if __name__ == '__main__':
     cfg_txt = opt.file
     obj = GaussianProfile(cfg_txt)
     obj.contourf_div(obj.mesh, np.abs(obj.func), pngname=obj.tempname)
+
+    obj.mesh = rot_mesh(obj.mesh, rot=np.deg2rad(5.0))
+    obj.setup_func()
+    obj.contourf_div(obj.mesh, np.abs(obj.func), pngname=obj.tempname + "_rot")

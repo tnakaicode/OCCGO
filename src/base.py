@@ -319,7 +319,8 @@ class plot2d (PlotBase):
         dx, dy = mesh[0][0, 1] - mesh[0][0, 0], mesh[1][1, 0] - mesh[1][0, 0]
         mx, my = int((sy - ys) / dy), int((sx - xs) / dx)
         tx, ty = 1.1, 0.0
-
+        
+        self.new_2Dfig()
         self.div_axs()
         self.ax_x.plot(mesh[0][mx, :], func[mx, :])
         self.ax_x.set_title("y = {:.2f}".format(sy))
