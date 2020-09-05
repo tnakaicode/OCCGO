@@ -32,6 +32,29 @@ def gauss_2d(mesh, sxy=[0, 0], wxy=[10, 10], deg=0.0):
     return fx * fy
 
 
+class GaussianProfile(plot2d):
+
+    def __init__(self, cfgtxt="plot_gauss.txt"):
+        plot2d.__init__(self)
+        self.cfg_txt = cfgtxt
+
+        lx, ly = [float(v) for v in getline(self.cfg_txt, 1).split()]
+        sx, sy = [float(v) for v in getline(self.cfg_txt, 2).split()]
+        nx, ny = [int(v) for v in getline(self.cfg_txt, 3).split()]
+        px = np.linspace(-1, 1, nx) * lx / 2 - sx
+        py = np.linspace(-1, 1, ny) * ly / 2 - sy
+        self.mesh = np.meshgrid(px, py)
+        self.ampl = self.setup_ampl()
+
+    def setup_ampl(self):
+        val = [float(v) for v in getline(self.cfg_txt, 5).split()]
+        wxy = [float(v) for v in getline(self.cfg_txt, 6).split()]
+        sxy = [float(v) for v in getline(self.cfg_txt, 7).split()]
+        deg = float(getline(self.cfg_txt, 8).split()[0])
+        ampl = gauss_2d(mesh, sxy, wxy, np.rad2deg(deg)) * val[0] + val[1]
+        return ampl
+
+
 if __name__ == '__main__':
     argvs = sys.argv
     parser = OptionParser()
@@ -52,7 +75,7 @@ if __name__ == '__main__':
     wxy = [float(v) for v in getline(cfg_txt, 6).split()]
     sxy = [float(v) for v in getline(cfg_txt, 7).split()]
     deg, = [float(v) for v in getline(cfg_txt, 8).split()]
-    ampl = gauss_2d(mesh, sxy, wxy, np.rad2deg(deg)) * val
+    ampl = gauss_2d(mesh, sxy, wxy, np.rad2deg(deg)) * val + 1.0
 
     w_val, w_unit = getline(cfg_txt, 10).split()
     if w_unit in ["GHz", "kHz", "Hz"]:
