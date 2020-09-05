@@ -160,6 +160,10 @@ class GaussianProfile(plot2d):
                            pngname=name + "_ampl_compare.png")
         self.contourf_comp(self.mesh, db10, g_db10, sxy,
                            pngname=name + "_10db_compare.png", level=level)
+        self.contourf_div(self.mesh, g_ampl, sxy,
+                          pngname=name + "_ampl_g.png")
+        self.contourf_div(self.mesh, g_db10, sxy,
+                          pngname=name + "_10db_g.png", level=level)
 
 
 if __name__ == '__main__':

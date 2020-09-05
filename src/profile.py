@@ -77,7 +77,8 @@ def get_wxy(mesh, func):
     cov = get_cov(mesh, func, sxy)
     wxy, mat = np.linalg.eig(cov)
     wxy = np.sqrt(wxy)
-    rot = np.arcsin(mat[0, 1])
+    rot = np.arctan2(mat[0, 1], mat[1, 1])
+    #rot = np.arcsin(mat[0, 1])
     #print (wxy, np.rad2deg(-np.arcsin(mat[0, 1])), np.rad2deg(np.arccos(mat[0, 0])))
     """if wxy[0] > wxy[1]:
         rot = np.pi/2 - (-np.arcsin(mat[0, 1]))
