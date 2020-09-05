@@ -66,7 +66,7 @@ class GaussianProfile(plot2d):
         wxy = [float(v) for v in getline(self.cfg_txt, 6).split()]
         sxy = [float(v) for v in getline(self.cfg_txt, 7).split()]
         deg = float(getline(self.cfg_txt, 8).split()[0])
-        ampl = gaussian_func(self.mesh, sxy, wxy, np.rad2deg(deg))
+        ampl = gaussian_func(self.mesh, sxy, wxy, np.deg2rad(deg))
         ampl = ampl * val[0] + val[1]
         return ampl
 
