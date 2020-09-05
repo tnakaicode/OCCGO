@@ -1,3 +1,4 @@
+import shutil
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
@@ -45,3 +46,4 @@ if __name__ == '__main__':
     obj.tmpdir = "./img/"
     obj.tempname = obj.tmpdir + "gaussian"
     obj.profile_out()
+    shutil.copyfile(obj.cfg_txt, obj.tempname + ".txt")
