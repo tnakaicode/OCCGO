@@ -27,6 +27,11 @@ def gen_noise(px=[0, 0], ratio=100):
     py = py * (1 - px)**2 * ratio
     return px + py
 
+def copy_file (str1, str2):
+    if os.path.exists(str2):
+        pass
+    else:
+        shutil.copyfile(str1, str2)
 
 if __name__ == '__main__':
     argvs = sys.argv
@@ -52,5 +57,5 @@ if __name__ == '__main__':
     fp = open(obj.tmpdir + "noise.txt", "w")
     fp.write("{:.5E}\n".format(ratio))
     fp.close()
-    shutil.copyfile(obj.cfg_txt, obj.tempname + ".txt")
-    shutil.copyfile("./img/NOTE.md", obj.tmpdir + "NOTE.md")
+    copy_file(obj.cfg_txt, obj.tempname + ".txt")
+    copy_file("./img/NOTE.md", obj.tmpdir + "NOTE.md")

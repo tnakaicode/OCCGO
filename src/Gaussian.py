@@ -5,6 +5,7 @@ import os
 import time
 from linecache import getline, clearcache
 from optparse import OptionParser
+from numpy.core.defchararray import array
 from numpy.lib.function_base import unwrap
 
 from sympy import im
@@ -111,6 +112,13 @@ class GaussianProfile(plot2d):
         self.ax_y.plot(func1[:, my], mesh[1][:, my])
         self.ax_y.plot(func2[:, my], mesh[1][:, my])
         self.ax_y.set_title("x = {:.2f}".format(sx))
+
+        if type(level) == np.ndarray:
+            dl = level[2] - level[0]
+            ls = level[0] - dl * 1.25
+            le = level[-1] + dl * 1.25
+            self.ax_x.set_ylim(ls, le)
+            self.ax_y.set_xlim(ls, le)
 
         self.fig.text(tx, ty, txt, transform=self.ax_x.transAxes)
         im = self.axs.contourf(*mesh, func1, cmap="jet", levels=level)
