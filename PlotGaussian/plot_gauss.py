@@ -31,7 +31,7 @@ def gen_noise(px=[0, 0], ratio=100):
 if __name__ == '__main__':
     argvs = sys.argv
     parser = OptionParser()
-    parser.add_option("--dir", dest="dir", default="./")
+    parser.add_option("--dir", dest="dir", default="./img/")
     parser.add_option("--file", dest="file", default="plot_gauss.txt")
     parser.add_option("--rati", dest="rati", default=1.0E-03, type="float")
     opt, argc = parser.parse_args(argvs)
@@ -43,7 +43,14 @@ if __name__ == '__main__':
     obj.ampl = gen_noise(obj.ampl, ratio)
     obj.func = obj.ampl * np.exp(1j * obj.phas)
     obj.g_func = obj.create_gauss()
-    obj.tmpdir = "./img/"
+
+    obj.tmpdir = "."
+    obj.tmpdir = obj.add_dir(opt.dir)
     obj.tempname = obj.tmpdir + "gaussian"
     obj.profile_out()
+    
+    fp = open(obj.tmpdir + "noise.txt", "w")
+    fp.write("{:.5E}\n".format(ratio))
+    fp.close()
     shutil.copyfile(obj.cfg_txt, obj.tempname + ".txt")
+    shutil.copyfile("./img/NOTE.md", obj.tmpdir + "NOTE.md")
