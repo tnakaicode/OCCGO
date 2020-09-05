@@ -6,8 +6,12 @@ import time
 from linecache import getline, clearcache
 from optparse import OptionParser
 
+from sympy import im
+
 sys.path.append(os.path.join("../"))
 from src.base import plot2d, plot3d
+from src.Unit import knum_from_freq, knum_from_wave
+from src.geomtory import curvature
 
 import logging
 logging.getLogger('matplotlib').setLevel(logging.ERROR)
@@ -32,12 +36,11 @@ if __name__ == '__main__':
     argvs = sys.argv
     parser = OptionParser()
     parser.add_option("--dir", dest="dir", default="./")
-    parser.add_option("--pxyz", dest="pxyz",
-                      default=[0.0, 0.0, 0.0], type="float", nargs=3)
+    parser.add_option("--file", dest="file", default="plot_gauss.txt")
     opt, argc = parser.parse_args(argvs)
     print(opt, argc)
 
-    cfg_txt = "plot_gauss.txt"
+    cfg_txt = opt.file
     lx, ly = [float(v) for v in getline(cfg_txt, 1).split()]
     sx, sy = [float(v) for v in getline(cfg_txt, 2).split()]
     nx, ny = [int(v) for v in getline(cfg_txt, 3).split()]
@@ -49,7 +52,33 @@ if __name__ == '__main__':
     wxy = [float(v) for v in getline(cfg_txt, 6).split()]
     sxy = [float(v) for v in getline(cfg_txt, 7).split()]
     deg, = [float(v) for v in getline(cfg_txt, 8).split()]
-    func = gauss_2d(mesh, sxy, wxy, np.rad2deg(deg)) * val
+    ampl = gauss_2d(mesh, sxy, wxy, np.rad2deg(deg)) * val
+
+    w_val, w_unit = getline(cfg_txt, 10).split()
+    if w_unit in ["GHz", "kHz", "Hz"]:
+        freq = float(w_val)
+        knum, wave = knum_from_freq(freq, w_unit)
+    elif w_unit in ["m", "cm", "mm", "um"]:
+        wave = float(w_val)
+        knum, freq = knum_from_wave(wave, w_unit)
+    else:
+        freq = 100.0
+        knum, wave = knum_from_freq(freq, "GHz")
+
+    p_prof = getline(cfg_txt, 11).split()[0]
+    p_txy = [float(v) for v in getline(cfg_txt, 12).split()]
+    p_sxy = [float(v) for v in getline(cfg_txt, 13).split()]
+    if p_prof == "curvature":
+        phas_x = curvature(mesh[0], p_txy[0], p_sxy[0])
+        phas_y = curvature(mesh[1], p_txy[1], p_sxy[1])
+    elif p_prof == "tilt":
+        phas_x = mesh[0] * np.tan(np.deg2rad(p_txy[0]))
+        phas_y = mesh[1] * np.tan(np.deg2rad(p_txy[1]))
+    else:
+        phas_x = np.zeros_like(ampl)
+        phas_y = np.zeros_like(ampl)
+    phas = phas_x + phas_y
+    func = ampl * np.exp(1j * knum * phas)
 
     obj = plot2d()
-    obj.contourf_div(mesh, func, pngname=obj.tempname)
+    obj.contourf_div(mesh, np.abs(func), pngname=obj.tempname)
