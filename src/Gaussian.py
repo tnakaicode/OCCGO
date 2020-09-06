@@ -143,13 +143,14 @@ class GaussianProfile(plot2d):
         g_ampl = np.abs(self.g_func)**2
         g_ampl = g_ampl / g_ampl.max()
         g_db10 = 10 * np.log10(g_ampl)
-        level = np.linspace(-50, 0, 11)
+        db_level = np.linspace(-50, 0, 11)
+        am_level = np.linspace(0, 1, 11)
 
         name = self.tempname
         self.contourf_div(self.mesh, ampl, sxy,
                           pngname=name + "_ampl.png")
         self.contourf_div(self.mesh, db10, sxy,
-                          pngname=name + "_10db.png", level=level)
+                          pngname=name + "_10db.png", level=db_level)
         self.contourf_div(self.mesh, phas, sxy,
                           pngname=name + "_phas.png")
         self.contourf_div(self.mesh, ampl_norm, sxy,
@@ -157,13 +158,13 @@ class GaussianProfile(plot2d):
         self.contourf_div(self.mesh, phas_norm, sxy,
                           pngname=name + "_phas_n.png")
         self.contourf_comp(self.mesh, ampl_norm, g_ampl, sxy,
-                           pngname=name + "_ampl_compare.png")
+                           pngname=name + "_ampl_compare.png", level=am_level)
         self.contourf_comp(self.mesh, db10, g_db10, sxy,
-                           pngname=name + "_10db_compare.png", level=level)
+                           pngname=name + "_10db_compare.png", level=db_level)
         self.contourf_div(self.mesh, g_ampl, sxy,
-                          pngname=name + "_ampl_g.png")
+                          pngname=name + "_ampl_g.png", level=am_level)
         self.contourf_div(self.mesh, g_db10, sxy,
-                          pngname=name + "_10db_g.png", level=level)
+                          pngname=name + "_10db_g.png", level=db_level)
 
 
 if __name__ == '__main__':

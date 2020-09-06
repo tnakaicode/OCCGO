@@ -26,7 +26,7 @@ def gen_noise(px=[0, 0], ratio=100):
     py = np.random.random(px.shape)
     py = py * 2 - 1
     py = py * (1 - p_x)**2 * ratio
-    return px + py * px.max()
+    return py * px.max()
 
 
 def copy_file(str1, str2):
@@ -48,7 +48,9 @@ if __name__ == '__main__':
     cfg_txt = opt.file
     ratio = opt.rati
     obj = GaussianProfile(cfg_txt)
-    obj.ampl = gen_noise(obj.ampl, ratio)
+    obj.ampl = obj.ampl + gen_noise(obj.ampl, ratio)
+    #obj.phas = obj.phas + gen_noise(obj.ampl, 1.0E-01)
+    #obj.func = obj.func + gen_noise(obj.func, ratio)
     obj.func = obj.ampl * np.exp(1j * obj.phas)
     obj.g_func = obj.create_gauss()
 
@@ -60,5 +62,5 @@ if __name__ == '__main__':
     fp = open(obj.tmpdir + "noise.txt", "w")
     fp.write("{:.5E}\n".format(ratio))
     fp.close()
-    copy_file(obj.cfg_txt, obj.tempname + ".txt")
+    shutil.copyfile(obj.cfg_txt, obj.tempname + ".txt")
     copy_file("./img/NOTE.md", obj.tmpdir + "NOTE.md")
