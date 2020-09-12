@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import sys
 import os
 import time
+import shutil
 from linecache import getline, clearcache
 from optparse import OptionParser
 from numpy.core.defchararray import array
@@ -20,6 +21,22 @@ from src.profile import get_centroid, get_wxy
 
 import logging
 logging.getLogger('matplotlib').setLevel(logging.ERROR)
+
+
+def gen_noise(px=[0, 0], ratio=100):
+    print(px.shape)
+    p_x = px / px.max()
+    py = np.random.random(px.shape)
+    py = py * 2 - 1
+    py = py * (1 - p_x)**2 * ratio
+    return py * px.max()
+
+
+def copy_file(str1, str2):
+    if os.path.exists(str2):
+        pass
+    else:
+        shutil.copyfile(str1, str2)
 
 
 class GaussianProfile(plot2d):
