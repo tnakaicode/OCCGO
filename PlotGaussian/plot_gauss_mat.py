@@ -13,7 +13,7 @@ from sympy import im
 sys.path.append(os.path.join("../"))
 from src.base import plot2d, plot3d
 from src.Unit import knum_from_freq, knum_from_wave
-from src.profile import moment
+from src.profile import moment, gcf_calc
 from src.profile import gaussian_func, rot_mesh, get_cov, get_centroid
 from src.geomtory import curvature
 from src.Gaussian import GaussianProfile, gen_noise, copy_file
@@ -23,6 +23,8 @@ logging.getLogger('matplotlib').setLevel(logging.ERROR)
 
 
 def moment_ensable(mesh, func, g_func):
+    #func = func / func.max()
+    #g_func = g_func / g_func.max()
     fg_func = func * g_func
     sx = moment(mesh, fg_func, [1, 0])
     sy = moment(mesh, fg_func, [0, 1])
@@ -56,9 +58,11 @@ if __name__ == '__main__':
     wx, wy = np.sqrt(cov[0, 0]), np.sqrt(cov[1, 1])
     rot = np.rad2deg(np.arctan(cov[0, 1] / wx / wy))
     print(sxy, wx, wy, rot)
-    for i in range(20):
+    for i in range(100):
         g_ampl = multivariate_normal.pdf(mesh_xy, mean=sxy, cov=cov)
+        g_ampl = g_ampl / g_ampl.max()
         sxy, cov = moment_ensable(obj.mesh, ampl, g_ampl)
-        wx, wy = np.sqrt(cov[0, 0]*2), np.sqrt(cov[1, 1]*2)
+        wx, wy = np.sqrt(cov[0, 0] * 2), np.sqrt(cov[1, 1] * 2)
         rot = np.rad2deg(np.arctan(cov[0, 1] / wx / wy))
-        print(sxy, wx, wy, rot)
+        gcf = gcf_calc(obj.mesh, ampl, g_ampl)
+        print(sxy, wx, wy, rot, gcf)
