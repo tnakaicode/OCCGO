@@ -30,10 +30,9 @@ def moment_ensable(mesh, func, g_func):
     #fg_func = func * g_func
     sx = moment(mesh, fg_func, [1, 0])
     sy = moment(mesh, fg_func, [0, 1])
-    g_mesh = [mesh[0] - sx, mesh[1] - sy]
-    wx = moment(g_mesh, fg_func, [2, 0]) * 2
-    rt = moment(g_mesh, fg_func, [1, 1]) * 2
-    wy = moment(g_mesh, fg_func, [0, 2]) * 2
+    wx = moment(mesh, fg_func, [2, 0]) * 2
+    rt = moment(mesh, fg_func, [1, 1]) * 2
+    wy = moment(mesh, fg_func, [0, 2]) * 2
     sxy = np.array([sx, sy])
     cov = np.array([
         [wx, rt],
@@ -54,34 +53,22 @@ if __name__ == '__main__':
     cfg_txt = opt.file
     ratio = opt.rati
     obj = GaussianProfile(cfg_txt)
+
+    ampl = obj.ampl
     mesh_xy = np.stack(obj.mesh, -1)
-    sxy = np.array([5, 5])
-    cov = np.array([
-        [10, 10.1],
-        [10.1, 20]
-    ])
-    #obj.ampl = multivariate_normal.pdf(mesh_xy, mean=sxy, cov=cov)
-    #obj.func = obj.ampl * np.exp(1j * obj.phas)
-    #obj.g_func = obj.create_gauss()
-
-    obj.tempname = obj.tmpdir + "gaussian"
-    obj.profile_out()
-
-    sxy, cov = moment_ensable(obj.mesh, obj.ampl, obj.ampl)
-    print(sxy)
-    print(cov)
-    sxy = get_centroid(obj.mesh, obj.ampl)
-    cov = get_cov(obj.mesh, obj.ampl, sxy)
-    print(sxy)
-    print(cov)
+    sxy, cov = moment_ensable(obj.mesh, ampl, ampl)
+    g_ampl = multivariate_normal.pdf(mesh_xy, mean=sxy, cov=cov)
+    wx, wy = np.sqrt(cov[0, 0]), np.sqrt(cov[1, 1])
+    rot = np.rad2deg(np.arccos(cov[0, 1] / wx / wy))
+    gcf = gcf_calc(obj.mesh, ampl, g_ampl)
+    print(sxy, wx, wy, rot, gcf)
     for i in range(10):
         g_ampl = multivariate_normal.pdf(mesh_xy, mean=sxy, cov=cov)
-        sxy, cov = moment_ensable(obj.mesh, obj.ampl, g_ampl)
+        sxy, cov = moment_ensable(obj.mesh, ampl, g_ampl)
         wx, wy = np.sqrt(cov[0, 0]), np.sqrt(cov[1, 1])
         rot = np.rad2deg(np.arccos(cov[0, 1] / wx / wy))
-        gcf = gcf_calc(obj.mesh, obj.ampl, g_ampl)
+        gcf = gcf_calc(obj.mesh, ampl, g_ampl)
         print(sxy, wx, wy, rot, gcf)
-        print(cov)
         wxy, mat = np.linalg.eig(cov)
         rot = np.rad2deg(np.arctan2(mat[0, 1], mat[1, 1]))
-        #g_mesh = [g_mesh[0] - sxy[0], g_mesh[1] - sxy[1]]
+        print(np.sqrt(wxy), rot)
