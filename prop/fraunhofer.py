@@ -12,6 +12,16 @@ __copyright = "ESRF, 2016"
 
 
 import numpy as np
+import matplotlib.pyplot as plt
+import sys
+import os
+import time
+import math
+from timeit import default_timer as timer
+
+sys.path.append(os.path.join("../"))
+from src.base import plot2d, plot3d
+
 
 #
 # wavefront definitions
@@ -67,16 +77,11 @@ def wavefront_aperture(p_x, p_y, amplitude, diameter=40e-6, type=0):
 
     return p_x, p_y, amplitude * filter
 
-#
-# tools
-#
-
 
 def propagator2d(x, y, z, method="fraunhofer", wavelength=1e-10, propagation_distance=1.0, return_angles=0):
     #
     # interface to different propagators
     #
-    from timeit import default_timer as timer
 
     t_start = timer()
     if method == "fraunhofer":
@@ -343,41 +348,21 @@ def line_fwhm(line):
     else:
         return -1
 
-#
-# plotting tools
-#
 
-
-def plot_show():
-
-    import matplotlib.pylab as plt
-
-    plt.show()
-
-
-def plot_image(mymode, theta, psi, title="TITLE", xtitle=r"X [$\mu m$]", ytitle=r"Y [$\mu m$]", cmap=None, show=1):
-
-    import matplotlib.pylab as plt
-
+def plot_image(mymode, theta, psi, title="TITLE", xtitle=r"X [$\mu m$]", ytitle=r"Y [$\mu m$]", name="name.png"):
     fig = plt.figure()
-
-    # cmap = plt.cm.Greys
     plt.imshow(mymode.T, origin='lower', extent=[
-               theta[0], theta[-1], psi[0], psi[-1]], cmap=cmap)
+               theta[0], theta[-1], psi[0], psi[-1]], cmap="jet")
     plt.colorbar()
     ax = fig.gca()
     ax.set_xlabel(xtitle)
     ax.set_ylabel(ytitle)
 
     plt.title(title)
-
-    if show:
-        plt.show()
+    plt.savefig(name)
 
 
-def plot(*positional_parameters, title="", xtitle="", ytitle="", show=1, legend=None, color=None):
-
-    import matplotlib.pylab as plt
+def plot(*positional_parameters, title="", xtitle="", ytitle="", name="name.png", legend=None, color=None):
 
     n_arguments = len(positional_parameters)
     if n_arguments == 0:
@@ -425,19 +410,18 @@ def plot(*positional_parameters, title="", xtitle="", ytitle="", show=1, legend=
     plt.title(title)
     plt.xlabel(xtitle)
     plt.ylabel(ytitle)
-
-    if show:
-        plt.show()
+    plt.savefig(name)
 
 
-def main():
+if __name__ == "__main__":
     #
     # inputs (in SI)
     #
 
     wavelength = 1.24e-10
 
-    aperture_diameter = 40e-6  # if Gaussian, aperture_diameter = 2.35*sigma
+    aperture_diameter = 40e-6
+    # if Gaussian, aperture_diameter = 2.35*sigma
     # 0=circular, 1=Square, 2=Gaussian (sigma = diameter/2.35)
     aperture_type = 2
 
@@ -464,8 +448,8 @@ def main():
     p_x, p_y, amplitude = wavefront_aperture(
         p_x, p_y, amplitude, diameter=aperture_diameter, type=aperture_type)
     # plot aperture
-    plot_image(np.abs(amplitude)**2, p_x * 1e6, p_y * 1e6, show=0,
-               title="aperture intensity, Diameter=%5.1f um" % (1e6 * aperture_diameter), xtitle="X [um]", ytitle="Y [um]")
+    plot_image(np.abs(amplitude)**2, p_x * 1e6, p_y * 1e6,
+               title="aperture intensity, Diameter=%5.1f um" % (1e6 * aperture_diameter), xtitle="X [um]", ytitle="Y [um]", name="fraunhofer_aper.png")
 
     #
     # propagation
@@ -478,8 +462,8 @@ def main():
         print("Fraunhoffer diffraction valid for distances > > a^2/lambda = %f m" %
               ((aperture_diameter / 2)**2 / wavelength))
 
-    plot_image(np.abs(amplitude_propagated)**2, angle_x * 1e6, angle_y * 1e6, show=0,
-               title="Diffracted intensity (%s)" % method, xtitle="X [urad]", ytitle="Y [urad]")
+    plot_image(np.abs(amplitude_propagated)**2, angle_x * 1e6, angle_y * 1e6,
+               title="Diffracted intensity (%s)" % method, xtitle="X [urad]", ytitle="Y [urad]", name="fraunhofer_prop.png")
 
     #
     # extract profiles and calculate theoretical ones
@@ -543,13 +527,9 @@ def main():
                                                                                  4 * np.pi / wavelength * fwhm_theoretical_profile_horizontal / 2.35 * aperture_diameter / 2.35))
 
     # plot profiles
-    plot(angle_x * 1e6, horizontal_intensity_profile, angle_x * 1e6, I_vs_theta_x, show=0,
+    plot(angle_x * 1e6, horizontal_intensity_profile, angle_x * 1e6, I_vs_theta_x,
          legend=["profile", "theory"], color=["red", "black"],
-         title="Horizontal profile of diffracted intensity (%s)" % method, xtitle='theta [urad]', ytitle='Diffracted intensity [a.u.]')
-    plot(angle_y * 1e6, vertical_intensity_profile, angle_y * 1e6, I_vs_theta_y, show=1,
+         title="Horizontal profile of diffracted intensity (%s)" % method, xtitle='theta [urad]', ytitle='Diffracted intensity [a.u.]', name="./fraunhofer_prof1.png")
+    plot(angle_y * 1e6, vertical_intensity_profile, angle_y * 1e6, I_vs_theta_y,
          legend=["profile", "theory"], color=["red", "black"],
-         title="Vertical profile of diffracted intensity (%s)" % method, xtitle='theta [urad]', ytitle='Diffracted intensity [a.u.]')
-
-
-if __name__ == "__main__":
-    main()
+         title="Vertical profile of diffracted intensity (%s)" % method, xtitle='theta [urad]', ytitle='Diffracted intensity [a.u.]', name="./fraunhofer_prof2.png")

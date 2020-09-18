@@ -12,20 +12,27 @@ __author__ = "Manuel Sanchez del Rio"
 __contact__ = "srio@esrf.eu"
 __copyright = "ESRF, 2012"
 
-import numpy
+import numpy as np
+import matplotlib.pyplot as plt
+import sys
+import os
+import time
 import math
+
+sys.path.append(os.path.join("../"))
+from src.base import plot2d, plot3d
 
 
 def goFromTo(source, image, distance=1.0, lensF=None, wavelength=1e-10):
-    distance = numpy.array(distance)
-    x1 = numpy.outer(source, numpy.ones(image.size))
-    x2 = numpy.outer(numpy.ones(source.size), image)
-    r = numpy.sqrt(numpy.power(x1 - x2, 2) + numpy.power(distance, 2))
+    distance = np.array(distance)
+    x1 = np.outer(source, np.ones(image.size))
+    x2 = np.outer(np.ones(source.size), image)
+    r = np.sqrt(np.power(x1 - x2, 2) + np.power(distance, 2))
     # add lens at the image plane
     if lensF != None:
-        r = r - numpy.power(x1 - x2, 2) / lensF
-    wavenumber = numpy.pi * 2 / wavelength
-    return numpy.exp(1.j * wavenumber * r)
+        r = r - np.power(x1 - x2, 2) / lensF
+    wavenumber = np.pi * 2 / wavelength
+    return np.exp(1.j * wavenumber * r)
 
 
 if __name__ == '__main__':
@@ -50,31 +57,30 @@ if __name__ == '__main__':
     #detector_size = 4e-3
 
     wavelength = 1.24e-10  # 10keV
-    aperture_diameter = 40e-6  # 1e-3 # 1e-6
+    aperture_diameter = 1e-6 # 40e-6  # 1e-3 # 1e-6
     detector_size = 800e-6
-    distance = 3.6
+    distance = 4.0
 
-    sourcepoints = 1000
-    detpoints = 1000
+    sourcepoints = 2000
+    detpoints = 2000
     lensF = None
 
     sourcesize = aperture_diameter
 
-    position1x = numpy.linspace(-sourcesize / 2, sourcesize / 2, sourcepoints)
-    position2x = numpy.linspace(-detector_size / 2,
-                                detector_size / 2, detpoints)
+    position1x = np.linspace(-sourcesize / 2, sourcesize / 2, sourcepoints)
+    position2x = np.linspace(-detector_size / 2, detector_size / 2, detpoints)
 
     fields12 = goFromTo(position1x, position2x, distance,
                         lensF=lensF, wavelength=wavelength)
     print("Shape of fields12: ", fields12.shape)
 
     # prepare results
-    fieldComplexAmplitude = numpy.dot(numpy.ones(sourcepoints), fields12)
+    fieldComplexAmplitude = np.dot(np.ones(sourcepoints), fields12)
     print("Shape of Complex U: ", fieldComplexAmplitude.shape)
     print("Shape of position1x: ", position1x.shape)
-    fieldIntensity = numpy.power(numpy.abs(fieldComplexAmplitude), 2)
-    fieldPhase = numpy.arctan2(numpy.real(fieldComplexAmplitude),
-                               numpy.imag(fieldComplexAmplitude))
+    fieldIntensity = np.power(np.abs(fieldComplexAmplitude), 2)
+    fieldPhase = np.arctan2(np.real(fieldComplexAmplitude),
+                            np.imag(fieldComplexAmplitude))
 
     #
     # write spec formatted file
@@ -86,20 +92,15 @@ if __name__ == '__main__':
     f.write(header)
 
     for i in range(detpoints):
-        out = numpy.array((position2x[i], fieldIntensity[i], fieldPhase[i]))
+        out = np.array((position2x[i], fieldIntensity[i], fieldPhase[i]))
         f.write(("%20.11e " * out.size + "\n") % tuple(out.tolist()))
 
     f.close()
     print("File written to disk: %s" % out_file)
 
-    #
-    # plots
-    #
-    from matplotlib import pylab as plt
-
-    plt.figure(1)
-    plt.plot(position2x * 1e6, fieldIntensity)
-    plt.title("Fresnel-Kirchhoff Diffraction")
-    plt.xlabel("X [um]")
-    plt.ylabel("Intensity [a.u.]")
-    plt.show()
+    obj = plot2d("auto")
+    obj.axs.plot(position2x * 1e6, fieldIntensity)
+    obj.axs.set_title("Fresnel-Kirchhoff Diffraction")
+    obj.axs.set_xlabel("X [um]")
+    obj.axs.set_ylabel("Intensity [a.u.]")
+    obj.SavePng()
