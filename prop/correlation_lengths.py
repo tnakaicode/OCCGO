@@ -6,8 +6,8 @@ correlation_lengths.py: calculates
 
 """
 
-import numpy
-
+import numpy as np
+import matplotlib.pyplot as plt
 
 __author__ = "Manuel Sanchez del Rio"
 __contact__ = "srio@esrf.eu"
@@ -16,58 +16,56 @@ __copyright = "ESRF, 2016"
 
 def std0(x):
     mu = 0.0  # x.mean()
-    return numpy.sqrt(numpy.mean(abs(x - mu)**2))
+    return np.sqrt(np.mean(abs(x - mu)**2))
 
 
 def coherence_length_longitudinal(lambda1, lambda2, lambda0=None):
-    delta_lambda = numpy.abs(lambda1 - lambda2)
+    delta_lambda = np.abs(lambda1 - lambda2)
     if lambda0 == None:
-        lambda0 = 0.5 * numpy.abs(lambda1 + lambda2)
+        lambda0 = 0.5 * np.abs(lambda1 + lambda2)
     return lambda0**2 / (2 * delta_lambda)
 
 
 def coherence_length_transverse(lambda0, distance, separation_at_source):
-    return lambda0 * distance / (2 * numpy.abs(separation_at_source))
+    return lambda0 * distance / (2 * np.abs(separation_at_source))
 
 
 def coherence_length_histogram(lambda0, distance, sigma, mu=0.0, npoints=1000, do_plot=True):
     # source
-    s1 = numpy.random.normal(mu, sigma, npoints)
-    s2 = numpy.random.normal(mu, sigma, npoints)
+    s1 = np.random.normal(mu, sigma, npoints)
+    s2 = np.random.normal(mu, sigma, npoints)
 
-    # s1 = (numpy.random.random(npoints) - 0.5 ) * sigma * 2.35
-    # s2 = (numpy.random.random(npoints) - 0.5 ) * sigma * 2.35
+    # s1 = (np.random.random(npoints) - 0.5 ) * sigma * 2.35
+    # s2 = (np.random.random(npoints) - 0.5 ) * sigma * 2.35
     # separation_at_source
-    x1 = numpy.outer(s1, numpy.ones(s2.size))
-    x2 = numpy.outer(numpy.ones(s1.size), s2)
-    dd = numpy.abs(x1 - x2).flatten()
-    separation_at_source = numpy.unique(dd)[1:-1]
+    x1 = np.outer(s1, np.ones(s2.size))
+    x2 = np.outer(np.ones(s1.size), s2)
+    dd = np.abs(x1 - x2).flatten()
+    separation_at_source = np.unique(dd)[1:-1]
 
     cl = coherence_length_transverse(lambda0, distance, separation_at_source)
 
-    if do_plot:
-        import matplotlib.pyplot as plt
-
-        count, bins, ignored = plt.hist(s1, 100)
-        plt.plot(bins, 1 / (sigma * numpy.sqrt(2 * numpy.pi)) * numpy.exp(- (bins - mu)**2 / (2 * sigma**2)),
-                 linewidth=2, color='r')
-        plt.show()
-
-        # https://arxiv.org/pdf/1508.02238v1.pdf
-        count, bins, ignored = plt.hist(
-            1e6 * separation_at_source, 100)
-        sigma_estimated = sigma * numpy.sqrt(2)
-        print("StDev of source separation = %f um; estimating = %f um" %
-              (1e6 * std0(separation_at_source), 1e6 * sigma_estimated))
-        plt.plot(bins, 2 / (1e6 * sigma_estimated * numpy.sqrt(2 * numpy.pi)) * numpy.exp(- (bins - 0.0)**2 / (2 * (1e6 * sigma_estimated)**2)),
-                 linewidth=2, color='r')
-        plt.show()
-
-        #
-        count, bins, ignored = plt.hist(1e6 * cl, 500, range=[
-                                        0, 10 * 1e6 * coherence_length_transverse(lambda0, distance, 2.35 * sigma)])
-        plt.show()
-
+    plt.figure()
+    count, bins, ignored = plt.hist(s1, 100)
+    plt.plot(bins, 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(- (bins - mu)**2 / (2 * sigma**2)),
+             linewidth=2, color='r')
+    plt.savefig("correlation_lengths_gauss.png")
+    
+    # https://arxiv.org/pdf/1508.02238v1.pdf
+    plt.figure()
+    count, bins, ignored = plt.hist(
+        1e6 * separation_at_source, 100)
+    sigma_estimated = sigma * np.sqrt(2)
+    print("StDev of source separation = %f um; estimating = %f um" %
+          (1e6 * std0(separation_at_source), 1e6 * sigma_estimated))
+    plt.plot(bins, 2 / (1e6 * sigma_estimated * np.sqrt(2 * np.pi)) * np.exp(- (bins - 0.0)**2 / (2 * (1e6 * sigma_estimated)**2)),
+             linewidth=2, color='r')
+    plt.savefig("correlation_lengths.png")
+    
+    plt.figure()
+    count, bins, ignored = plt.hist(1e6 * cl, 500, range=[
+                                    0, 10 * 1e6 * coherence_length_transverse(lambda0, distance, 2.35 * sigma)])
+    plt.savefig("correlation_lengths_hist.png")
     return bins[count.argmax()] * 1e-6
 
 
