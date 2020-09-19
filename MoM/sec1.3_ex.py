@@ -25,6 +25,12 @@ g_m  = <w_m, g>    = m(3m + 8) / {2(m + 2)(m + 4)}
 
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+import time
+import os
+
+sys.path.append(os.path.join('../'))
+from src.base import plot2d
 
 
 def gen_coef(dim=1):
@@ -74,15 +80,15 @@ if __name__ == '__main__':
 
     f_ex = - px**4 / 3 - px**2 / 2 + 5 * px / 6
 
-    plt.figure()
-    plt.plot(px, f_ex)
-    #plt.plot(px, f1)
-    #plt.plot(px, f2)
-    plt.plot(px, f3)
-    plt.plot(px, f4)
-    plt.plot(px, f5)
-    plt.plot(px, f6)
+    obj = plot2d("auto")
+    obj.axs.plot(px, f_ex)
+    #obj.axs.plot(px, f1)
+    #obj.axs.plot(px, f2)
+    obj.axs.plot(px, f3)
+    obj.axs.plot(px, f4)
+    obj.axs.plot(px, f5)
+    obj.axs.plot(px, f6)
 
-    #plt.plot(px, gen_fmn(px, 4))
-    #plt.plot(px, gen_fmn(px, 5))
-    plt.show()
+    obj.axs.plot(px, gen_fmn(px, 4))
+    obj.axs.plot(px, gen_fmn(px, 5))
+    obj.SavePng()

@@ -6,8 +6,8 @@ import sys
 import time
 import os
 import scipy.constants as cnt
-sys.path.append(os.path.join('../'))
 
+sys.path.append(os.path.join('../'))
 from src.plot import plot_contour_sub
 from src.profile import mask_eclip
 
@@ -86,5 +86,5 @@ if __name__ == '__main__':
 
     plot_contour_sub(mesh, prob.b_x(*mesh)[0], dirname="bx_0")
     plot_contour_sub(mesh, prob.b_x(*mesh)[1], dirname="bx_1")
-    plot_contour_sub(mesh, prob.f_x(*mesh), dirname="func")
-    plot_contour_sub(mesh, prob.g_x(*mesh), dirname="g_func")
+    plot_contour_sub(mesh, prob.f_x(*mesh), dirname="fx")
+    plot_contour_sub(mesh, prob.g_x(*mesh), dirname="gx")
