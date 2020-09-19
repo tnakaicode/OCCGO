@@ -32,7 +32,7 @@ if __name__ == '__main__':
     wavelength = 1.24e-10  # 10keV
     aperture_diameter = 40e-6  # 1e-3 # 1e-6
     detector_size = 800e-6
-    distance = 3.6
+    distance = 3.0
 
     npoints = 1000
 
@@ -99,4 +99,4 @@ if __name__ == '__main__':
     obj.axs.set_title("Fresnel Diffraction")
     obj.axs.set_xlabel("X [um]")
     obj.axs.set_ylabel("Intensity [a.u.]")
-    obj.SavePng()
+    obj.SavePng(obj.rootname + ".png")

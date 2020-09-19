@@ -59,11 +59,11 @@ def plot_image(*positional_parameters, title="TITLE", xtitle=r"X", ytitle=r"Y",
 # inputs
 #
 size_x = 1.0
-size_y = .50
+size_y = 1.0
 n_x = 620
 n_y = 320
 w = size_x / 8.
-m = 3
+m = 1
 n = 1
 
 X = np.linspace(-size_x / 2, size_x / 2, n_x)

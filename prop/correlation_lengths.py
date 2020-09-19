@@ -50,7 +50,7 @@ def coherence_length_histogram(lambda0, distance, sigma, mu=0.0, npoints=1000, d
     plt.plot(bins, 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(- (bins - mu)**2 / (2 * sigma**2)),
              linewidth=2, color='r')
     plt.savefig("correlation_lengths_gauss.png")
-    
+
     # https://arxiv.org/pdf/1508.02238v1.pdf
     plt.figure()
     count, bins, ignored = plt.hist(
@@ -61,7 +61,7 @@ def coherence_length_histogram(lambda0, distance, sigma, mu=0.0, npoints=1000, d
     plt.plot(bins, 2 / (1e6 * sigma_estimated * np.sqrt(2 * np.pi)) * np.exp(- (bins - 0.0)**2 / (2 * (1e6 * sigma_estimated)**2)),
              linewidth=2, color='r')
     plt.savefig("correlation_lengths.png")
-    
+
     plt.figure()
     count, bins, ignored = plt.hist(1e6 * cl, 500, range=[
                                     0, 10 * 1e6 * coherence_length_transverse(lambda0, distance, 2.35 * sigma)])
@@ -94,9 +94,13 @@ if __name__ == "__main__":
     print("Correlation length H EBS (transversal): %f um" % (
         1e6 * coherence_length_transverse(lambda0, distance, 2.35 * sigma_ebs)))
 
-    # print("HISTOGRAM Correlation length (longitudinal): %f um"%(1e6*coherence_length_longitudinal(lambda1,lambda2)))
-    # print("HISTOGRAM Correlation length V     (transversal): %f um"%(1e6*coherence_length_histogram(lambda0,distance,sigma_v)))
-    # print("HISTOGRAM Correlation length H Hb  (transversal): %f um"%(1e6*coherence_length_histogram(lambda0,distance,sigma_hb)))
-    # print("HISTOGRAM Correlation length H Lb  (transversal): %f um"%(1e6*coherence_length_histogram(lambda0,distance,sigma_lb)))
+    print("HISTOGRAM Correlation length (longitudinal): %f um" %
+          (1e6 * coherence_length_longitudinal(lambda1, lambda2)))
+    print("HISTOGRAM Correlation length V     (transversal): %f um" %
+          (1e6 * coherence_length_histogram(lambda0, distance, sigma_v)))
+    print("HISTOGRAM Correlation length H Hb  (transversal): %f um" %
+          (1e6 * coherence_length_histogram(lambda0, distance, sigma_hb)))
+    print("HISTOGRAM Correlation length H Lb  (transversal): %f um" %
+          (1e6 * coherence_length_histogram(lambda0, distance, sigma_lb)))
     print("HISTOGRAM Correlation length H EBS (transversal): %f um" %
           (1e6 * coherence_length_histogram(lambda0, distance, sigma_ebs)))
