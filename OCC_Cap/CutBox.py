@@ -32,7 +32,7 @@ if __name__ == "__main__":
     bo.AddArgument(fc3)
 
     bo.Perform()
-    print("error status: {}".format(bo.ErrorStatus()))
+    #print("error status: {}".format(bo.ErrorStatus()))
 
     colos = ["BLUE", "RED", "GREEN", "YELLOW", "BLACK", "WHITE", "BLUE", "RED"]
 

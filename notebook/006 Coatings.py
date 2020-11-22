@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
 
 import logging
 logging.getLogger('trimesh').disabled = True
@@ -11,7 +9,6 @@ logging.getLogger('matplotlib').setLevel(logging.CRITICAL)
 import functools
 import numpy as np
 import matplotlib.pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
 from pvtrace import *
 
 
