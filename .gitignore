@@ -14,8 +14,3 @@ temp_*/*
 
 # cpp
 a.exe
-
-cfg/model_*.json
-input/*.cor
-input/*.sfc
-input/*.rim
