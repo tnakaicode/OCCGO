@@ -30,9 +30,9 @@ def get_airfol_data(filename="./dae51.dat"):
     n1 = int(float(dat[1].split()[1]))
 
     ns0 = 3
-    ne0 = ns0+n0
-    ns1 = 3+n0+1
-    ne1 = ns1+n1
+    ne0 = ns0 + n0
+    ns1 = 3 + n0 + 1
+    ne1 = ns1 + n1
     upp = []
     bot = []
     for line in dat[ns0:ne0]:
@@ -50,7 +50,7 @@ def gen_data_spline(dat):
     pts = TColgp_Array1OfPnt(1, num)
     for i, xyz in enumerate(dat):
         pnt = gp_Pnt(*xyz)
-        pts.SetValue(i+1, pnt)
+        pts.SetValue(i + 1, pnt)
     geo_spl = GeomAPI_PointsToBSpline(pts, 4)
     return geo_spl.Curve()
 
@@ -72,22 +72,22 @@ class Airfoil (object):
         pts = TColgp_Array1OfPnt(1, num)
         for i, xyz in enumerate(dat):
             pnt = gp_Pnt(*xyz)
-            pts.SetValue(i+1, pnt)
+            pts.SetValue(i + 1, pnt)
         geo_spl = GeomAPI_PointsToBSpline(pts)
         return geo_spl
-    
+
     def get_airfoil_2d(self, name="dae51", ratio=1.0):
         filename = self.url + name + ".dat"
         self.upp, self.bot = get_airfol_data(filename)
         self.upp_spl = self.gen_data_spline_2d(self.upp, ratio)
         self.bot_spl = self.gen_data_spline_2d(self.bot, ratio)
-    
+
     def gen_data_spline_2d(self, dat, ratio=1.0):
         num = dat.shape[0]
         pts = TColgp_Array1OfPnt2d(1, num)
         for i, xyz in enumerate(dat):
             pnt = gp_Pnt2d(xyz[0], xyz[1])
-            pts.SetValue(i+1, pnt)
+            pts.SetValue(i + 1, pnt)
         geo_spl = Geom2dAPI_PointsToBSpline(pts)
         return geo_spl
 
@@ -104,7 +104,7 @@ class Airfoil (object):
         self.display.DisplayShape(self.bot_spl.Curve())
 
         self.display.FitAll()
-        #self.start_display()
+        # self.start_display()
 
 
 if __name__ == "__main__":
