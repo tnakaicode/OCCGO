@@ -77,9 +77,7 @@ if __name__ == "__main__":
     obj_plt.axs.plot(pz, np.tan(t0) * pz)
     obj_plt.Show()
 
-    #obj = plotocc()
-
-    display, start_display, add_menu, add_function_to_menu = init_display()
+    obj = plotocc()
 
     api = BRepOffsetAPI_ThruSections()
     for z in np.linspace(0, 1000, 10):
@@ -99,12 +97,12 @@ if __name__ == "__main__":
             BRepBuilderAPI_MakeEdge(wxy).Edge()).Wire()
         print(wxy, pln)
         api.AddWire(wxy)
-        display.DisplayShape(pnt)
-        display.DisplayShape(pln)
-        display.DisplayShape(wxy)
+        obj.display.DisplayShape(pnt)
+        obj.display.DisplayShape(pln)
+        obj.display.DisplayShape(wxy)
     api.Build()
     surf_wxy = api.Shape()
-    display.DisplayShape(surf_wxy)
+    obj.display.DisplayShape(surf_wxy)
 
     pnt = gp_Pnt(0, 0, 500)
     axs = gp_Ax3(pnt, gp_Dir(0, 0, 1))
@@ -117,7 +115,7 @@ if __name__ == "__main__":
     surf = mesh[0]**2 / 1000 + mesh[1]**2 / 1000
     #pln = make_plane (axs.Location(), dir_to_vec(axs.Direction()))
     pln = surf_spl(*mesh, surf, axs)
-    display.DisplayShape(pln)
+    obj.display.DisplayShape(pln)
 
     #print (TopoDS_Face(pln))
     print(surf_wxy, pln)
@@ -135,8 +133,6 @@ if __name__ == "__main__":
         r_z = z + 1 / z * (np.pi * w0 / wave)**2
         w_z = w0 * np.sqrt(1 + (wave * z / (np.pi * w0**2))**2)
         print(x, y, z, r_z, w_z)
-        display.DisplayShape(curv_p)
-    display.DisplayShape(curv)
-
-    display.FitAll()
-    start_display()
+        obj.display.DisplayShape(curv_p)
+    obj.display.DisplayShape(curv)
+    obj.show()

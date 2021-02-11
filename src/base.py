@@ -10,6 +10,7 @@ import glob
 import shutil
 import datetime
 import platform
+import subprocess
 from scipy.spatial import ConvexHull, Delaunay
 from optparse import OptionParser
 from matplotlib import animation
@@ -159,6 +160,12 @@ class SetDir (object):
             tmpdir = "{}/{}/".format(self.tmpdir, name)
             print("already exist {}".format(tmpdir))
         return tmpdir
+
+    def open_tempdir(self):
+        path = os.path.abspath(self.tmpdir)
+        subprocess.Popen(
+            "explorer.exe {}".format(path)
+        )
 
     def exit_app(self):
         sys.exit()
@@ -787,134 +794,83 @@ def init_qtdisplay(backend_str=None,
         return offscreen_renderer, do_nothing, do_nothing, call_function
     used_backend = load_backend(backend_str)
     log.info("GUI backend set to: %s", used_backend)
-    # wxPython based simple GUI
-    if used_backend == 'wx':
-        import wx
-        from OCC.Display.wxDisplay import wxViewer3d
-
-        class AppFrame(wx.Frame):
-
-            def __init__(self, parent):
-                wx.Frame.__init__(self, parent, -1, "pythonOCC-%s 3d viewer ('wx' backend)" % VERSION,
-                                  style=wx.DEFAULT_FRAME_STYLE, size=size)
-                self.canva = wxViewer3d(self)
-                self.menuBar = wx.MenuBar()
-                self._menus = {}
-                self._menu_methods = {}
-
-            def add_menu(self, menu_name):
-                _menu = wx.Menu()
-                self.menuBar.Append(_menu, "&" + menu_name)
-                self.SetMenuBar(self.menuBar)
-                self._menus[menu_name] = _menu
-
-            def add_function_to_menu(self, menu_name, _callable):
-                # point on curve
-                _id = wx.NewId()
-                check_callable(_callable)
-                try:
-                    self._menus[menu_name].Append(_id,
-                                                  _callable.__name__.replace('_', ' ').lower())
-                except KeyError:
-                    raise ValueError(
-                        'the menu item %s does not exist' % menu_name)
-                self.Bind(wx.EVT_MENU, _callable, id=_id)
-
-        app = wx.App(False)
-        win = AppFrame(None)
-        win.Show(True)
-        wx.SafeYield()
-        win.canva.InitDriver()
-        app.SetTopWindow(win)
-        display = win.canva._display
-
-        def add_menu(*args, **kwargs):
-            win.add_menu(*args, **kwargs)
-
-        def add_function_to_menu(*args, **kwargs):
-            win.add_function_to_menu(*args, **kwargs)
-
-        def start_display():
-            app.MainLoop()
-
     # Qt based simple GUI
-    elif 'qt' in used_backend:
-        from OCC.Display.qtDisplay import qtViewer3d
-        QtCore, QtGui, QtWidgets, QtOpenGL = get_qt_modules()
+    from OCC.Display.qtDisplay import qtViewer3d
+    QtCore, QtGui, QtWidgets, QtOpenGL = get_qt_modules()
 
-        class MainWindow(QtWidgets.QMainWindow):
+    class MainWindow(QtWidgets.QMainWindow):
 
-            def __init__(self, *args):
-                QtWidgets.QMainWindow.__init__(self, *args)
-                self.canva = qtViewer3d(self)
-                self.setWindowTitle(
-                    "pythonOCC-%s 3d viewer ('%s' backend)" % (VERSION, used_backend))
-                self.setCentralWidget(self.canva)
-                if sys.platform != 'darwin':
-                    self.menu_bar = self.menuBar()
-                else:
-                    # create a parentless menubar
-                    # see: http://stackoverflow.com/questions/11375176/qmenubar-and-qmenu-doesnt-show-in-mac-os-x?lq=1
-                    # noticeable is that the menu ( alas ) is created in the
-                    # topleft of the screen, just
-                    # next to the apple icon
-                    # still does ugly things like showing the "Python" menu in
-                    # bold
-                    self.menu_bar = QtWidgets.QMenuBar()
-                self._menus = {}
-                self._menu_methods = {}
-                # place the window in the center of the screen, at half the
-                # screen size
-                self.centerOnScreen()
+        def __init__(self, *args):
+            QtWidgets.QMainWindow.__init__(self, *args)
+            self.canva = qtViewer3d(self)
+            self.setWindowTitle(
+                "pythonOCC-%s 3d viewer ('%s' backend)" % (VERSION, used_backend))
+            self.setCentralWidget(self.canva)
+            if sys.platform != 'darwin':
+                self.menu_bar = self.menuBar()
+            else:
+                # create a parentless menubar
+                # see: http://stackoverflow.com/questions/11375176/qmenubar-and-qmenu-doesnt-show-in-mac-os-x?lq=1
+                # noticeable is that the menu ( alas ) is created in the
+                # topleft of the screen, just
+                # next to the apple icon
+                # still does ugly things like showing the "Python" menu in
+                # bold
+                self.menu_bar = QtWidgets.QMenuBar()
+            self._menus = {}
+            self._menu_methods = {}
+            # place the window in the center of the screen, at half the
+            # screen size
+            self.centerOnScreen()
 
-            def centerOnScreen(self):
-                '''Centers the window on the screen.'''
-                resolution = QtWidgets.QApplication.desktop().screenGeometry()
-                x = (resolution.width() - self.frameSize().width()) / 2
-                y = (resolution.height() - self.frameSize().height()) / 2
-                self.move(x, y)
+        def centerOnScreen(self):
+            '''Centers the window on the screen.'''
+            resolution = QtWidgets.QApplication.desktop().screenGeometry()
+            x = (resolution.width() - self.frameSize().width()) / 2
+            y = (resolution.height() - self.frameSize().height()) / 2
+            self.move(x, y)
 
-            def add_menu(self, menu_name):
-                _menu = self.menu_bar.addMenu("&" + menu_name)
-                self._menus[menu_name] = _menu
+        def add_menu(self, menu_name):
+            _menu = self.menu_bar.addMenu("&" + menu_name)
+            self._menus[menu_name] = _menu
 
-            def add_function_to_menu(self, menu_name, _callable):
-                check_callable(_callable)
-                try:
-                    _action = QtWidgets.QAction(
-                        _callable.__name__.replace('_', ' ').lower(), self)
-                    # if not, the "exit" action is now shown...
-                    _action.setMenuRole(QtWidgets.QAction.NoRole)
-                    _action.triggered.connect(_callable)
+        def add_function_to_menu(self, menu_name, _callable):
+            check_callable(_callable)
+            try:
+                _action = QtWidgets.QAction(
+                    _callable.__name__.replace('_', ' ').lower(), self)
+                # if not, the "exit" action is now shown...
+                _action.setMenuRole(QtWidgets.QAction.NoRole)
+                _action.triggered.connect(_callable)
+                self._menus[menu_name].addAction(_action)
+            except KeyError:
+                raise ValueError(
+                    'the menu item %s does not exist' % menu_name)
 
-                    self._menus[menu_name].addAction(_action)
-                except KeyError:
-                    raise ValueError(
-                        'the menu item %s does not exist' % menu_name)
+    # following couple of lines is a tweak to enable ipython --gui='qt'
+    # checks if QApplication already exists
+    app = QtWidgets.QApplication.instance()
+    if not app:  # create QApplication if it doesnt exist
+        app = QtWidgets.QApplication(sys.argv)
 
-        # following couple of lines is a tweak to enable ipython --gui='qt'
-        # checks if QApplication already exists
-        app = QtWidgets.QApplication.instance()
-        if not app:  # create QApplication if it doesnt exist
-            app = QtWidgets.QApplication(sys.argv)
-        win = MainWindow()
-        win.resize(size[0] - 1, size[1] - 1)
-        win.show()
-        win.centerOnScreen()
-        win.canva.InitDriver()
-        win.resize(size[0], size[1])
-        win.canva.qApp = app
-        display = win.canva._display
+    win = MainWindow()
+    win.resize(size[0] - 1, size[1] - 1)
+    win.show()
+    win.centerOnScreen()
+    win.canva.InitDriver()
+    win.resize(size[0], size[1])
+    win.canva.qApp = app
+    display = win.canva._display
 
-        def add_menu(*args, **kwargs):
-            win.add_menu(*args, **kwargs)
+    def add_menu(*args, **kwargs):
+        win.add_menu(*args, **kwargs)
 
-        def add_function_to_menu(*args, **kwargs):
-            win.add_function_to_menu(*args, **kwargs)
+    def add_function_to_menu(*args, **kwargs):
+        win.add_function_to_menu(*args, **kwargs)
 
-        def start_display():
-            win.raise_()  # make the application float to the top
-            app.exec_()
+    def start_display():
+        win.raise_()  # make the application float to the top
+        app.exec_()
 
     if display_triedron:
         display.display_triedron()
@@ -1195,6 +1151,7 @@ class plotocc (SetDir, OCCViewer):
             self.add_function("File", self.export_igs_selected)
             self.add_function("File", self.export_brep_selected)
             self.add_function("File", self.clear_selected)
+        self.add_function("File", self.open_tempdir)
         self.add_function("File", self.exit_win)
         self.add_function("File", self.exit_app)
 
