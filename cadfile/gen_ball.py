@@ -13,6 +13,9 @@ from linecache import getline, clearcache
 from scipy.integrate import simps
 from optparse import OptionParser
 
+sys.path.append(os.path.join("../"))
+from src.base import plotocc
+
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
 from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
@@ -32,23 +35,24 @@ if __name__ == "__main__":
     opt, argc = parser.parse_args(argvs)
     print(argc, opt)
 
-    display, start_display, add_menu, add_function_to_menu = init_display()
+    obj = plotocc()
+    obj.display.DisplayShape(gp_Pnt())
 
-    display.DisplayShape(gp_Pnt())
-
-    pnt_3d = Graphic3d_ArrayOfPoints(100)
-    for idx in range(100):
+    num = 100000
+    pnt_3d = Graphic3d_ArrayOfPoints(num)
+    for idx in range(num):
         x = random.uniform(-0.5, 0.5)
         y = random.uniform(-0.5, 0.5)
         z = random.uniform(-0.5, 0.5)
         r = np.sqrt(x**2 + y**2 + z**2)
         ratio = random.uniform(0, 100)
-        pnt_3d.AddVertex(x/r*ratio, y/r*ratio, z/r*ratio)
-    
+        pnt_3d.AddVertex(x / r * ratio, y / r * ratio, z / r * ratio)
+
     point_cloud = AIS_PointCloud()
     point_cloud.SetPoints(pnt_3d)
+    box = point_cloud.GetBoundingBox()
+    print(box)
 
-    #display.DisplayShape(point_cloud.GetBoundingBox())
-
-    display.FitAll()
-    start_display()
+    ais_context = obj.display.GetContext()
+    ais_context.Display(point_cloud, True)
+    obj.show()

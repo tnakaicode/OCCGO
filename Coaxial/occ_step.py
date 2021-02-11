@@ -35,7 +35,7 @@ class ExportCAFMethod (object):
         self.name = name
         self.step = STEPCAFControl_Writer()
         self.step.SetNameMode(True)
-        self.h_doc = TDocStd_Document()
+        self.h_doc = TDocStd_Document("")
         self.x_app = XCAFApp_Application.GetApplication().GetObject()
         self.x_app.NewDocument(
             TCollection_ExtendedString("MDTV-CAF"), self.h_doc)
