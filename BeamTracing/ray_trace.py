@@ -38,24 +38,24 @@ from OCC.Display.SimpleGui import init_display
 if __name__ == "__main__":
     argvs = sys.argv
     parser = OptionParser()
-    parser.add_option("--dir", dest="dir", default="./")
+    parser.add_option("--dir", dest="dir", default="../input/")
     opt, argc = parser.parse_args(argvs)
     print(argc, opt)
 
     init = "surf1"
     surf = ["surf2", "surf3", "surf4"]
 
-    obj = Multi_RaySystem("./", init, "surf2")
-    obj.ini.beam = get_axs("./" + obj.ini.name + "_beam.cor", obj.ini.axs)
+    obj = Multi_RaySystem("../input/", init, "surf2")
+    obj.ini.beam = get_axs("../input/" + obj.ini.name + "_beam.cor", obj.ini.axs)
 
     obj.ini.beam_rght = get_axs(
-        "./" + obj.ini.name + "_beam_rght.cor", obj.ini.axs)
+        "../input/" + obj.ini.name + "_beam_rght.cor", obj.ini.axs)
     obj.ini.beam_left = get_axs(
-        "./" + obj.ini.name + "_beam_left.cor", obj.ini.axs)
+        "../input/" + obj.ini.name + "_beam_left.cor", obj.ini.axs)
     obj.ini.beam_uppr = get_axs(
-        "./" + obj.ini.name + "_beam_uppr.cor", obj.ini.axs)
+        "../input/" + obj.ini.name + "_beam_uppr.cor", obj.ini.axs)
     obj.ini.beam_bott = get_axs(
-        "./" + obj.ini.name + "_beam_bott.cor", obj.ini.axs)
+        "../input/" + obj.ini.name + "_beam_bott.cor", obj.ini.axs)
 
     obj.MultiReflect()
     print(obj.tar.beam.Location())
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     for idx, name in enumerate(surf[:-1]):
         print(name)
         obj.ini = obj.tar
-        obj.tar = SurfSystem("./", surf[idx + 1])
+        obj.tar = SurfSystem("../input/", surf[idx + 1])
         print(obj.ini.beam.Location())
 
         obj.MultiReflect()

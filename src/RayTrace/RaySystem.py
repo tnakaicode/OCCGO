@@ -26,13 +26,15 @@ from OCCUtils.Construct import make_wire, make_edge, make_plane, make_line
 from OCCUtils.Construct import project_edge_onto_plane, project_point_on_curve
 from OCCUtils.Topology import Topo
 
-from .ray_setup import get_axs, load_surface, reflect, axs_pln, get_deg
-from .SurfSystem import SurfSystem, GaussSystem, wavefront, axs_curvature
-from .SurfSystem import make_edges, set_surface, set_axs_pln, setup_sxy
-from ..pyocc.load import read_step_file
-from ..pyocc.surface import surf_spl
-from ..fileout import occ_to_grasp_cor, occ_to_grasp_rim
-from ..geomtory import curvature, fit_surf
+sys.path.append(os.path.join('../../'))
+from src.base import plotocc
+from src.RayTrace.ray_setup import get_axs, load_surface, reflect, axs_pln, get_deg
+from src.RayTrace.SurfSystem import SurfSystem, GaussSystem, wavefront, axs_curvature
+from src.RayTrace.SurfSystem import make_edges, set_surface, set_axs_pln, setup_sxy
+from src.pyocc.load import read_step_file
+from src.pyocc.surface import surf_spl
+from src.fileout import occ_to_grasp_cor, occ_to_grasp_rim
+from src.geomtory import curvature, fit_surf
 
 
 class RaySystem (object):
@@ -248,16 +250,16 @@ class OptSystem (object):
         self.start_display()
 
 
-class Multi_RaySystem (object):
+class Multi_RaySystem (plotocc):
 
-    def __init__(self, dir_name, ini_name, tar_name):
+    def __init__(self, dir_name, ini_name, tar_name, touch=True):
+        plotocc.__init__(self, touch=touch)
         self.dir = dir_name
         self.axs = gp_Ax3()
         self.ini = SurfSystem(self.dir, ini_name)
         self.tar = SurfSystem(self.dir, tar_name)
         self.ini.MultiRay()
         self.tar.MultiRay()
-        self.display, self.start_display, self.add_menu, self.add_function_to_menu = init_display()
 
     def Reflect(self):
         h_surf = BRep_Tool.Surface(self.tar.srf)
@@ -343,7 +345,7 @@ class Multi_RaySystem (object):
         self.ini.RotAxs(deg / 2, axs=axs)
 
     def Display_Shape(self, colors=["BLUE", "YELLOW"]):
-        #self.display.DisplayShape(axs_pln(gp_Ax3()))
+        # self.display.DisplayShape(axs_pln(gp_Ax3()))
         #self.display.DisplayShape(axs_pln(self.ini.axs), color=colors[0])
         #self.display.DisplayShape(axs_pln(self.tar.axs), color=colors[1])
         self.display.DisplayShape(self.ini.srf, color=colors[0])
@@ -535,7 +537,7 @@ class GOSystem (object):
 
         print(self.ini.beam.Location())
         print(self.tar.beam.Location())
-        
+
         GeomAPI_IntCS(ray, h_surf).IsDone()
         uvw = GeomAPI_IntCS(ray, h_surf).Parameters(1)
         u, v, w = uvw
@@ -552,16 +554,16 @@ class GOSystem (object):
 
         h_tar_wave = BRep_Tool.Surface(self.ini_wave)
         vz, v1, v2, r1, r2 = axs_curvature(h_tar_wave, u, v)
-        tar_wave_axs = self.tar.beam.Translated(gp_Vec(0,0,0))
+        tar_wave_axs = self.tar.beam.Translated(gp_Vec(0, 0, 0))
         tar_wave_axs.SetXDirection(vec_to_dir(v1))
         self.tar.wave = wavefront([r1, r2], tar_wave_axs)
-        self.display.DisplayShape(self.tar.wave,  color="RED")
+        self.display.DisplayShape(self.tar.wave, color="RED")
         self.display.DisplayShape(axs_pln(tar_wave_axs))
 
     def GO_Prop(self, s=0):
         h_ini_wave = BRep_Tool.Surface(self.ini.wave)
         vz, v1, v2, r1, r2 = axs_curvature(h_ini_wave, 0.5, 0.5)
-        
+
         r1_z = r1 + s / 2
         r2_z = r2 + s / 2
         ini_wave_axs = self.ini.beam.Translated(
