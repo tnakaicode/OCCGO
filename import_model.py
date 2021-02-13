@@ -20,7 +20,7 @@ print(obj.cfg["name"])
 md0 = obj.set_model(name="surf0")
 md1 = obj.set_model(name="surf1")
 md2 = obj.set_model(name="surf")
-md2.pts, md2.rim = obj.make_PolyWire(skin=None)
+md2.rim = obj.make_PolyWire(skin=None)
 md3 = model_base(meta={"name": "surf3"})
 md3.axs.Translate(gp_Pnt(), gp_Pnt(0, 0, 100))
 

@@ -900,6 +900,10 @@ class plotocc (SetDir, OCCViewer):
         self.colors = ["BLUE", "RED", "GREEN",
                        "YELLOW", "BLACK", "WHITE", "BROWN"]
 
+    def prop_axs(self, axs=gp_Ax3(), scale=100):
+        vz = dir_to_vec(axs.Direction()).Scaled(scale)
+        return axs.Translated(vz)
+
     def show_box(self, axs=gp_Ax3(), lxyz=[100, 100, 100]):
         box = make_box(*lxyz)
         ax1 = gp_Ax3(

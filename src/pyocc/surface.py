@@ -5,12 +5,12 @@ import glob
 import sys
 import time
 import os
+import scipy.constants as cnt
 from numpy.linalg import inv
 from unwrap.unwrap import unwrap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from linecache import getline, clearcache
 from scipy.integrate import simps
-from scipy.constants import *
 
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Pnt, gp_Ax1, gp_Ax3, gp_Vec, gp_Dir
