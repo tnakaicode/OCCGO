@@ -1,20 +1,20 @@
+import numpy as np
 import operator
 
-import OCC.Core.GProp
-import OCC.Core.BRepGProp
+from OCC.Core.GProp import GProp_GProps
+from OCC.Core.BRepGProp import brepgprop_VolumeProperties, brepgprop_SurfaceProperties, brepgprop_LinearProperties
 
+# http://smartlab1.elis.ugent.be:8889/IFC-repo/
+# conda install -c conda-forge -c oce -c dlr-sc -c ifcopenshell ifcopenshell
 import ifcopenshell
 import ifcopenshell.geom
-
-import numpy
 
 # RGBA colors for the visualisation of elements
 RED, GRAY = (1, 0, 0, 1), (0.6, 0.6, 0.6, 0.1)
 
 # Model freely available at:
 # http://www.nibs.org/?page=bsa_commonbimfiles
-ifc_file = ifcopenshell.open(
-    "C:/Users/nakai/Documents/OCCGO/ifcdata/2011-09-14-Duplex-IFC/Duplex_A_20110907_optimized.ifc")
+ifc_file = ifcopenshell.open("../cadfile/Duplex_A_20110907_optimized.ifc")
 
 # Settings to specify usage of pyOCC
 settings = ifcopenshell.geom.settings()
@@ -28,19 +28,20 @@ def create_shape(elem):
 
 
 def calc_volume(s):
-    props = GProp.GProp_GProps()
-    BRepGProp.brepgprop_VolumeProperties(s.geometry, props)
+    props = GProp_GProps()
+    brepgprop_VolumeProperties(s.geometry, props)
     return props.Mass()
 
 
 def calc_area(s):
-    props = GProp.GProp_GProps()
-    BRepGProp.brepgprop_SurfaceProperties(s.geometry, props)
+    props = GProp_GProps()
+    brepgprop_SurfaceProperties(s.geometry, props)
     return props.Mass()
 
 
 def normalize(li):
-    mean, std = numpy.mean(li), numpy.std(li)
+    mean = np.mean(li)
+    std = np.std(li)
     return map(lambda v: abs(v - mean) / std, li)
 
 
