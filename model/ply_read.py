@@ -12,7 +12,8 @@ from linecache import getline, clearcache
 from scipy.integrate import simps
 from optparse import OptionParser
 
-import plyfile
+sys.path.append(os.path.join("../"))
+from src.plyfile import PlyData
 
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
@@ -24,12 +25,12 @@ from OCC.Extend.DataExchange import write_iges_file, write_step_file, write_stl_
 if __name__ == "__main__":
     argvs = sys.argv
     parser = OptionParser()
-    parser.add_option("--file", dest="file", default="./buckling")
+    parser.add_option("--file", dest="file", default="../cadfile/buckling")
     opt, argc = parser.parse_args(argvs)
     print(argc, opt)
 
     ply_file = opt.file + ".ply"
-    ply_data = plyfile.PlyData.read(ply_file)
+    ply_data = PlyData.read(ply_file)
     print(ply_data["vertex"])
     print(ply_data["face"])
 

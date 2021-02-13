@@ -6,17 +6,13 @@ ImportError.
 
 '''
 
-from argparse import ArgumentParser
-
 import numpy as np
+import os
+import sys
 from mayavi import mlab
 
-from plyfile import PlyData
-
-
-def main():
-    plot(PlyData.read("./tet.ply"))
-    mlab.show()
+sys.path.append(os.path.join("../"))
+from src.plyfile import PlyData
 
 
 def plot(ply):
@@ -56,4 +52,6 @@ def plot(ply):
                              color=(1, 0, 0.4), opacity=0.5)
 
 
-main()
+if __name__ == "__main__":
+    plot(PlyData.read("../cadfile/writeply.ply"))
+    mlab.show()

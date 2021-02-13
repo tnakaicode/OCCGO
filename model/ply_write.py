@@ -1,6 +1,6 @@
 import vtk
 
-filename = "writeply.ply"
+filename = "../cadfile/writeply.ply"
 
 sphereSource = vtk.vtkSphereSource()
 sphereSource.Update()
