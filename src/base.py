@@ -900,9 +900,16 @@ class plotocc (SetDir, OCCViewer):
         self.colors = ["BLUE", "RED", "GREEN",
                        "YELLOW", "BLACK", "WHITE", "BROWN"]
 
-    def prop_axs(self, axs=gp_Ax3(), scale=100):
-        vz = dir_to_vec(axs.Direction()).Scaled(scale)
-        return axs.Translated(vz)
+    def prop_axs(self, axs=gp_Ax3(), scale=100, xyz="z"):
+        if xyz == "x":
+            vec = dir_to_vec(axs.XDirection()).Scaled(scale)
+        elif xyz == "y":
+            vec = dir_to_vec(axs.YDirection()).Scaled(scale)
+        elif xyz == "z":
+            vec = dir_to_vec(axs.Direction()).Scaled(scale)
+        else:
+            vec = dir_to_vec(axs.Direction()).Scaled(scale)
+        return axs.Translated(vec)
 
     def rot_axis(self, axs=gp_Ax3(), deg=0.0, xyz="x"):
         if xyz == "x":

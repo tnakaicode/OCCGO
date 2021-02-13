@@ -32,7 +32,7 @@ def occ_to_grasp_rim(axs, pts, filename="pln.rim", name="name", nxy=5):
     trf.SetTransformation(gp_Ax3(), axs)
     px, py = [], []
     for i in range(len(pts)):
-        i0, i1 = i, (i+1) % len(pts)
+        i0, i1 = i, (i + 1) % len(pts)
         p0, p1 = pts[i0].Transformed(trf), pts[i1].Transformed(trf)
         p_x = np.delete(np.linspace(p0.X(), p1.X(), nxy), -1)
         p_y = np.delete(np.linspace(p0.Y(), p1.Y(), nxy), -1)
@@ -51,6 +51,22 @@ def occ_to_grasp_cor(axs, name="name", filename="pln.cor"):
     pnt = axs.Location()
     v_x = axs.XDirection()
     v_y = axs.YDirection()
+    fp = open(filename, "w")
+    fp.write(' {:s}\n'.format(name))
+    fp.write(' {:s}\n'.format("mm"))
+    fp.write(''.join([float_to_string(v) for v in pnt_to_xyz(pnt)]) + '\n')
+    fp.write(''.join([float_to_string(v) for v in pnt_to_xyz(v_x)]) + '\n')
+    fp.write(''.join([float_to_string(v) for v in pnt_to_xyz(v_y)]) + '\n')
+    fp.close()
+
+
+def occ_to_grasp_cor_ref(axs=gp_Ax1(), ref=gp_Ax3(), name="name", filename="pln.cor"):
+    trf = gp_Trsf()
+    trf.SetTransformation(ref, gp_Ax3())
+    axis = axs.Transformed(trf)
+    pnt = axis.Location()
+    v_x = axis.XDirection()
+    v_y = axis.YDirection()
     fp = open(filename, "w")
     fp.write(' {:s}\n'.format(name))
     fp.write(' {:s}\n'.format("mm"))
