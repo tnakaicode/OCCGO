@@ -16,6 +16,8 @@ from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
 from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
 from OCC.Core.gp import gp_XYZ
 from OCC.Core.gp import gp_Trsf, gp_Quaternion
+from OCC.Core.BRep import BRep_Tool
+from OCC.Core.GeomAPI import GeomAPI_IntCS, GeomAPI_IntSS
 from OCCUtils.Construct import point_to_vector, vector_to_point
 from OCCUtils.Construct import dir_to_vec, vec_to_dir
 
@@ -44,6 +46,18 @@ if __name__ == '__main__':
 
     ax2 = obj.prop_axs(ax1, scale=50)
     obj.show_axs_pln(ax2, scale=50, name="axs2")
+
+    ax3 = obj.rot_axis(ax2, xyz="z", deg=45)
+    obj.show_axs_pln(ax3, scale=50)
+    pln1 = obj.show_plane(ax3, scale=25, trs=0.9, color="RED")
+    srf1 = BRep_Tool.Surface(pln1)
+    ax3 = obj.rot_axis(ax3, xyz="x", deg=5)
+    obj.show_axs_pln(ax3, scale=50)
+    pln2 = obj.show_plane(ax3, scale=25, trs=0.9, color="BLUE")
+    srf2 = BRep_Tool.Surface(pln2)
+
+    api = GeomAPI_IntSS(srf1, srf2, 0.1E-3)
+    obj.display.DisplayShape(api.Line(1))
 
     obj.show_axs_pln(scale=25)
     obj.show()

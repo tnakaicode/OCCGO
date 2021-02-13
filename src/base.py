@@ -904,6 +904,17 @@ class plotocc (SetDir, OCCViewer):
         vz = dir_to_vec(axs.Direction()).Scaled(scale)
         return axs.Translated(vz)
 
+    def rot_axis(self, axs=gp_Ax3(), deg=0.0, xyz="x"):
+        if xyz == "x":
+            ax1 = gp_Ax1(axs.Location(), axs.XDirection())
+        elif xyz == "y":
+            ax1 = gp_Ax1(axs.Location(), axs.YDirection())
+        elif xyz == "z":
+            ax1 = gp_Ax1(axs.Location(), axs.Direction())
+        else:
+            ax1 = gp_Ax1(axs.Location(), axs.Direction())
+        return axs.Rotated(ax1, np.deg2rad(deg))
+
     def show_box(self, axs=gp_Ax3(), lxyz=[100, 100, 100]):
         box = make_box(*lxyz)
         ax1 = gp_Ax3(
@@ -960,11 +971,12 @@ class plotocc (SetDir, OCCViewer):
         if name != None:
             self.display.DisplayMessage(axs.Location(), name)
 
-    def show_plane(self, axs=gp_Ax3(), scale=100):
+    def show_plane(self, axs=gp_Ax3(), scale=100, trs=0.0, color=None):
         pnt = axs.Location()
         vec = dir_to_vec(axs.Direction())
         pln = make_plane(pnt, vec, -scale, scale, -scale, scale)
-        self.display.DisplayShape(pln)
+        self.display.DisplayShape(pln, color=color, transparency=trs)
+        return pln
 
     def proj_rim_pln(self, wire, surf, axs=gp_Ax3()):
         proj = BRepProj_Projection(wire, surf, axs.Direction())

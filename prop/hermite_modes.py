@@ -55,24 +55,22 @@ def plot_image(*positional_parameters, title="TITLE", xtitle=r"X", ytitle=r"Y",
     plt.savefig(name)
 
 
-#
-# inputs
-#
-size_x = 1.0
-size_y = 1.0
-n_x = 620
-n_y = 320
-w = size_x / 8.
-m = 1
-n = 1
+if __name__ == '__main__':
+    size_x = 1.0
+    size_y = 1.0
+    n_x = 620
+    n_y = 320
+    w = size_x / 8.
+    m = 1
+    n = 1
 
-X = np.linspace(-size_x / 2, size_x / 2, n_x)
-Y = np.linspace(-size_y / 2, size_y / 2, n_y)
+    X = np.linspace(-size_x / 2, size_x / 2, n_x)
+    Y = np.linspace(-size_y / 2, size_y / 2, n_y)
 
-XX = np.outer(X, np.ones_like(Y))
-YY = np.outer(np.ones_like(X), Y)
+    XX = np.outer(X, np.ones_like(Y))
+    YY = np.outer(np.ones_like(X), Y)
 
-out = (hermite(m)(np.sqrt(2) * XX / w) * np.exp(-XX**2 / w**2))**2 \
-    * (hermite(n)(np.sqrt(2) * YY / w) * np.exp(-YY**2 / w**2))**2
+    out = (hermite(m)(np.sqrt(2) * XX / w) * np.exp(-XX**2 / w**2))**2 \
+        * (hermite(n)(np.sqrt(2) * YY / w) * np.exp(-YY**2 / w**2))**2
 
-plot_image(out, X, Y, name="hermite_modes.png")
+    plot_image(out, X, Y, name="hermite_modes.png")
