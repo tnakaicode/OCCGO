@@ -15,8 +15,9 @@ from scipy.integrate import simps
 from scipy.optimize import curve_fit
 from scipy.special import jv, jvp, jn_zeros, jnp_zeros
 from scipy.special import yv, yvp, yn_zeros, ynp_zeros
-sys.path.append(os.path.join('..'))
 
+sys.path.append(os.path.join('..'))
+from src.base import plot2d
 from src.Unit import convert_SI, convert
 
 
@@ -122,18 +123,17 @@ if __name__ == "__main__":
     d_2 = jvp(m, pr, 0) * yvp(m, x1_mn_2, 1) - \
         yvp(m, pr, 0) * jvp(m, x1_mn_2, 1)
 
-    plt.figure()
-    plt.plot(pr, d_1)
-    plt.plot(pr, d_2)
-    plt.grid()
+    obj = plot2d(aspect="auto")
+    obj.axs.plot(pr, d_1)
+    obj.axs.plot(pr, d_2)
+    obj.SavePng_Serial()
 
-    plt.figure()
-    plt.plot(pr, jvp(m, pr, 0) * yvp(m, x1_mn_1, 1))
-    plt.plot(pr, jvp(m, pr, 0) * yvp(m, x1_mn_2, 1))
-    plt.grid()
+    obj.new_2Dfig(aspect="auto")
+    obj.axs.plot(pr, jvp(m, pr, 0) * yvp(m, x1_mn_1, 1))
+    obj.axs.plot(pr, jvp(m, pr, 0) * yvp(m, x1_mn_2, 1))
+    obj.SavePng_Serial()
 
-    plt.figure()
-    plt.plot(pr, yvp(m, pr, 0) * jvp(m, x1_mn_1, 1))
-    plt.plot(pr, yvp(m, pr, 0) * jvp(m, x1_mn_2, 1))
-    plt.grid()
-    plt.show()
+    obj.new_2Dfig(aspect="auto")
+    obj.axs.plot(pr, yvp(m, pr, 0) * jvp(m, x1_mn_1, 1))
+    obj.axs.plot(pr, yvp(m, pr, 0) * jvp(m, x1_mn_2, 1))
+    obj.SavePng_Serial()

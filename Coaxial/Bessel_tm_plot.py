@@ -15,8 +15,9 @@ from scipy.integrate import simps
 from scipy.optimize import curve_fit
 from scipy.special import jv, jvp, jn_zeros, jnp_zeros
 from scipy.special import yv, yvp, yn_zeros, ynp_zeros
-sys.path.append(os.path.join('..'))
 
+sys.path.append(os.path.join('..'))
+from src.base import plot2d
 from src.Unit import convert_SI, convert
 
 
@@ -135,19 +136,18 @@ if __name__ == "__main__":
     print(yn_zeros(m, n))
     print(ynp_zeros(m, n))
 
-    plt.figure()
+    obj = plot2d(aspect="auto")
     #plt.plot(pr, jn_dev(r0, 37, 12, 0) - nj_dev(r0, 37, 12, 0))
-    plt.plot(pr, jn_dev(r0, 31, 10, 0) - nj_dev(r0, 31, 10, 0))
-    plt.plot(pr, jn_dev(r0, 31, 11, 0) - nj_dev(r0, 31, 11, 0))
-    plt.xlim(0, 100)
-    plt.ylim(-0.025, 0.025)
-    plt.grid()
+    obj.axs.plot(pr, jn_dev(r0, 31, 10, 0) - nj_dev(r0, 31, 10, 0))
+    obj.axs.plot(pr, jn_dev(r0, 31, 11, 0) - nj_dev(r0, 31, 11, 0))
+    obj.axs.set_xlim(0, 100)
+    obj.axs.set_ylim(-0.025, 0.025)
+    obj.SavePng()
 
-    plt.figure()
+    obj.new_2Dfig(aspect="auto")
     #plt.plot(pr, jn_dev(r0, 37, 12, 1) - nj_dev(r0, 37, 12, 1))
-    plt.plot(pr, jn_dev(r0, 31, 10, 1) - nj_dev(r0, 31, 10, 1))
-    plt.plot(pr, jn_dev(r0, 31, 11, 1) - nj_dev(r0, 31, 11, 1))
-    plt.grid()
-    plt.xlim(0, 100)
-    plt.ylim(-0.025, 0.025)
-    plt.show()
+    obj.axs.plot(pr, jn_dev(r0, 31, 10, 1) - nj_dev(r0, 31, 10, 1))
+    obj.axs.plot(pr, jn_dev(r0, 31, 11, 1) - nj_dev(r0, 31, 11, 1))
+    obj.axs.set_xlim(0, 100)
+    obj.axs.set_ylim(-0.025, 0.025)
+    obj.SavePng_Serial()

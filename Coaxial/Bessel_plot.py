@@ -15,8 +15,9 @@ from scipy.integrate import simps
 from scipy.optimize import curve_fit
 from scipy.special import jv, jvp, jn_zeros, jnp_zeros
 from scipy.special import yv, yvp, yn_zeros, ynp_zeros
-sys.path.append(os.path.join('../'))
 
+sys.path.append(os.path.join('..'))
+from src.base import plot2d
 from src.Unit import convert_SI, convert
 
 
@@ -113,9 +114,10 @@ if __name__ == "__main__":
     x1_i = jnp_zeros(m, n)[-1]
     print(x0_i, x1_i)
 
-    plt.figure()
-    plt.contourf(x, y, circle_wg_tm_mn(mesh))
+    obj = plot2d(aspect="auto")
+    obj.axs.contourf(x, y, circle_wg_tm_mn(mesh))
+    obj.SavePng_Serial()
 
-    plt.figure()
-    plt.contourf(x, y, circle_wg_te_mn(mesh))
-    plt.show()
+    obj.new_2Dfig(aspect="auto")
+    obj.axs.contourf(x, y, circle_wg_te_mn(mesh))
+    obj.SavePng_Serial()
