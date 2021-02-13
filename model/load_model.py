@@ -24,6 +24,7 @@ from OCC.Core.GeomAPI import GeomAPI_PointsToBSplineSurface, GeomAPI_IntCS
 from OCC.Core.GeomAPI import GeomAPI_ProjectPointOnSurf, GeomAPI_ProjectPointOnCurve
 from OCC.Core.GeomAbs import GeomAbs_C2, GeomAbs_C0, GeomAbs_G1, GeomAbs_G2
 from OCC.Core.GeomLProp import GeomLProp_SurfaceTool
+from OCC.Core.BRepLProp import BRepLProp_SLProps
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeFace
 from OCCUtils.Construct import dir_to_vec, vec_to_dir
 from OCCUtils.Construct import make_wire, make_edge, make_plane, make_line
