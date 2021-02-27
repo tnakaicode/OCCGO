@@ -11,8 +11,8 @@ import shutil
 import datetime
 import platform
 import subprocess
-from scipy.spatial import ConvexHull, Delaunay
 from optparse import OptionParser
+from scipy.spatial import ConvexHull, Delaunay
 from matplotlib import animation
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from mpl_toolkits.mplot3d import Axes3D
@@ -22,6 +22,8 @@ logging.getLogger('matplotlib').setLevel(logging.ERROR)
 
 from PyQt5.QtWidgets import QApplication, qApp
 from PyQt5.QtWidgets import QDialog, QCheckBox
+from PyQt5.QtWidgets import QFileDialog
+# pip install PyQt5
 
 from OCC import VERSION
 from OCC.Display.backend import load_backend, get_qt_modules
@@ -30,7 +32,7 @@ from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
 from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
 from OCC.Core.gp import gp_XYZ
-from OCC.Core.gp import gp_Lin, gp_Elips
+from OCC.Core.gp import gp_Lin, gp_Elips, gp_Pln
 from OCC.Core.gp import gp_Mat, gp_GTrsf, gp_Trsf
 from OCC.Core.TopoDS import TopoDS_Shape, TopoDS_Compound
 from OCC.Core.TopLoc import TopLoc_Location
@@ -42,6 +44,7 @@ from OCC.Core.BRep import BRep_Tool
 from OCC.Core.BRep import BRep_Builder
 from OCC.Core.BRepFill import BRepFill_Filling
 from OCC.Core.BRepFill import BRepFill_CurveConstraint
+from OCC.Core.BRepTools import breptools_Read
 from OCC.Core.BRepProj import BRepProj_Projection
 from OCC.Core.BRepTools import breptools_Write
 from OCC.Core.BRepOffset import BRepOffset_MakeOffset, BRepOffset_Skin, BRepOffset_Interval
@@ -129,6 +132,7 @@ def create_tempnum(name, tmpdir="./", ext=".tar.gz"):
 class SetDir (object):
 
     def __init__(self):
+        self.basepath = os.path.dirname(__file__) + "/"
         self.root_dir = os.getcwd()
         self.tempname = ""
         self.rootname = ""
@@ -166,6 +170,11 @@ class SetDir (object):
         subprocess.Popen(
             "explorer.exe {}".format(path)
         )
+
+    def open_newtempir(self):
+        self.create_tempdir("temp", -1)
+        path = os.path.abspath(self.tmpdir)
+        subprocess.run('explorer.exe {}'.format(path))
 
     def exit_app(self):
         sys.exit()
@@ -885,42 +894,22 @@ def init_qtdisplay(backend_str=None,
 
 class plotocc (SetDir, OCCViewer):
 
-    def __init__(self, view=True, touch=False):
+    def __init__(self, disp=True, touch=False):
         SetDir.__init__(self)
-        if view == True:
-            self.display, self.start_display, self.add_menu, self.add_function, self.wi = init_qtdisplay()
-        self.view = view
         self.base_axs = gp_Ax3()
+        self.disp = disp
         self.touch = touch
-        if touch == True:
-            OCCViewer.__init__(self)
-            self.on_select()
-        if view == True:
-            self.SaveMenu()
         self.colors = ["BLUE", "RED", "GREEN",
                        "YELLOW", "BLACK", "WHITE", "BROWN"]
 
-    def prop_axs(self, axs=gp_Ax3(), scale=100, xyz="z"):
-        if xyz == "x":
-            vec = dir_to_vec(axs.XDirection()).Scaled(scale)
-        elif xyz == "y":
-            vec = dir_to_vec(axs.YDirection()).Scaled(scale)
-        elif xyz == "z":
-            vec = dir_to_vec(axs.Direction()).Scaled(scale)
-        else:
-            vec = dir_to_vec(axs.Direction()).Scaled(scale)
-        return axs.Translated(vec)
-
-    def rot_axis(self, axs=gp_Ax3(), deg=0.0, xyz="x"):
-        if xyz == "x":
-            ax1 = gp_Ax1(axs.Location(), axs.XDirection())
-        elif xyz == "y":
-            ax1 = gp_Ax1(axs.Location(), axs.YDirection())
-        elif xyz == "z":
-            ax1 = gp_Ax1(axs.Location(), axs.Direction())
-        else:
-            ax1 = gp_Ax1(axs.Location(), axs.Direction())
-        return axs.Rotated(ax1, np.deg2rad(deg))
+        # OCC Viewer
+        if disp == True:
+            self.display, self.start_display, self.add_menu, self.add_function, self.wi = init_qtdisplay()
+            if touch == True:
+                OCCViewer.__init__(self)
+                self.on_select()
+            self.SaveMenu()
+            self.SelectMenu()
 
     def show_box(self, axs=gp_Ax3(), lxyz=[100, 100, 100]):
         box = make_box(*lxyz)
@@ -978,40 +967,22 @@ class plotocc (SetDir, OCCViewer):
         if name != None:
             self.display.DisplayMessage(axs.Location(), name)
 
-    def show_plane(self, axs=gp_Ax3(), scale=100, trs=0.0, color=None):
+    def show_plane(self, axs=gp_Ax3(), scale=100):
         pnt = axs.Location()
         vec = dir_to_vec(axs.Direction())
         pln = make_plane(pnt, vec, -scale, scale, -scale, scale)
-        self.display.DisplayShape(pln, color=color, transparency=trs)
+        self.display.DisplayShape(pln)
+
+    def prop_axs(self, axs=gp_Ax3(), scale=100):
+        vz = dir_to_vec(axs.Direction()).Scaled(scale)
+        return axs.Translated(vz)
+
+    def make_plane_axs(self, axs=gp_Ax3(), rx=[0, 500], ry=[0, 500]):
+        pln = BRepBuilderAPI_MakeFace(
+            gp_Pln(axs),
+            rx[0], rx[1], ry[0], ry[1]
+        ).Face()
         return pln
-
-    def proj_rim_pln(self, wire, surf, axs=gp_Ax3()):
-        proj = BRepProj_Projection(wire, surf, axs.Direction())
-        return proj.Current()
-
-    def proj_pnt_pln(self, pnt, surf, axs=gp_Ax3()):
-        lin = gp_Lin(pnt, axs.Direction())
-        sxy = GeomAPI_IntCS(Geom_Line(lin), surf).Point(1)
-        return sxy
-
-    def make_plate(self, pts=[], axs=gp_Ax3(), skin=None):
-        poly = make_polygon(pts)
-        poly.Location(set_loc(gp_Ax3(), axs))
-
-        if skin == None:
-            return poly
-        else:
-            n_sided = BRepFill_Filling()
-            for e in Topo(poly).edges():
-                n_sided.Add(e, GeomAbs_C0)
-            n_sided.Build()
-            face = n_sided.Face()
-            if skin == 0:
-                return face
-            else:
-                solid = BRepOffset_MakeOffset(
-                    face, skin, 1.0E-5, BRepOffset_Skin, False, True, GeomAbs_Arc, True, True)
-                return solid.Shape()
 
     def make_EllipWire(self, rxy=[1.0, 1.0], shft=0.0, skin=None, axs=gp_Ax3()):
         rx, ry = rxy
@@ -1157,6 +1128,45 @@ class plotocc (SetDir, OCCViewer):
         face = n_sided.Face()
         return face
 
+    def proj_rim_pln(self, wire, surf, axs=gp_Ax3()):
+        proj = BRepProj_Projection(wire, surf, axs.Direction())
+        return proj.Current()
+
+    def proj_pnt_pln(self, pnt, surf, axs=gp_Ax3()):
+        lin = gp_Lin(pnt, axs.Direction())
+        sxy = GeomAPI_IntCS(Geom_Line(lin), BRep_Tool.Surface(surf)).Point(1)
+        return sxy
+
+    def proj_pln_show(self, face, nxy=[10, 10], ux=[0, 1], uy=[0, 1], axs=gp_Ax3()):
+        trf = set_trf(gp_Ax3(), axs)
+        pln = self.make_plane_axs(axs, [-1000, 1000], [-1000, 1000])
+        surf = BRep_Tool.Surface(face)
+        for px in np.linspace(ux[0], ux[1], nxy[0]):
+            for py in np.linspace(uy[0], uy[1], nxy[1]):
+                p0 = surf.Value(px, py)
+                p1 = self.proj_pnt_pln(p0, pln, axs)
+                self.display.DisplayShape(p0)
+                self.display.DisplayShape(p1)
+
+    def proj_pln_showup(self, face, nxy=[10, 10], lx=[-10, 10], ly=[-10, 10], axs=gp_Ax3()):
+        trf = set_trf(gp_Ax3(), axs)
+        nx, ny = nxy
+        xs, xe = lx
+        ys, ye = ly
+        plnx = np.linspace(xs, xe, nx)
+        plny = np.linspace(ys, ye, ny)
+        mesh = np.meshgrid(plnx, plny)
+        data = np.zeros_like(mesh[0])
+        for (ix, iy), x in np.ndenumerate(data):
+            px, py = mesh[0][ix, iy], mesh[1][ix, iy]
+            p0 = gp_Pnt(px, py, 0).Transformed(trf)
+            p1 = self.proj_pnt_pln(p0, face, axs)
+            z = p0.Distance(p1)
+            data[ix, iy] = z
+            self.display.DisplayShape(p0)
+            self.display.DisplayShape(p1)
+        return mesh, data
+
     def AddManipulator(self):
         self.manip = AIS_Manipulator(self.base_axs.Ax2())
         ais_shp = self.display.DisplayShape(
@@ -1167,6 +1177,7 @@ class plotocc (SetDir, OCCViewer):
 
     def SaveMenu(self):
         self.add_menu("File")
+        self.add_function("File", self.import_cadfile)
         self.add_function("File", self.export_cap)
         if self.touch == True:
             self.add_function("File", self.export_stp_selected)
@@ -1174,9 +1185,43 @@ class plotocc (SetDir, OCCViewer):
             self.add_function("File", self.export_igs_selected)
             self.add_function("File", self.export_brep_selected)
             self.add_function("File", self.clear_selected)
+        self.add_function("File", self.open_newtempir)
         self.add_function("File", self.open_tempdir)
         self.add_function("File", self.exit_win)
-        self.add_function("File", self.exit_app)
+
+    def SelectMenu(self):
+        self.add_menu("Select")
+        self.add_function("Select", self.display.SetSelectionModeVertex)
+        self.add_function("Select", self.display.SetSelectionModeEdge)
+        self.add_function("Select", self.display.SetSelectionModeFace)
+        self.add_function("Select", self.display.SetSelectionModeShape)
+
+    def import_cadfile(self):
+        options = QFileDialog.Options()
+        fileName, _ = QFileDialog.getOpenFileName(self.wi, 'QFileDialog.getOpenFileName()', '',
+                                                  'CAD files (*.stp *.step *.stl *.igs *.iges, *.brep)', options=options)
+        print(fileName)
+        base_dir = os.path.dirname(fileName)
+        basename = os.path.basename(fileName)
+        rootname, extname = os.path.splitext(fileName)
+        if extname in [".stp", ".step"]:
+            shpe = read_step_file(fileName)
+            self.display.DisplayShape(shpe, update=True)
+        elif extname in [".igs", ".iges"]:
+            shpe = read_iges_file(fileName)
+            self.display.DisplayShape(shpe, update=True)
+        elif extname in [".stl"]:
+            shpe = read_stl_file(fileName)
+            self.display.DisplayShape(shpe, update=True)
+        elif extname in [".brep"]:
+            shpe = TopoDS_Shape()
+            builder = BRep_Builder()
+            breptools_Read(shpe, fileName, builder)
+            self.display.DisplayShape(shpe, update=True)
+        else:
+            print("Incorrect file index")
+            # sys.exit(0)
+        self.export_cap()
 
     def export_cap(self):
         pngname = create_tempnum(self.rootname, self.tmpdir, ".png")
@@ -1185,10 +1230,6 @@ class plotocc (SetDir, OCCViewer):
     def export_stp(self, shp):
         stpname = create_tempnum(self.rootname, self.tmpdir, ".stp")
         write_step_file(shp, stpname)
-
-    def export_stl(self, shp, *args, **kwargs):
-        stpname = create_tempnum(self.rootname, self.tmpdir, ".stl")
-        write_stl_file(shp, stpname, *args, **kwargs)
 
     def export_stp_selected(self):
         if self.touch == True:
@@ -1351,6 +1392,7 @@ class LineDrawer(object):
 if __name__ == '__main__':
     obj = SetDir()
     obj.create_tempdir(flag=-1)
+    print(obj.basepath)
     # for i in range(5):
     #    name = "temp{:d}".format(i)
     #    obj.add_dir(name)

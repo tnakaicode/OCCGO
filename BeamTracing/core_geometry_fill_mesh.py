@@ -22,6 +22,9 @@ import os
 import sys
 import time
 
+sys.path.append(os.path.join("../"))
+from src.base import plotocc, PlotBase
+
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
 from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
@@ -52,7 +55,7 @@ def curvature(px, r, s):
     if (r == 0):
         py = np.zeros_like(px + s)
     else:
-        py = (px + s)**2 / (2*r)
+        py = (px + s)**2 / (2 * r)
     return py
 
 
@@ -64,7 +67,7 @@ def geom_plate():
     p5 = gp_Pnt(0, 5, 5)
     edge = [p1, p2, p3, p4]
     edge.append(edge[0])
-    poly = [make_edge(edge[i], edge[i+1]) for i in range(len(edge)-1)]
+    poly = [make_edge(edge[i], edge[i + 1]) for i in range(len(edge) - 1)]
     face = make_n_sided(poly)
     return face
 
@@ -75,10 +78,10 @@ class OCC_Display (object):
         self.display, self.start_display, self.add_menu, self.add_function_to_menu = init_display()
 
 
-class Surf (OCC_Display):
+class Surf (plotocc):
 
-    def __init__(self):
-        super(Surf, self).__init__()
+    def __init__(self, disp=True):
+        plotocc.__init__(self, disp=disp, touch=True)
         self.nx = 10
         self.ny = 20
         self.lx = 150
@@ -86,8 +89,8 @@ class Surf (OCC_Display):
         self.ini_mesh()
 
     def ini_mesh(self):
-        px = np.linspace(-1, 1, self.nx) * self.lx/2
-        py = np.linspace(-1, 1, self.ny) * self.ly/2
+        px = np.linspace(-1, 1, self.nx) * self.lx / 2
+        py = np.linspace(-1, 1, self.ny) * self.ly / 2
         self.mesh = np.meshgrid(px, py)
 
     def gen_surf(self, rxy=[100, 200], sxy=[0, 0]):
@@ -96,8 +99,8 @@ class Surf (OCC_Display):
         self.surf = surf_x + surf_y
 
         self.pnt_2d = TColgp_Array2OfPnt(1, self.nx, 1, self.ny)
-        for idx_row in range(self.pnt_2d.LowerRow(), self.pnt_2d.UpperRow()+1):
-            for idx_col in range(self.pnt_2d.LowerCol(), self.pnt_2d.UpperCol()+1):
+        for idx_row in range(self.pnt_2d.LowerRow(), self.pnt_2d.UpperRow() + 1):
+            for idx_col in range(self.pnt_2d.LowerCol(), self.pnt_2d.UpperCol() + 1):
                 row = idx_row - 1
                 col = idx_col - 1
                 pnt = gp_Pnt(
@@ -106,7 +109,7 @@ class Surf (OCC_Display):
                     self.surf[col, row]
                 )
                 self.pnt_2d.SetValue(idx_row, idx_col, pnt)
-                self.display.DisplayShape(pnt)
+                # self.display.DisplayShape(pnt)
 
     def gen_face(self):
         curv = GeomAPI_PointsToBSplineSurface(
@@ -122,7 +125,7 @@ class Surf (OCC_Display):
 
         for idx_row in range(self.pnt_2d.LowerRow(), self.pnt_2d.UpperRow()):
             for idx_col in range(self.pnt_2d.LowerCol(), self.pnt_2d.UpperCol()):
-                i00, i01 = idx_row, idx_row+1
+                i00, i01 = idx_row, idx_row + 1
                 i10, i11 = idx_col, idx_col + 1
                 p1 = self.pnt_2d.Value(i00, i10)
                 p2 = self.pnt_2d.Value(i01, i10)
@@ -130,17 +133,15 @@ class Surf (OCC_Display):
                 p4 = self.pnt_2d.Value(i00, i11)
                 edge = [p1, p2, p3, p4]
                 edge.append(edge[0])
-                poly = [make_edge(edge[i], edge[i+1])
-                        for i in range(len(edge)-1)]
+                poly = [make_edge(edge[i], edge[i + 1])
+                        for i in range(len(edge) - 1)]
                 face = make_n_sided(poly)
                 self.display.DisplayShape(face)
 
 
 if __name__ == "__main__":
     print("ok")
-    obj = Surf()
+    obj = Surf(disp=True)
     obj.gen_surf(sxy=[50, 100])
     obj.gen_fill()
-
-    obj.display.FitAll()
-    obj.start_display()
+    obj.show()
