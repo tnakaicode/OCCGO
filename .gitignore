@@ -9,7 +9,7 @@ __pycache__/
 # Temp
 tmp/*
 cfd_python/ch10/*
-temp_*/*
+temp_*
 */temp_*/*
 
 # cpp

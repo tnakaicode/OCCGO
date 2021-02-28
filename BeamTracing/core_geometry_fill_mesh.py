@@ -142,6 +142,6 @@ class Surf (plotocc):
 if __name__ == "__main__":
     print("ok")
     obj = Surf(disp=True)
-    obj.gen_surf(sxy=[50, 100])
+    obj.gen_surf(sxy=[20, 10])
     obj.gen_fill()
     obj.show()
