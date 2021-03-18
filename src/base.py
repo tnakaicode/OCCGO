@@ -66,6 +66,8 @@ from OCC.Core.GeomFill import GeomFill_BoundWithSurf
 from OCC.Core.GeomFill import GeomFill_BSplineCurves
 from OCC.Core.GeomFill import GeomFill_StretchStyle, GeomFill_CoonsStyle, GeomFill_CurvedStyle
 from OCC.Core.AIS import AIS_Manipulator
+from OCC.Core.V3d import V3d_SpotLight, V3d_XnegYnegZpos
+from OCC.Core.Quantity import Quantity_Color, Quantity_NOC_WHITE, Quantity_NOC_CORAL2, Quantity_NOC_BROWN
 from OCC.Core.StlAPI import StlAPI_Reader, StlAPI_Writer
 from OCC.Extend.DataExchange import write_step_file, read_step_file
 from OCC.Extend.DataExchange import write_iges_file, read_iges_file
@@ -165,16 +167,22 @@ class SetDir (object):
             print("already exist {}".format(tmpdir))
         return tmpdir
 
-    def open_tempdir(self):
+    def open_filemanager(self, path="."):
+        if sys.platform == "win32":
+            subprocess.run('explorer.exe {}'.format(path))
+        elif sys.platform == "linux":
+            subprocess.check_call(['xdg-open', path])
+        else:
+            subprocess.run('explorer.exe {}'.format(path))
+
+    def open_tempir(self):
         path = os.path.abspath(self.tmpdir)
-        subprocess.Popen(
-            "explorer.exe {}".format(path)
-        )
+        self.open_filemanager(path)
 
     def open_newtempir(self):
         self.create_tempdir("temp", -1)
         path = os.path.abspath(self.tmpdir)
-        subprocess.run('explorer.exe {}'.format(path))
+        self.open_filemanager(path)
 
     def exit_app(self):
         sys.exit()
@@ -292,6 +300,28 @@ class plot2d (PlotBase):
         ys, ye = mesh[1][0, 0], mesh[1][-1, 0]
         mx = np.searchsorted(mesh[0][0, :], sx) - 1
         my = np.searchsorted(mesh[1][:, 0], sy) - 1
+
+        self.ax_x.plot(mesh[0][mx, :], func[mx, :])
+        self.ax_x.set_title("y = {:.2f}".format(sy))
+        self.ax_y.plot(func[:, my], mesh[1][:, my])
+        self.ax_y.set_title("x = {:.2f}".format(sx))
+        im = self.axs.contourf(*mesh, func, cmap="jet")
+        self.fig.colorbar(im, ax=self.axs, shrink=0.9)
+        self.fig.tight_layout()
+        if pngname == None:
+            self.SavePng_Serial(pngname)
+        else:
+            self.SavePng(pngname)
+
+    def contourf_sub2(self, mesh, func, sxy=[0, 0], pngname=None):
+        self.new_fig()
+        self.div_axs()
+        nx, ny = mesh[0].shape
+        sx, sy = sxy
+        xs, xe = mesh[0][0, 0], mesh[0][0, -1]
+        ys, ye = mesh[1][0, 0], mesh[1][-1, 0]
+        mx = np.searchsorted(mesh[0][:, 0], sx) - 1
+        my = np.searchsorted(mesh[1][0, :], sy) - 1
 
         self.ax_x.plot(mesh[0][mx, :], func[mx, :])
         self.ax_x.set_title("y = {:.2f}".format(sy))
@@ -501,6 +531,43 @@ class plot3d (PlotBase):
         #self.axs.set_xlim3d(-10, 10)
         #self.axs.set_ylim3d(-10, 10)
         #self.axs.set_zlim3d(-10, 10)
+
+
+def which(program):
+    """Run the Unix which command in Python."""
+    import os
+
+    def is_exe(fpath):
+        """Check if file is executable."""
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, _ = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
+
+
+def _gmsh_path():
+    """Find Gmsh."""
+
+    if os.name == "nt":
+        gmp = which("gmsh.exe")
+    else:
+        gmp = which("gmsh")
+    if gmp is None:
+        print(
+            "Could not find Gmsh."
+            + "Interactive plotting and shapes module not available."
+        )
+    return gmp
 
 
 def pnt_from_axs(axs=gp_Ax3(), length=100):
@@ -751,6 +818,10 @@ class GenCompound (object):
         self.compound = TopoDS_Compound()
         self.builder.MakeCompound(self.compound)
 
+    def add_shapes(self, shps=[]):
+        for shp in shps:
+            self.builder.Add(self.compound, shp)
+
 
 log = logging.getLogger(__name__)
 
@@ -908,8 +979,13 @@ class plotocc (SetDir, OCCViewer):
             if touch == True:
                 OCCViewer.__init__(self)
                 self.on_select()
+
             self.SaveMenu()
+            self.ViewMenu()
             self.SelectMenu()
+
+        # GMSH
+        self.gmsh = _gmsh_path()
 
     def show_box(self, axs=gp_Ax3(), lxyz=[100, 100, 100]):
         box = make_box(*lxyz)
@@ -1167,13 +1243,16 @@ class plotocc (SetDir, OCCViewer):
             self.display.DisplayShape(p1)
         return mesh, data
 
-    def AddManipulator(self):
+    def ViewManipulator(self):
         self.manip = AIS_Manipulator(self.base_axs.Ax2())
         ais_shp = self.display.DisplayShape(
             self.base_axs.Location(),
             update=True
         )
         self.manip.Attach(ais_shp)
+
+    def RemoveManipulator(self):
+        self.manip.Detach()
 
     def SaveMenu(self):
         self.add_menu("File")
@@ -1186,8 +1265,22 @@ class plotocc (SetDir, OCCViewer):
             self.add_function("File", self.export_brep_selected)
             self.add_function("File", self.clear_selected)
         self.add_function("File", self.open_newtempir)
-        self.add_function("File", self.open_tempdir)
+        self.add_function("File", self.open_tempir)
         self.add_function("File", self.exit_win)
+
+    def ViewMenu(self):
+        self.add_menu("View")
+        self.add_function("View", self.display.FitAll)
+        self.add_function("View", self.display.View_Top)  # XY-Plane(+)
+        self.add_function("View", self.display.View_Bottom)  # XY-Plane(-)
+        self.add_function("View", self.display.View_Rear)  # XZ-Plane(+)
+        self.add_function("View", self.display.View_Front)  # XZ-Plane(-)
+        self.add_function("View", self.display.View_Right)  # YZ-Plane(+)
+        self.add_function("View", self.display.View_Left)  # YZ-Plane(-)
+        self.add_function("View", self.ray_tracing_mode)
+        self.add_function("View", self.display.SetRasterizationMode)
+        #self.add_function("View", self.ViewManipulator)
+        #self.add_function("View", self.RemoveManipulator)
 
     def SelectMenu(self):
         self.add_menu("Select")
@@ -1196,10 +1289,42 @@ class plotocc (SetDir, OCCViewer):
         self.add_function("Select", self.display.SetSelectionModeFace)
         self.add_function("Select", self.display.SetSelectionModeShape)
 
+    def ray_tracing_mode(self):
+        # create one spotlight
+        spot_light = V3d_SpotLight(
+            gp_Pnt(-100, -100, 100), V3d_XnegYnegZpos, Quantity_Color(Quantity_NOC_WHITE))
+        # display the spotlight in rasterized mode
+        self.display.Viewer.AddLight(spot_light)
+        self.display.View.SetLightOn()
+        self.display.SetRaytracingMode(depth=8)
+
+    def import_geofile(self, geofile):
+        # msh1, msh2, msh22, msh3, msh4, msh40, msh41, msh,
+        # unv, vtk, wrl, mail, stl, p3d, mesh, bdf, cgns, med,
+        # diff, ir3, inp, ply2, celum, su2, x3d, dat, neu, m, key
+        filename = os.path.basename(geofile)
+        rootname, ext_name = os.path.splitext(filename)
+        geo_name = create_tempnum(self.rootname, self.tmpdir, ".geo")
+        shutil.copyfile(geofile, geo_name)
+        stl_name, _ = os.path.splitext(geo_name)
+        stl_name += ".stl"
+        txt_name, _ = os.path.splitext(geo_name)
+        txt_name += "_gmsh.txt"
+
+        gmsh_run = self.gmsh
+        gmsh_run += " -tol 0.1"
+        gmsh_run += " " + geo_name
+        gmsh_run += " -3 -o"
+        gmsh_run += " {} -format stl".format(stl_name)
+        gmsh_run += " -log {}".format(txt_name)
+        gmsh_success = os.system(gmsh_run)
+        return stl_name
+
     def import_cadfile(self):
         options = QFileDialog.Options()
         fileName, _ = QFileDialog.getOpenFileName(self.wi, 'QFileDialog.getOpenFileName()', '',
-                                                  'CAD files (*.stp *.step *.stl *.igs *.iges, *.brep)', options=options)
+                                                  'CAD files (*.stp *.step *.stl *.igs *.iges, *.brep. *.geo)',
+                                                  options=options)
         print(fileName)
         base_dir = os.path.dirname(fileName)
         basename = os.path.basename(fileName)
@@ -1217,6 +1342,10 @@ class plotocc (SetDir, OCCViewer):
             shpe = TopoDS_Shape()
             builder = BRep_Builder()
             breptools_Read(shpe, fileName, builder)
+            self.display.DisplayShape(shpe, update=True)
+        elif extname in [".geo"]:
+            stlfile = self.import_geofile(fileName)
+            shpe = read_stl_file(stlfile)
             self.display.DisplayShape(shpe, update=True)
         else:
             print("Incorrect file index")
