@@ -34,7 +34,7 @@ if __name__ == '__main__':
     px = np.linspace(-1, 1, 100) * 100 + 50
     py = np.linspace(-1, 1, 200) * 100 - 50
     mesh = np.meshgrid(px, py)
-    
+
     p2d = plot2d(aspect="auto")
     p2d.contourf_sub2(mesh, mesh[0], pngname=p2d.tempname + "_plot2d")
 

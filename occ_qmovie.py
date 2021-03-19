@@ -29,34 +29,34 @@ from OCCUtils.Construct import make_plane, make_polygon
 from OCCUtils.Construct import point_to_vector, vector_to_point
 from OCCUtils.Construct import dir_to_vec, vec_to_dir
 
+
 class OCCMovie(plotocc):
-    
+
     def __init__(self, disp=True, touch=True):
         super().__init__(disp=disp, touch=touch)
         self.MovieMenu()
-    
+
     def MovieMenu(self):
         self.add_menu("Movie")
         self.add_function("Movie", self.export_cap)
         self.add_function("Movie", self.movie_start)
         self.add_function("Movie", self.movie_stop)
 
-    
-        
     def movie_start(self):
         """sart animnation"""
         # use an animated gif file you have in the working folder
         # or give the full file path
-        self.movie = QMovie(self.tempname + ".gif", QByteArray(), self.wi) 
-        self.movie.setCacheMode(QMovie.CacheAll) 
-        self.movie.setSpeed(100) 
-        #self.movie_screen.setMovie(self.movie) 
+        self.movie = QMovie(self.tempname + ".gif", QByteArray(), self.wi)
+        self.movie.setCacheMode(QMovie.CacheAll)
+        self.movie.setSpeed(100)
+        # self.movie_screen.setMovie(self.movie)
         self.movie.start()
-        
+
     def movie_stop(self):
         """stop the animation"""
         self.movie.stop()
-        
+
+
 if __name__ == '__main__':
     argvs = sys.argv
     parser = OptionParser()
@@ -65,7 +65,7 @@ if __name__ == '__main__':
                       default=[0.0, 0.0, 0.0], type="float", nargs=3)
     opt, argc = parser.parse_args(argvs)
     print(opt, argc)
-    
+
     # https://www.daniweb.com/programming/software-development/threads/116827/pyqt-and-gif
 
     obj = OCCMovie(touch=True)
