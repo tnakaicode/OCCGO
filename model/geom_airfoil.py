@@ -5,7 +5,7 @@ import glob
 import sys
 import time
 import os
-import urllib
+import urllib.request
 import scipy.constants as cnt
 from optparse import OptionParser
 
@@ -114,7 +114,7 @@ if __name__ == "__main__":
     opt, argc = parser.parse_args(argvs)
     print(argc, opt)
 
-    cfg = json.load(open("airfoil.json", "r"))
+    cfg = json.load(open("../cadfile/airfoil.json", "r"))
     airfilo_url = cfg["url"]
     airfilo_dat = cfg[opt.name]
     filename = airfilo_url + airfilo_dat

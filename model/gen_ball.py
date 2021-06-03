@@ -14,7 +14,7 @@ from scipy.integrate import simps
 from optparse import OptionParser
 
 sys.path.append(os.path.join("../"))
-from src.base import plotocc
+from src.base_occ import dispocc
 
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     opt, argc = parser.parse_args(argvs)
     print(argc, opt)
 
-    obj = plotocc()
+    obj = dispocc()
     obj.display.DisplayShape(gp_Pnt())
 
     num = 100000

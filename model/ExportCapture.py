@@ -3,10 +3,9 @@ import matplotlib.pyplot as plt
 import sys
 import time
 import os
-sys.path.append(os.path.join("../"))
 
-from src.pyocc.OCCQt import Viewer
-from src.pyocc.OCCDisplay import OCCDisplay
+sys.path.append(os.path.join("../"))
+from src.base_occ import dispocc
 
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Pln
@@ -21,11 +20,10 @@ from OCCUtils.Construct import make_box, make_face
 from OCCUtils.Construct import vec_to_dir
 
 
-class OCCObject (OCCDisplay):
+class OCCObject (dispocc):
 
     def __init__(self):
-        super(OCCObject, self).__init__()
-        print(self.app)
+        dispocc.__init__(self, touch=True)
         print(self.vi)
         print(self.wi)
 
@@ -38,7 +36,7 @@ class OCCObject (OCCDisplay):
     def Cap(self):
         menu_name = "ScreenCapture"
         self.add_menu(menu_name)
-        self.add_function_menu(menu_name, self.export_cap)
+        self.add_function(menu_name, self.export_cap)
 
 
 if __name__ == "__main__":

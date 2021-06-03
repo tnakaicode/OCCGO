@@ -5,7 +5,8 @@ import time
 import os
 sys.path.append(os.path.join("../"))
 
-from src.base import plot2d, plotocc
+from src.base import plot2d
+from src.base_occ import dispocc
 
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir, gp_Ax1, gp_Ax2, gp_Ax3
@@ -77,7 +78,7 @@ if __name__ == "__main__":
     obj_plt.axs.plot(pz, np.tan(t0) * pz)
     obj_plt.Show()
 
-    obj = plotocc()
+    obj = dispocc()
 
     api = BRepOffsetAPI_ThruSections()
     for z in np.linspace(0, 1000, 10):
