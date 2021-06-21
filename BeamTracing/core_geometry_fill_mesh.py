@@ -23,7 +23,7 @@ import sys
 import time
 
 sys.path.append(os.path.join("../"))
-from src.base import plotocc, PlotBase
+from src.base_occ import dispocc
 
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
@@ -78,10 +78,10 @@ class OCC_Display (object):
         self.display, self.start_display, self.add_menu, self.add_function_to_menu = init_display()
 
 
-class Surf (plotocc):
+class Surf (dispocc):
 
     def __init__(self, disp=True):
-        plotocc.__init__(self, disp=disp, touch=True)
+        dispocc.__init__(self, disp=disp, touch=True)
         self.nx = 10
         self.ny = 20
         self.lx = 150

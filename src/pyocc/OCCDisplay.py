@@ -5,16 +5,16 @@ import time
 import os
 
 from .OCCQt import Viewer
-from ..base import plotocc
+from ..base_occ import dispocc
 
 from OCC.Display.SimpleGui import init_display
 from PyQt5.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, QVBoxLayout
 
 
-class OCCDisplay (Viewer, plotocc):
+class OCCDisplay (Viewer, dispocc):
 
     def __init__(self):
-        plotocc.__init__(self)
+        dispocc.__init__(self)
         self.display_obj = self.display.View.View()
         Viewer.__init__(self)
         self.on_select()

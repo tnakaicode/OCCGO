@@ -19,7 +19,7 @@ from OCCUtils.Construct import point_to_vector, vector_to_point
 from OCCUtils.Construct import dir_to_vec, vec_to_dir
 
 sys.path.append(os.path.join('../'))
-from src.base import plotocc
+from src.base_occ import dispocc
 
 basepath = os.path.dirname(__file__) + "/"
 
@@ -69,7 +69,7 @@ class model_base (object):
         return meta
 
 
-class model (plotocc):
+class model (dispocc):
 
     def __init__(self, cfgfile="./cfg/model.json"):
         super().__init__()

@@ -8,7 +8,7 @@ from linecache import getline, clearcache
 from optparse import OptionParser
 
 sys.path.append(os.path.join("./"))
-from src.base import plotocc, plot2d
+from src.base_occ import dispocc, plot2d
 
 import logging
 logging.getLogger('matplotlib').setLevel(logging.ERROR)
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     p2d = plot2d(aspect="auto")
     p2d.contourf_sub2(mesh, mesh[0], pngname=p2d.tempname + "_plot2d")
 
-    obj = plotocc(touch=True)
+    obj = dispocc(touch=True)
 
     surf1 = make_face(gp_Torus(gp_Ax3(), 1000, 500),
                       0, 2 * np.pi, -np.pi, np.pi)

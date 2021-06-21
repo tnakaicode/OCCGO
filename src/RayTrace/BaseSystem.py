@@ -7,7 +7,7 @@ from linecache import getline, clearcache
 from optparse import OptionParser
 
 sys.path.append(os.path.join("../../"))
-from src.base import plotocc, set_trf
+from src.base_occ import dispocc, set_trf
 from src.geomtory import curvature, grasp_sfc
 
 import logging
@@ -64,7 +64,7 @@ class SurfOCC(object):
         self.rot = axs
         self.axs = gp_Ax3(self.rot.Ax2())
         self.rim = make_edge(gp_Circ(self.axs.Ax2(), 100))
-        self.pln = plotocc.make_plane_axs(self.axs)
+        self.pln = dispocc.make_plane_axs(self.axs)
         self.surf = make_plane(
             self.axs.Location(), dir_to_vec(self.axs.Direction()),
             -500, 500, -500, 500)
@@ -163,7 +163,7 @@ class SurfOCC(object):
         self.surf, self.surf_pts = surf_spl_pcd(*mesh, data)
 
     def export_rim_2d(self, rimfile="pln1.rim", name="pln1-rim"):
-        rim_2d = plotocc.proj_rim_pln(self, self.rim, self.pln, self.axs)
+        rim_2d = dispocc.proj_rim_pln(self, self.rim, self.pln, self.axs)
         fp = open(rimfile, "w")
         fp.write(' {:s}\n'.format(name))
         fp.write('{:12d}{:12d}{:12d}\n'.format(1, 1, 1))
@@ -205,8 +205,8 @@ class SurfOCC(object):
         surf = BRep_Tool.Surface(self.surf)
 
         trf = set_trf(self.axs, gp_Ax3())
-        xy0 = plotocc.proj_pnt_pln(self, surf.Value(0, 0), self.pln, self.axs)
-        xy1 = plotocc.proj_pnt_pln(self, surf.Value(1, 1), self.pln, self.axs)
+        xy0 = dispocc.proj_pnt_pln(self, surf.Value(0, 0), self.pln, self.axs)
+        xy1 = dispocc.proj_pnt_pln(self, surf.Value(1, 1), self.pln, self.axs)
         xy0.Transform(trf)
         xy1.Transform(trf)
 
@@ -231,7 +231,7 @@ class SurfOCC(object):
         for ix in np.linspace(0, 1, nx):
             for iy in np.linspace(0, 1, ny):
                 p0 = surf.Value(ix, iy)
-                p1 = plotocc.proj_pnt_pln(self, p0, self.pln, self.axs)
+                p1 = dispocc.proj_pnt_pln(self, p0, self.pln, self.axs)
                 pz = p1.Transformed(trf)
                 z = p0.Distance(p1)
                 fp.write(" {:.5e} ".format(z))
@@ -251,7 +251,7 @@ class SurfOCC(object):
         for (ix, iy), x in np.ndenumerate(data):
             px, py = mesh[0][ix, iy], mesh[1][ix, iy]
             p0 = gp_Pnt(px, py, 0).Transformed(trsf)
-            p1 = plotocc.proj_pnt_pln(self, p0, self.surf, self.axs)
+            p1 = dispocc.proj_pnt_pln(self, p0, self.surf, self.axs)
             z = p0.Distance(p1)
             data[ix, iy] = z
         grasp_sfc(mesh, data, sfcfile)
@@ -294,7 +294,7 @@ if __name__ == '__main__':
     opt, argc = parser.parse_args(argvs)
     print(opt, argc)
     
-    obj = plotocc(touch=True)
+    obj = dispocc(touch=True)
 
     surf0 = SurfOCC()
     obj.display.DisplayShape(surf0.surf, transparency=0.9)

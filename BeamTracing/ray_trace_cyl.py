@@ -70,8 +70,8 @@ if __name__ == "__main__":
 
     display, start_display, add_menu, add_function_to_menu = init_display()
 
-    beam = get_axs("./beam_cyl.cor")
-    surf = set_surface("./cylinder.stp")
+    beam = get_axs("../input/beam_cyl.cor")
+    surf = set_surface("../input/cylinder.stp")
     display.DisplayShape(surf)
     # display.DisplayShape(axs_pln(gp_Ax3()))
     # display.DisplayShape(axs_pln(beam))

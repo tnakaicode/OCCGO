@@ -7,7 +7,7 @@ from linecache import getline, clearcache
 from optparse import OptionParser
 
 sys.path.append(os.path.join("../"))
-from src.base import plotocc, spl_face
+from src.base_occ import dispocc, spl_face
 from src.fileout import occ_to_grasp_cor_ref
 
 import logging
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     opt, argc = parser.parse_args(argvs)
     print(opt, argc)
 
-    obj = plotocc(touch=True)
+    obj = dispocc(touch=True)
 
     ax0 = gp_Ax3(gp_Pnt(100, 100, 20),
                  gp_Dir(0.1, 0.2, 1.0),

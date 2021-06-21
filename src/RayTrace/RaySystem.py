@@ -27,7 +27,7 @@ from OCCUtils.Construct import project_edge_onto_plane, project_point_on_curve
 from OCCUtils.Topology import Topo
 
 sys.path.append(os.path.join('../../'))
-from src.base import plotocc
+from src.base_occ import dispocc
 from src.RayTrace.ray_setup import get_axs, load_surface, reflect, axs_pln, get_deg
 from src.RayTrace.SurfSystem import SurfSystem, GaussSystem, wavefront, axs_curvature
 from src.RayTrace.SurfSystem import make_edges, set_surface, set_axs_pln, setup_sxy
@@ -250,10 +250,10 @@ class OptSystem (object):
         self.start_display()
 
 
-class Multi_RaySystem (plotocc):
+class Multi_RaySystem (dispocc):
 
     def __init__(self, dir_name, ini_name, tar_name, touch=True):
-        plotocc.__init__(self, touch=touch)
+        dispocc.__init__(self, touch=touch)
         self.dir = dir_name
         self.axs = gp_Ax3()
         self.ini = SurfSystem(self.dir, ini_name)
