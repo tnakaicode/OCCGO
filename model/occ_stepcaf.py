@@ -12,7 +12,6 @@ from OCC.Core.XCAFDoc import (XCAFDoc_DocumentTool_ShapeTool,
                               XCAFDoc_DocumentTool_LayerTool,
                               XCAFDoc_DocumentTool_MaterialTool)
 from OCC.Core.STEPCAFControl import STEPCAFControl_Writer
-from OCC.Core.STEPConstruct import stepconstruct_FindEntity
 from OCC.Core.STEPControl import STEPControl_Writer
 from OCC.Core.STEPControl import (STEPControl_AsIs,
                                   STEPControl_ManifoldSolidBrep,
@@ -23,7 +22,7 @@ from OCC.Core.Interface import Interface_Static_SetCVal
 from OCC.Core.IFSelect import IFSelect_RetDone
 from OCC.Core.TDF import TDF_LabelSequence, TDF_Label, TDF_Tool, TDF_Data
 from OCC.Core.TDataStd import TDataStd_Name, TDataStd_Name_GetID
-from OCC.Core.TCollection import TCollection_AsciiString, TCollection_HAsciiString
+from OCC.Core.TCollection import TCollection_AsciiString
 from OCC.Core.TCollection import TCollection_ExtendedString
 from OCC.Core.TDocStd import TDocStd_Document
 from OCCUtils.Construct import make_box
@@ -34,20 +33,14 @@ class ExportCAFMethod (object):
 
     def __init__(self, name="name", tol=1.0E-10):
         self.name = name
-        self.schema = 'AP214'
-        self.assembly_mode = 1
-
-        self.stp = STEPControl_Writer()
-        self.stp.SetTolerance(tol)
-        self.app = self.stp.WS().TransferWriter().FinderProcess()
-        Interface_Static_SetCVal('write.step.schema', self.schema)
-        Interface_Static_SetCVal('write.step.unit', 'MM')
-        Interface_Static_SetCVal(
-            'write.step.assembly', str(self.assembly_mode))
-
-        # Interface_Static_SetCVal ("write.step.schema","AP203")
-        # Interface_Static_SetIVal ("write.step.schema", 3)
-        # Interface_Static_SetRVal
+        self.step = STEPCAFControl_Writer()
+        self.step.SetNameMode(True)
+        self.doc = TDocStd_Document(TCollection_ExtendedString(""))
+        self.x_app = XCAFApp_Application.GetApplication()
+        self.x_app.NewDocument(TCollection_ExtendedString("MDTV-CAF"), self.doc)
+        self.shape_tool = XCAFDoc_DocumentTool_ShapeTool(self.doc.Main())
+        Interface_Static_SetCVal("write.step.schema", "AP214")
+        Interface_Static_SetCVal('write.step.unit', 'mm')
 
     def Add(self, shape, name="name"):
         """
@@ -57,10 +50,9 @@ class ExportCAFMethod (object):
         STEPControl_ShellBasedSurfaceModel translates an Open CASCADE shape into a STEP shell_based_surface_model entity.
         STEPControl_GeometricCurveSet      translates an Open CASCADE shape into a STEP geometric_curve_set entity.
         """
+        label = self.shape_tool.AddShape(shape)
         Interface_Static_SetCVal('write.step.product.name', name)
-        self.stp.Transfer(shape, STEPControl_AsIs)
-        item = stepconstruct_FindEntity(self.app, shape)
-        item.SetName(TCollection_HAsciiString(name))
+        self.step.Transfer(self.doc, STEPControl_AsIs)
 
     def Write(self, filename=None):
         if not filename:
@@ -68,7 +60,7 @@ class ExportCAFMethod (object):
         path, ext = os.path.splitext(filename)
         if not ext:
             ext = ".stp"
-        status = self.stp.Write(path + ext)
+        status = self.step.Write(path + ext)
         assert(status == IFSelect_RetDone)
 
 

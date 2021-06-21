@@ -1,4 +1,3 @@
-from src.base import plotocc
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
@@ -7,8 +6,8 @@ import time
 from linecache import getline, clearcache
 from optparse import OptionParser
 
-sys.path.append(os.path.join("./"))
-from src.base import plotocc
+sys.path.append(os.path.join("../"))
+from src.base_occ import dispocc
 
 import logging
 logging.getLogger('matplotlib').setLevel(logging.ERROR)
@@ -30,7 +29,7 @@ from OCCUtils.Construct import point_to_vector, vector_to_point
 from OCCUtils.Construct import dir_to_vec, vec_to_dir
 
 
-class OCCMovie(plotocc):
+class OCCMovie(dispocc):
 
     def __init__(self, disp=True, touch=True):
         super().__init__(disp=disp, touch=touch)
