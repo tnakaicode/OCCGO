@@ -548,7 +548,7 @@ class GOSystem (object):
                               vec_to_dir(vz), vec_to_dir(v1))
         tar_surf = wavefront([r1, r2], tar_surf_axs)
         self.display.DisplayShape(tar_surf, color="BLUE")
-        self.display.DisplayShape(axs_pln(tar_surf_axs))
+        dispocc.show_axs_pln(self, tar_surf_axs, scale=50)
 
         self.GO_Prop(w)
 
@@ -558,7 +558,7 @@ class GOSystem (object):
         tar_wave_axs.SetXDirection(vec_to_dir(v1))
         self.tar.wave = wavefront([r1, r2], tar_wave_axs)
         self.display.DisplayShape(self.tar.wave, color="RED")
-        self.display.DisplayShape(axs_pln(tar_wave_axs))
+        dispocc.show_axs_pln(self, tar_wave_axs, scale=50)
 
     def GO_Prop(self, s=0):
         h_ini_wave = BRep_Tool.Surface(self.ini.wave)
@@ -649,9 +649,9 @@ class GOSystem (object):
         self.ini.RotAxs(deg / 2, axs=axs)
 
     def Display_Shape(self, colors=["BLUE", "YELLOW"]):
-        self.display.DisplayShape(axs_pln(gp_Ax3()))
-        self.display.DisplayShape(axs_pln(self.ini.axs), color=colors[0])
-        self.display.DisplayShape(axs_pln(self.tar.axs), color=colors[1])
+        dispocc.show_axs_pln(self, gp_Ax3(), scale=50)
+        dispocc.show_axs_pln(self, self.ini.axs, scale=50)
+        dispocc.show_axs_pln(self, self.tar.axs, scale=50)
         self.display.DisplayShape(self.ini.srf, color=colors[0])
         self.display.DisplayShape(self.tar.srf, color=colors[1])
         self.display.DisplayShape(

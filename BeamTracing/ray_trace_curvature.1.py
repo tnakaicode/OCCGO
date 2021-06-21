@@ -24,7 +24,7 @@ from OCCUtils.Construct import project_edge_onto_plane, project_point_on_curve
 from OCCUtils.Construct import make_wire, make_edge, make_plane, make_line, make_loft
 from OCCUtils.Construct import dir_to_vec, vec_to_dir
 from OCC.Core.BRep import BRep_Tool, BRep_PointsOnSurface
-from OCC.Core.BRep import BRep_ListNodeOfListOfPointRepresentation
+#from OCC.Core.BRep import BRep_ListNodeOfListOfPointRepresentation
 from OCC.Core.TopLoc import TopLoc_Location
 from OCC.Core.TopoDS import TopoDS_Face
 from OCC.Core.GeomLProp import GeomLProp_SurfaceTool, GeomLProp_SLProps
@@ -149,7 +149,7 @@ if __name__ == "__main__":
 
     display.DisplayShape(surf)
     display.DisplayShape(obj)
-    display.DisplayShape(axs_pln(axs))
+    #display.DisplayShape(axs_pln(axs))
 
     display.FitAll()
     start_display()
@@ -157,8 +157,8 @@ if __name__ == "__main__":
     init = "surf1"
     surf = ["surf2", "surf3", "surf4"]
 
-    surf1 = SurfSystem("./", "surf1")
-    surf2 = SurfSystem("./", "surf2")
+    surf1 = SurfSystem("../input/", "surf1")
+    surf2 = SurfSystem("../input/", "surf2")
 
     h_surf = BRep_Tool.Surface(surf1.srf)
     second_derivative(h_surf, 0.5, 0.5)

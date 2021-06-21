@@ -11,8 +11,8 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from linecache import getline, clearcache
 from scipy.integrate import simps
 from optparse import OptionParser
-sys.path.append(os.path.join('../'))
 
+sys.path.append(os.path.join('../'))
 from src.RayTrace.RaySystem import GOSystem
 from src.RayTrace.ray_setup import get_axs, get_deg
 from src.RayTrace.SurfSystem import GaussSystem
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     freq = convert_SI(opt.freq, unit_in='GHz', unit_out='Hz')
     wave = cnt.c / freq * convert(unit_in="m", unit_out="mm")
 
-    obj = GOSystem("./", "surf1", "surf2", wave)
+    obj = GOSystem("../input/", "surf1", "surf2", wave)
     obj.ini.Init_Beam()
     obj.tar.beam = obj.tar.axs
 
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     obj.display.DisplayShape(obj.ini.wave)
 
     obj.ini = obj.tar
-    obj.tar = GaussSystem("./", "surf3")
+    obj.tar = GaussSystem("../input/", "surf3")
     obj.Reflect()
     obj.Display_Shape()
 

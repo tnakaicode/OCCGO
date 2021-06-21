@@ -131,8 +131,8 @@ if __name__ == "__main__":
     init = "surf1"
     surf = ["surf2", "surf3", "surf4"]
 
-    surf1 = SurfSystem("./", "surf1")
-    surf2 = SurfSystem("./", "surf2")
+    surf1 = SurfSystem("../input/", "surf1")
+    surf2 = SurfSystem("../input/", "surf2")
 
     h_surf = BRep_Tool.Surface(surf1.srf)
     second_derivative(h_surf, 0.5, 0.5)
