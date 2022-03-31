@@ -27,9 +27,9 @@ if __name__ == "__main__":
     parser.add_argument("--refe", dest="refe", default="surf1")
     parser.add_argument("--surf", dest="surf", default="surf2")
     parser.add_argument("--pxyz", dest="pxyz",
-                      default=(0, 0, 0), type="float", nargs=3)
+                      default=(0, 0, 0), type=float, nargs=3)
     parser.add_argument("--rxyz", dest="rxyz",
-                      default=(0, 0, 0), type="float", nargs=3)
+                      default=(0, 0, 0), type=float, nargs=3)
     opt = parser.parse_args()
     print(argc, opt)
 

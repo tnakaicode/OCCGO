@@ -61,11 +61,11 @@ if __name__ == "__main__":
     parser.add_argument("--dir", dest="dir", default="./")
     parser.add_argument("--surf", dest="surf", default="cylinder")
     parser.add_argument("--radi", dest="radi", default=(10, 10),
-                      type="float", nargs=2)
+                      type=float, nargs=2)
     parser.add_argument("--lxy", dest="lxy", default=(0, 10),
-                      type="float", nargs=2)
+                      type=float, nargs=2)
     parser.add_argument("--rxy", dest="rxy", default=(0, 0),
-                      type="float", nargs=2)
+                      type=float, nargs=2)
     opt = parser.parse_args()
     print(argc, opt)
 

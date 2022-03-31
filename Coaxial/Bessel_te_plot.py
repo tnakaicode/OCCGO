@@ -86,11 +86,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--freq", dest="freq", default="170GHz")
     parser.add_argument("--radi", dest="radi",
-                      default=(10.0, 25.0), type="float", nargs=2)
-    parser.add_argument("--mn", dest="mn", default=(31, 11), type="int", nargs=2)
+                      default=(10.0, 25.0), type=float, nargs=2)
+    parser.add_argument("--mn", dest="mn", default=(31, 11), type=int, nargs=2)
     parser.add_argument("--nxy", dest="nxy",
-                      default=(200, 200), type="int", nargs=2)
-    parser.add_argument("--lxy", dest="lxy", default=25, type="float")
+                      default=(200, 200), type=int, nargs=2)
+    parser.add_argument("--lxy", dest="lxy", default=25, type=float)
     opt = parser.parse_args()
     print(argc, opt)
 

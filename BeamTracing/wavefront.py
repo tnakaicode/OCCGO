@@ -41,8 +41,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--dir", dest="dir", default="./")
     parser.add_argument("--radi", dest="radi", default=(-1000, -500),
-                      type="float", nargs=2)
-    parser.add_argument("--dist", dest="dist", default=500.0, type="float")
+                      type=float, nargs=2)
+    parser.add_argument("--dist", dest="dist", default=500.0, type=float)
     opt = parser.parse_args()
     print(argc, opt)
 

@@ -58,9 +58,9 @@ if __name__ == "__main__":
     parser.add_argument("--out", dest="out", default="./")
     parser.add_argument("--file", dest="file", default="surf1.stp")
     parser.add_argument("--pxyz", dest="pxyz",
-                      default=(0, 0, 0), type="float", nargs=3)
+                      default=(0, 0, 0), type=float, nargs=3)
     parser.add_argument("--rxyz", dest="rxyz",
-                      default=(0, 0, 0), type="float", nargs=3)
+                      default=(0, 0, 0), type=float, nargs=3)
     parser.add_argument("--fileout", dest="fileout", default="surf2.stp")
     opt = parser.parse_args()
     print(argc, opt)
