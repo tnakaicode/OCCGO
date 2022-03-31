@@ -5,7 +5,7 @@ import os
 import time
 import shutil
 from linecache import getline, clearcache
-from optparse import OptionParser
+import argparse
 from numpy.core.defchararray import array
 from numpy.lib.function_base import unwrap
 
@@ -186,11 +186,11 @@ class GaussianProfile(plot2d):
 
 if __name__ == '__main__':
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--dir", dest="dir", default="./")
-    parser.add_option("--file", dest="file", default="plot_gauss.txt")
-    opt, argc = parser.parse_args(argvs)
-    print(opt, argc)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dir", dest="dir", default="./")
+    parser.add_argument("--file", dest="file", default="plot_gauss.txt")
+    opt = parser.parse_args()
+    print(opt, argvs)
 
     cfg_txt = opt.file
     obj = GaussianProfile(cfg_txt)

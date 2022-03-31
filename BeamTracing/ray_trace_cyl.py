@@ -10,7 +10,7 @@ from unwrap.unwrap import unwrap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from linecache import getline, clearcache
 from scipy.integrate import simps
-from optparse import OptionParser
+import argparse
 sys.path.append(os.path.join('../'))
 
 from src.RayTrace.RaySystem import RaySystem, SurfSystem, OptSystem, Multi_RaySystem, set_surface
@@ -63,9 +63,9 @@ def reflect_axs2(beam, surf, axs=gp_Ax3(), indx=1):
 
 if __name__ == "__main__":
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--dir", dest="dir", default="./")
-    opt, argc = parser.parse_args(argvs)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dir", dest="dir", default="./")
+    opt = parser.parse_args()
     print(argc, opt)
 
     display, start_display, add_menu, add_function_to_menu = init_display()

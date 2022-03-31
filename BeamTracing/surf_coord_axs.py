@@ -9,7 +9,7 @@ from unwrap.unwrap import unwrap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from linecache import getline, clearcache
 from scipy.integrate import simps
-from optparse import OptionParser
+import argparse
 sys.path.append(os.path.join('../'))
 
 from src.RayTrace.ray_setup import get_axs, get_deg
@@ -21,16 +21,16 @@ from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
 
 if __name__ == "__main__":
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--dir", dest="dir", default="./")
-    parser.add_option("--out", dest="out", default="./")
-    parser.add_option("--refe", dest="refe", default="surf1")
-    parser.add_option("--surf", dest="surf", default="surf2")
-    parser.add_option("--pxyz", dest="pxyz",
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dir", dest="dir", default="./")
+    parser.add_argument("--out", dest="out", default="./")
+    parser.add_argument("--refe", dest="refe", default="surf1")
+    parser.add_argument("--surf", dest="surf", default="surf2")
+    parser.add_argument("--pxyz", dest="pxyz",
                       default=(0, 0, 0), type="float", nargs=3)
-    parser.add_option("--rxyz", dest="rxyz",
+    parser.add_argument("--rxyz", dest="rxyz",
                       default=(0, 0, 0), type="float", nargs=3)
-    opt, argc = parser.parse_args(argvs)
+    opt = parser.parse_args()
     print(argc, opt)
 
     filename = opt.dir + opt.refe + ".cor"

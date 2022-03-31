@@ -10,7 +10,7 @@ import scipy.constants as cnt
 from unwrap.unwrap import unwrap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from linecache import getline, clearcache
-from optparse import OptionParser
+import argparse
 from scipy.integrate import simps
 from scipy.optimize import curve_fit
 from scipy.special import jv, jvp, jn_zeros, jnp_zeros
@@ -22,15 +22,15 @@ from src.Unit import convert_SI, convert
 
 if __name__ == "__main__":
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--freq", dest="freq", default="170GHz")
-    parser.add_option("--radi", dest="radi",
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--freq", dest="freq", default="170GHz")
+    parser.add_argument("--radi", dest="radi",
                       default=(10.0, 25.0), type="float", nargs=2)
-    parser.add_option("--mn", dest="mn", default=(31, 11), type="int", nargs=2)
-    parser.add_option("--nxy", dest="nxy",
+    parser.add_argument("--mn", dest="mn", default=(31, 11), type="int", nargs=2)
+    parser.add_argument("--nxy", dest="nxy",
                       default=(200, 200), type="int", nargs=2)
-    parser.add_option("--lxy", dest="lxy", default=(100, 100), type="float")
-    opt, argc = parser.parse_args(argvs)
+    parser.add_argument("--lxy", dest="lxy", default=(100, 100), type="float")
+    opt = parser.parse_args()
     print(argc, opt)
 
     freq = convert_SI(opt.freq, unit_in='GHz', unit_out='Hz')

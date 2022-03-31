@@ -9,7 +9,7 @@ from unwrap.unwrap import unwrap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from linecache import getline, clearcache
 from scipy.integrate import simps
-from optparse import OptionParser
+import argparse
 sys.path.append(os.path.join('../'))
 
 from src.fileout import occ_to_grasp_cor, occ_to_grasp_rim
@@ -23,10 +23,10 @@ from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
 
 if __name__ == "__main__":
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--dir", dest="dir", default="./")
-    parser.add_option("--surf", dest="surf", default="surf1")
-    opt, argc = parser.parse_args(argvs)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dir", dest="dir", default="./")
+    parser.add_argument("--surf", dest="surf", default="surf1")
+    opt = parser.parse_args()
     print(argc, opt)
 
     filename = opt.dir + opt.surf + "_mat.sfc"

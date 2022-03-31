@@ -10,7 +10,7 @@ from unwrap.unwrap import unwrap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from linecache import getline, clearcache
 from scipy.integrate import simps
-from optparse import OptionParser
+import argparse
 
 sys.path.append(os.path.join('../'))
 from src.RayTrace.RaySystem import GOSystem
@@ -44,10 +44,10 @@ from OCCUtils.Construct import dir_to_vec, vec_to_dir
 
 if __name__ == "__main__":
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--dir", dest="dir", default="./")
-    parser.add_option("--freq", dest="freq", default="170GHz")
-    opt, argc = parser.parse_args(argvs)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dir", dest="dir", default="./")
+    parser.add_argument("--freq", dest="freq", default="170GHz")
+    opt = parser.parse_args()
     print(argc, opt)
 
     freq = convert_SI(opt.freq, unit_in='GHz', unit_out='Hz')

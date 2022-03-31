@@ -10,7 +10,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from linecache import getline, clearcache
 from scipy.integrate import simps
 from scipy.constants import *
-from optparse import OptionParser
+import argparse
 sys.path.append(os.path.join('..'))
 
 from OCCUtils.Construct import vec_to_dir

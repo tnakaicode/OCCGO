@@ -29,7 +29,7 @@ from unwrap.unwrap import unwrap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from linecache import getline, clearcache
 from scipy.integrate import simps
-from optparse import OptionParser
+import argparse
 sys.path.append(os.path.join('../'))
 
 
@@ -38,12 +38,12 @@ if __name__ == "__main__":
     from src.geomtory import curvature
 
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--dir", dest="dir", default="./")
-    parser.add_option("--radi", dest="radi", default=(-1000, -500),
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dir", dest="dir", default="./")
+    parser.add_argument("--radi", dest="radi", default=(-1000, -500),
                       type="float", nargs=2)
-    parser.add_option("--dist", dest="dist", default=500.0, type="float")
-    opt, argc = parser.parse_args(argvs)
+    parser.add_argument("--dist", dest="dist", default=500.0, type="float")
+    opt = parser.parse_args()
     print(argc, opt)
 
     px = np.linspace(-1, 1, 100) * 100

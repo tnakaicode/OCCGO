@@ -9,7 +9,7 @@ from unwrap.unwrap import unwrap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from linecache import getline, clearcache
 from scipy.integrate import simps
-from optparse import OptionParser
+import argparse
 sys.path.append(os.path.join('../'))
 
 from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
@@ -53,16 +53,16 @@ def SetViewer():
 
 if __name__ == "__main__":
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--dir", dest="dir", default="../BeamTracing/")
-    parser.add_option("--out", dest="out", default="./")
-    parser.add_option("--file", dest="file", default="surf1.stp")
-    parser.add_option("--pxyz", dest="pxyz",
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dir", dest="dir", default="../BeamTracing/")
+    parser.add_argument("--out", dest="out", default="./")
+    parser.add_argument("--file", dest="file", default="surf1.stp")
+    parser.add_argument("--pxyz", dest="pxyz",
                       default=(0, 0, 0), type="float", nargs=3)
-    parser.add_option("--rxyz", dest="rxyz",
+    parser.add_argument("--rxyz", dest="rxyz",
                       default=(0, 0, 0), type="float", nargs=3)
-    parser.add_option("--fileout", dest="fileout", default="surf2.stp")
-    opt, argc = parser.parse_args(argvs)
+    parser.add_argument("--fileout", dest="fileout", default="surf2.stp")
+    opt = parser.parse_args()
     print(argc, opt)
 
     idx = opt.file.split(".")[-1]

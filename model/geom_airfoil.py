@@ -7,7 +7,7 @@ import time
 import os
 import urllib.request
 import scipy.constants as cnt
-from optparse import OptionParser
+import argparse
 
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.gp import gp_Ax1, gp_Ax2, gp_Ax3
@@ -109,9 +109,9 @@ class Airfoil (object):
 
 if __name__ == "__main__":
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--name", dest="name", default="dae51")
-    opt, argc = parser.parse_args(argvs)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--name", dest="name", default="dae51")
+    opt = parser.parse_args()
     print(argc, opt)
 
     cfg = json.load(open("../cadfile/airfoil.json", "r"))

@@ -9,7 +9,7 @@ from unwrap.unwrap import unwrap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from linecache import getline, clearcache
 from scipy.integrate import simps
-from optparse import OptionParser
+import argparse
 sys.path.append(os.path.join('../'))
 
 from src.fileout import occ_to_grasp_cor, occ_to_grasp_rim
@@ -57,16 +57,16 @@ def wxy_wire(pnt, wxy=[10, 20]):
 
 if __name__ == "__main__":
     argvs = sys.argv
-    parser = OptionParser()
-    parser.add_option("--dir", dest="dir", default="./")
-    parser.add_option("--surf", dest="surf", default="cylinder")
-    parser.add_option("--radi", dest="radi", default=(10, 10),
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dir", dest="dir", default="./")
+    parser.add_argument("--surf", dest="surf", default="cylinder")
+    parser.add_argument("--radi", dest="radi", default=(10, 10),
                       type="float", nargs=2)
-    parser.add_option("--lxy", dest="lxy", default=(0, 10),
+    parser.add_argument("--lxy", dest="lxy", default=(0, 10),
                       type="float", nargs=2)
-    parser.add_option("--rxy", dest="rxy", default=(0, 0),
+    parser.add_argument("--rxy", dest="rxy", default=(0, 0),
                       type="float", nargs=2)
-    opt, argc = parser.parse_args(argvs)
+    opt = parser.parse_args()
     print(argc, opt)
 
     display, start_display, add_menu, add_function_to_menu = init_display()
