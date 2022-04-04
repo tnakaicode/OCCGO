@@ -4,8 +4,8 @@ import sys
 import os
 import time
 import shutil
-from linecache import getline, clearcache
 import argparse
+from linecache import getline, clearcache
 from numpy.core.defchararray import array
 from numpy.lib.function_base import unwrap
 

@@ -4,8 +4,8 @@ import sys
 import os
 import time
 import scipy.fftpack
-from linecache import getline, clearcache
 import argparse
+from linecache import getline, clearcache
 
 sys.path.append(os.path.join("../"))
 from src.base import plot2d, plot3d
