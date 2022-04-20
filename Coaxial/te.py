@@ -31,7 +31,7 @@ if __name__ == "__main__":
                       default=(200, 200), type=int, nargs=2)
     parser.add_argument("--lxy", dest="lxy", default=(100, 100), type=float)
     opt = parser.parse_args()
-    print(argc, opt)
+    print(opt, argvs)
 
     freq = convert_SI(opt.freq, unit_in='GHz', unit_out='Hz')
     wave = cnt.c / freq * convert(unit_in="m", unit_out="mm")

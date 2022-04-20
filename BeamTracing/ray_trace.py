@@ -40,7 +40,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--dir", dest="dir", default="../input/")
     opt = parser.parse_args()
-    print(argc, opt)
+    print(opt, argvs)
 
     init = "surf1"
     surf = ["surf2", "surf3", "surf4"]

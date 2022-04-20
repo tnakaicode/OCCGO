@@ -33,7 +33,7 @@ if __name__ == "__main__":
     argvs = sys.argv
     parser = argparse.ArgumentParser()
     opt = parser.parse_args()
-    print(argc, opt)
+    print(opt, argvs)
 
     obj = dispocc()
     obj.display.DisplayShape(gp_Pnt())

@@ -27,7 +27,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", dest="file", default="../cadfile/buckling")
     opt = parser.parse_args()
-    print(argc, opt)
+    print(opt, argvs)
 
     ply_file = opt.file + ".ply"
     ply_data = PlyData.read(ply_file)

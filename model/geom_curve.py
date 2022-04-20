@@ -151,7 +151,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", dest="name", default="dae51")
     opt = parser.parse_args()
-    print(argc, opt)
+    print(opt, argvs)
 
     cfg = json.load(open("airfoil.json", "r"))
     airfilo_url = cfg["url"]

@@ -27,7 +27,7 @@ if __name__ == "__main__":
     parser.add_argument("--dir", dest="dir", default="./")
     parser.add_argument("--surf", dest="surf", default="surf1")
     opt = parser.parse_args()
-    print(argc, opt)
+    print(opt, argvs)
 
     filename = opt.dir + opt.surf + "_mat.sfc"
     xs, ys, xe, ye = [float(v) for v in getline(filename, 2).split()]

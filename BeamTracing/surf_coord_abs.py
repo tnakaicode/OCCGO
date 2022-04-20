@@ -29,7 +29,7 @@ if __name__ == "__main__":
     parser.add_argument("--rxyz", dest="rxyz",
                       default=(0, 0, 0), type=float, nargs=3)
     opt = parser.parse_args()
-    print(argc, opt)
+    print(opt, argvs)
 
     ax = gp_Ax3(gp_Pnt(*opt.pxyz), gp_Dir(0, 0, 1))
     for i, deg in enumerate(opt.rxyz):

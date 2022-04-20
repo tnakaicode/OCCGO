@@ -63,7 +63,7 @@ if __name__ == "__main__":
                       default=(0, 0, 0), type=float, nargs=3)
     parser.add_argument("--fileout", dest="fileout", default="surf2.stp")
     opt = parser.parse_args()
-    print(argc, opt)
+    print(opt, argvs)
 
     idx = opt.file.split(".")[-1]
 

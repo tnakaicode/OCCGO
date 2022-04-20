@@ -48,7 +48,7 @@ if __name__ == "__main__":
     parser.add_argument("--dir", dest="dir", default="./")
     parser.add_argument("--freq", dest="freq", default="170GHz")
     opt = parser.parse_args()
-    print(argc, opt)
+    print(opt, argvs)
 
     freq = convert_SI(opt.freq, unit_in='GHz', unit_out='Hz')
     wave = cnt.c / freq * convert(unit_in="m", unit_out="mm")

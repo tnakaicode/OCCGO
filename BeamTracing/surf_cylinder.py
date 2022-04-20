@@ -67,7 +67,7 @@ if __name__ == "__main__":
     parser.add_argument("--rxy", dest="rxy", default=(0, 0),
                       type=float, nargs=2)
     opt = parser.parse_args()
-    print(argc, opt)
+    print(opt, argvs)
 
     display, start_display, add_menu, add_function_to_menu = init_display()
 

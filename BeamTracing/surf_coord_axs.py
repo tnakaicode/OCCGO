@@ -31,7 +31,7 @@ if __name__ == "__main__":
     parser.add_argument("--rxyz", dest="rxyz",
                       default=(0, 0, 0), type=float, nargs=3)
     opt = parser.parse_args()
-    print(argc, opt)
+    print(opt, argvs)
 
     filename = opt.dir + opt.refe + ".cor"
     ax = get_axs(filename)

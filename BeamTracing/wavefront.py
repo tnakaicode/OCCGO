@@ -44,7 +44,7 @@ if __name__ == "__main__":
                       type=float, nargs=2)
     parser.add_argument("--dist", dest="dist", default=500.0, type=float)
     opt = parser.parse_args()
-    print(argc, opt)
+    print(opt, argvs)
 
     px = np.linspace(-1, 1, 100) * 100
     py = np.linspace(-1, 1, 100) * 100

@@ -35,7 +35,7 @@ if __name__ == "__main__":
     parser.add_argument("--rxy", dest="rxy",
                       default=(100, 200), type=float, nargs=2)
     opt = parser.parse_args()
-    print(argc, opt)
+    print(opt, argvs)
 
     px = np.linspace(-1, 1, opt.nxy[0]) * opt.lxy[0] / 2
     py = np.linspace(-1, 1, opt.nxy[1]) * opt.lxy[1] / 2
